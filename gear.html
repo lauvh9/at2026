@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gear List — Laura on Trail</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .gear-hero {
+      background: var(--bark);
+      padding: 3rem 2rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .gear-hero::after {
+      content: '16.4 LBS';
+      position: absolute;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--serif);
+      font-size: 5rem;
+      font-weight: 900;
+      color: rgba(201,169,110,0.07);
+      letter-spacing: -0.02em;
+      pointer-events: none;
+    }
+    .gear-hero .hero-bg-lines { opacity: 0.05; }
+
+    /* Category filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .filter-btn {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 14px;
+      border-radius: 2px;
+      border: 1.5px solid var(--fog);
+      background: transparent;
+      color: var(--trail);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--pine);
+      color: var(--white);
+      border-color: var(--pine);
+    }
+
+    /* Weight summary bar */
+    .weight-summary {
+      background: var(--white);
+      border: 1px solid var(--fog);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+    .wt-item { text-align: center; }
+    .wt-num {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--pine);
+      line-height: 1;
+      display: block;
+    }
+    .wt-lbl {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--trail);
+      margin-top: 3px;
+      display: block;
+    }
+
+    /* Visual weight bar */
+    .cat-weight-bars { margin-bottom: 2rem; }
+    .cwb-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .cwb-label { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--trail); width: 110px; flex-shrink: 0; }
+    .cwb-track { flex: 1; height: 8px; background: var(--fog); border-radius: 1px; overflow: hidden; }
+    .cwb-fill { height: 100%; border-radius: 1px; background: var(--pine); transition: width 1s ease; }
+    .cwb-val { font-family: var(--mono); font-size: 0.6rem; color: var(--trail); width: 45px; text-align: right; flex-shrink: 0; }
+
+    /* Table tweaks */
+    .gear-section { margin-bottom: 2rem; }
+    .gear-section.hidden { display: none; }
+    .gear-name-col { min-width: 160px; }
+    .gear-detail { font-size: 0.8rem; color: var(--trail); margin-top: 2px; }
+    .gear-weight { font-family: var(--mono); font-size: 0.85rem; }
+    .gear-price { font-family: var(--mono); font-size: 0.8rem; color: var(--trail); }
+    .gear-link { color: var(--pine); text-decoration: none; font-size: 0.75rem; border-bottom: 1px solid var(--fern); }
+    .gear-link:hover { color: var(--moss); }
+
+    .season-note {
+      background: var(--fog);
+      border-left: 3px solid var(--sand);
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      color: var(--earth);
+      font-style: italic;
+      margin-bottom: 2rem;
+      border-radius: 0 3px 3px 0;
+    }
+
+    @media (max-width: 600px) {
+      .gear-table thead { display: none; }
+      .gear-table td { display: block; padding: 0.3rem 0.5rem; }
+      .gear-table td::before { content: attr(data-label) ': '; font-family: var(--mono); font-size: 0.55rem; color: var(--trail); text-transform: uppercase; letter-spacing: 0.06em; }
+      .gear-table tr { display: block; padding: 0.75rem 0; border-bottom: 1px solid var(--fog); }
+      .gear-table .cat-header td { display: block; }
+      .gear-table .cat-header td::before { content: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="blog.html">Trail Log</a></li>
+    <li><a href="gear.html" class="active">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+</nav>
+
+<header class="gear-hero">
+  <div class="hero-bg-lines"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label" style="color:var(--sand)">Every ounce counts</span>
+    <h1 style="color:var(--white);font-size:clamp(2rem,4vw,3rem)">The Pack</h1>
+  </div>
+</header>
+
+<div class="topo-divider" style="background:var(--bark)">
+  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
+  </svg>
+</div>
+
+<main>
+  <section>
+    <div class="container">
+
+      <!-- Weight summary -->
+      <div class="weight-summary">
+        <div class="wt-item">
+          <span class="wt-num">16.4</span>
+          <span class="wt-lbl">Base weight (lbs)</span>
+        </div>
+        <div class="wt-item">
+          <span class="wt-num">~26.4</span>
+          <span class="wt-lbl">Approx total weight (incl. food &amp; water)</span>
+        </div>
+        <div class="wt-item">
+          <span class="wt-num">33 oz</span>
+          <span class="wt-lbl">Heaviest item (tent)</span>
+        </div>
+        <div class="wt-item">
+          <span class="wt-num">51</span>
+          <span class="wt-lbl">Items in pack</span>
+        </div>
+      </div>
+
+      <!-- Category weight bars -->
+      <div class="cat-weight-bars">
+        <span class="section-label" style="margin-bottom:0.75rem;display:block">Weight by category</span>
+        <div id="weightBars"></div>
+      </div>
+
+      <div class="season-note">
+        Base weight includes all packed items except worn clothing and consumables (food, water, fuel). Total weight assumes 2L of water and 4 days of food, which adds roughly 10 lbs.
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterGear('all', this)">All</button>
+        <button class="filter-btn" onclick="filterGear('shelter', this)">Shelter</button>
+        <button class="filter-btn" onclick="filterGear('sleep', this)">Sleep</button>
+        <button class="filter-btn" onclick="filterGear('cookware', this)">Cookware</button>
+        <button class="filter-btn" onclick="filterGear('clothing', this)">Clothing</button>
+        <button class="filter-btn" onclick="filterGear('electronics', this)">Electronics</button>
+        <button class="filter-btn" onclick="filterGear('toiletries', this)">Toiletries</button>
+        <button class="filter-btn" onclick="filterGear('firstaid', this)">First Aid</button>
+      </div>
+
+      <!-- GEAR TABLE -->
+      <table class="gear-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Item</th>
+            <th style="width:32%">Detail</th>
+            <th>Weight</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cat-header gear-shelter"><td colspan="4">⛺ Shelter</td></tr>
+          <tr class="gear-shelter">
+            <td data-label="Item"><a href="https://www.rei.com/product/238835/nemo-hornet-osmo-ultralight-2p-tent?sku=2388350001&store=&CAWELAID=120217890018772508&CAGPSPN=pla&CAAGID=112140757372&CATCI=aud-1396942686915:pla-448713819068&cm_mmc=PLA_Google%7C21700000001700551_2388350001%7C448713819068%7Cbrand_flag%7C7979068557&gclsrc=aw.ds&gad_source=1&gad_campaignid=7979068557&gbraid=0AAAAAD_DTlxwvZuwP-5aPoO7QzDGEdMaB&gclid=Cj0KCQiAg63LBhDtARIsAJygHZ4xPudlfUlorJ0TbK29Rsk-nXdGDTWGe2LTE1KbTa35Nq97LQSsZ9caAjquEALw_wcB" target="_blank" class="gear-link">Tent</a></td>
+            <td data-label="Detail"><span class="gear-detail">Nemo Hornet Elite 2P</span></td>
+            <td data-label="Weight"><span class="gear-weight">33 oz</span></td>
+          </tr>
+          <tr class="gear-shelter">
+            <td data-label="Item"><a href="https://www.gossamergear.com/products/polycryo-tent-footprint-ground-cloths?_pos=1&_sid=fa4239091&_ss=r" target="_blank" class="gear-link">Footprint</a></td>
+            <td data-label="Detail"><span class="gear-detail">Gossamer Gear Polycro Ground Cloth</span></td>
+            <td data-label="Weight"><span class="gear-weight">3.6 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-backpack"><td colspan="4">🎒 Backpack</td></tr>
+          <tr class="gear-backpack">
+            <td data-label="Item"><a href="https://www.gossamergear.com/products/clear-waterproof-pack-liners?_pos=1&_sid=af0e483d6&_ss=r" target="_blank" class="gear-link">Backpack Liner</a></td>
+            <td data-label="Detail"><span class="gear-detail">Gossamer Gear Clear Waterproof Pack Liner</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.4 oz</span></td>
+          </tr>
+          <tr class="gear-backpack">
+            <td data-label="Item"><a href="https://durstongear.com/products/kakwa-55?srsltid=AfmBOoogeVwnWktZqMrTxvgBpGNVFV3EK0G1f1rcoCyRi9Wri8Qkqtxd" target="_blank" class="gear-link">Backpack</a></td>
+            <td data-label="Detail"><span class="gear-detail">Durston Kakwa 55</span></td>
+            <td data-label="Weight"><span class="gear-weight">32 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-sleep"><td colspan="4">🛌 Sleep System</td></tr>
+          <tr class="gear-sleep">
+            <td data-label="Item"><a href="https://www.rei.com/product/241034/therm-a-rest-neoair-xlite-nxt-sleeping-pad?redirect-pup=false" target="_blank" class="gear-link">Sleeping Pad</a></td>
+            <td data-label="Detail"><span class="gear-detail">Therm-a-Rest NeoAir XLite NXT, Short (R4.5)</span></td>
+            <td data-label="Weight"><span class="gear-weight">11.5 oz</span></td>
+          </tr>
+          <tr class="gear-sleep">
+            <td data-label="Item"><a href="https://enlightenedequipment.com/enigma-sleeping-quilt/?utm_source=google&utm_medium=ppc&utm_campaign=bp-performance-max&utm_content=&utm_term=&matchtype=&network=x&device=c&gad_source=1&gad_campaignid=17952685898&gbraid=0AAAAADliJ_oP62LFEXK22WYOt642ncPSM&gclid=Cj0KCQjw4PPNBhD8ARIsAMo-icxHgG5B0edFPR3yuVI5UCMIAzy1Hl9uKzde9eDjbRYnlrw7UlycF4IaAmVwEALw_wcB" target="_blank" class="gear-link">Sleeping Quilt</a></td>
+            <td data-label="Detail"><span class="gear-detail">Enlightened Equipment Enigma</span></td>
+            <td data-label="Weight"><span class="gear-weight">21.41 oz</span></td>
+          </tr>
+          <tr class="gear-sleep">
+            <td data-label="Item"><a href="https://www.rei.com/product/850427/cocoon-silk-mummyliner?sku=8504270002&store=80&CAWELAID=120217890000855874&CAGPSPN=pla&CAAGID=&CATCI=&cm_mmc=PLA_Google-P-Max%7C21700000001700551_8504270002%7C%7Cbrand_flag%7C20088201991&gclsrc=aw.ds&gad_source=1&gad_campaignid=20079383886&gbraid=0AAAAAD_DTlwbOSllZvI5DD-bg9W6QHlmO&gclid=Cj0KCQjw4PPNBhD8ARIsAMo-icxH98xeD8HSMSnKS4Xa9klqZ2WOXnngYJrmwuH7j70IBQvZEzfHxZcaAjHSEALw_wcB" target="_blank" class="gear-link">Sleeping Bag Liner</a></td>
+            <td data-label="Detail"><span class="gear-detail">Coccon Silk Mummy Liner</span></td>
+            <td data-label="Weight"><span class="gear-weight">4.7 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-cookware"><td colspan="4">🍳 Cookware</td></tr>
+          <tr class="gear-cookware">
+            <td data-label="Item"><a href="https://www.rei.com/product/148209/msr-pocketrocket-deluxe-stove?redirect-pup=false" target="_blank" class="gear-link">Stove</a></td>
+            <td data-label="Detail"><span class="gear-detail">MSR Pocket Rocket Deluxe Stove</span></td>
+            <td data-label="Weight"><span class="gear-weight">2.9 oz</span></td>
+          </tr>
+          <tr class="gear-cookware">
+            <td data-label="Item"><a href="https://www.rei.com/product/256187/humangear-gobites-bio-uno-long-spork?redirect-pup=false" target="_blank" class="gear-link">Spork</a></td>
+            <td data-label="Detail"><span class="gear-detail">humangear GoBites Long Spork</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.63 oz</span></td>
+          </tr>
+          <tr class="gear-cookware">
+            <td data-label="Item"><a href="https://www.rei.com/product/849634/msr-isopro-fuel-canister-39-oz-110-g?sku=8496340001&store=199&CAWELAID=120217890008401602&CAGPSPN=pla&CAAGID=116436834648&CATCI=aud-1396942686955:pla-1192733344692&cm_mmc=PLA_Google%7C21700000001700551_8496340001%7C1192733344692%7Cbrand_flag%7C11304355197&gclsrc=aw.ds&gad_source=1&gad_campaignid=11304355197&gbraid=0AAAAAD_DTlyiWAnu2dRSAB6r_VbGH_j3j&gclid=Cj0KCQiAprLLBhCMARIsAEDhdPcx5JOTzFSnGhGa76wdqHQksqKuzbH7T1oRsjwgwydJl4LF1wBb9AwaAua1EALw_wcB" target="_blank" class="gear-link">Fuel</a></td>
+            <td data-label="Detail"><span class="gear-detail">IsoPro Fuel Canister</span></td>
+            <td data-label="Weight"><span class="gear-weight">7.4 oz</span></td>
+          </tr>
+          <tr class="gear-cookware">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/bic-lighter-mini?_pos=1&_sid=a79ff6f34&_ss=r" target="_blank" class="gear-link">Lighter</a></td>
+            <td data-label="Detail"><span class="gear-detail">MiniBic</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.4 oz</span></td>
+          </tr>
+          <tr class="gear-cookware">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/titanium-1100ml-pot-by-toaks?_pos=3&_sid=65b17af6e&_ss=r" target="_blank" class="gear-link">Pot</a></td>
+            <td data-label="Detail"><span class="gear-detail">Toaks 1100</span></td>
+            <td data-label="Weight"><span class="gear-weight">4.8 oz</span></td>
+          </tr>
+          <tr class="gear-cookware">
+            <td data-label="Item">Pot Cozy</td>
+            <td data-label="Detail"><span class="gear-detail">Pot Cozy by Toaks</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.9 oz</span></td>
+          </tr>
+          <tr class="gear-cookware">
+            <td data-label="Item"><a href="https://adotecgear.com/products/ultralight-food-locker-grizzly-bear-resistant-bag?variant=44710671450298" target="_blank" class="gear-link">Food Bag</a></td>
+            <td data-label="Detail"><span class="gear-detail">Adotec Ultralight Bear Locker</span></td>
+            <td data-label="Weight"><span class="gear-weight">7 oz</span></td>
+          </tr>
+          <tr class="gear-cookware">
+            <td data-label="Item"><a href="https://zpacks.com/products/nylopro-odor-barrier-bags?_pos=1&_sid=0286de669&_ss=r" target="_blank" class="gear-link">Food Bag Liner</a></td>
+            <td data-label="Detail"><span class="gear-detail">ZPacks Nylo Ppro Odor Barrier Bag Large</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.67 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-water"><td colspan="4">💧 Water / Filtration</td></tr>
+          <tr class="gear-water">
+            <td data-label="Item"><a href="https://www.rei.com/product/103050/sawyer-squeeze-water-filter-system?redirect-pup=false" target="_blank" class="gear-link">Water Filter</a></td>
+            <td data-label="Detail"><span class="gear-detail">Sawyer Squeeze</span></td>
+            <td data-label="Weight"><span class="gear-weight">2.33 oz</span></td>
+          </tr>
+          <tr class="gear-water">
+            <td data-label="Item"><a href="https://www.amazon.com/Cnoc-Outdoors-Container-Thread-Orange/dp/B07QBQ894L/ref=sr_1_1?adgrpid=194854419748&dib=eyJ2IjoiMSJ9.paMT_PHl_UcRHsX7fXw0eryGIgGIK6gWfuSdCGcFtC-ja22NHSy0k6n1ZTCfaFkdDzFt_fdlPL6wGuE4HCQKrjQd7haI-mQnM6abAByCagk1CrzwzJu3-jIHAo4v2nyxlW3ShgBqXC9QaMuSzA0fv9yDDyzdILAbIC-L4PbkKUgJ1pKdr95tNHDhk83yAVSeBEYTaui8Fs3Xl8s7JTRWi3dXLe1mXMMLlyaOGEC5-2Ip7RMgUJxCKIQy3TFAXDAkD6h-D1ICCGZZIw8xmhCCqzbvbXafaB2rIFzzla0RpA4.gO8xcDEmAV0l6QZRuQkqyYPqYk349HXRHtJWcXgb-T0&dib_tag=se&hvadid=779643506047&hvdev=c&hvexpln=0&hvlocphy=9052922&hvnetw=g&hvocijid=11977118714271651826--&hvqmt=e&hvrand=11977118714271651826&hvtargid=kwd-491062939109&hydadcr=2833_13623713_2134266&keywords=cnoc%2Bbladder&mcid=7c2d269a37213b72afa0d1dc1ddb2344&qid=1768751075&sr=8-1&th=1" target="_blank" class="gear-link">Water Filter Bag</a></td>
+            <td data-label="Detail"><span class="gear-detail">CNOC 2L Bladder</span></td>
+            <td data-label="Weight"><span class="gear-weight">2.79 oz</span></td>
+          </tr>
+          <tr class="gear-water">
+            <td data-label="Item">Water Bottles</td>
+            <td data-label="Detail"><span class="gear-detail">Smart Water 1L x2</span></td>
+            <td data-label="Weight"><span class="gear-weight">2.6 oz</span></td>
+          </tr>
+          <tr class="gear-water">
+            <td data-label="Item">Extra Caps</td>
+            <td data-label="Detail"><span class="gear-detail">Extra Water Bottle Sports Caps</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.1 oz</span></td>
+          </tr>
+          <tr class="gear-water">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/cleaning-coupling-by-sawyer?_pos=1&_sid=f7af09ccc&_ss=r" target="_blank" class="gear-link">Cleaning Coupling</a></td>
+            <td data-label="Detail"><span class="gear-detail">Cleaning Coupling by Sawyer</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.2 oz</span></td>
+          </tr>
+          <tr class="gear-water">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/hydration-system-for-28mm-waterbottles-by-one-bottle-hydration?_pos=1&_sid=caa1c9a61&_ss=r&variant=44576148652219" target="_blank" class="gear-link">Bottle Tubing</a></td>
+            <td data-label="Detail"><span class="gear-detail">One Bottle Hydration</span></td>
+            <td data-label="Weight"><span class="gear-weight">2.8 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-clothing"><td colspan="4">🧥 Camp Clothes</td></tr>
+          <tr class="gear-clothing">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/water-bottle-sport-caps?_pos=1&_sid=77f773676&_ss=r" target="_blank" class="gear-link">Camp Shoes</a></td>
+            <td data-label="Detail"><span class="gear-detail">Crocs or Xero down shoes</span></td>
+            <td data-label="Weight"><span class="gear-weight">11 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item"><a href="https://zpacks.com/products/medium-stuff-sack?_pos=1&_sid=673c49408&_ss=r" target="_blank" class="gear-link">Camp Clothes Bag</a></td>
+            <td data-label="Detail"><span class="gear-detail">ZPacks Medium Stuff Sack</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.28 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Camp Pants</td>
+            <td data-label="Detail"><span class="gear-detail">Woolies Merino Joggers</span></td>
+            <td data-label="Weight"><span class="gear-weight">10.65 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Camp Shirt</td>
+            <td data-label="Detail"><span class="gear-detail">Brighton Basics layer</span></td>
+            <td data-label="Weight"><span class="gear-weight">4.16 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Puffy</td>
+            <td data-label="Detail"><span class="gear-detail">Patagonia Down Sweater</span></td>
+            <td data-label="Weight"><span class="gear-weight">11.75 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Rain Jacket</td>
+            <td data-label="Detail"><span class="gear-detail">Janji M's Rainrunner Pack Jacket (S)</span></td>
+            <td data-label="Weight"><span class="gear-weight">7.27 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item"><a href="https://senchidesigns.com/products/a90-half-zip-hoodie?variant=49536929956137" target="_blank" class="gear-link">Fleece</a></td>
+            <td data-label="Detail"><span class="gear-detail">Senchi Designs A90 Half Zip Hoodie</span></td>
+            <td data-label="Weight"><span class="gear-weight">4.59 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Camp Socks</td>
+            <td data-label="Detail"><span class="gear-detail">Darn Tough x2</span></td>
+            <td data-label="Weight"><span class="gear-weight">3.88 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Hat</td>
+            <td data-label="Detail"><span class="gear-detail">Beanie</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.48 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Gloves</td>
+            <td data-label="Detail"><span class="gear-detail">Testing</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.23 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Underwear</td>
+            <td data-label="Detail"><span class="gear-detail">4 pairs</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.94 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Hiking Socks</td>
+            <td data-label="Detail"><span class="gear-detail">Injinji Liner Toe Socks (Extra)</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.1 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-clothing"><td colspan="4">👟 Worn Clothing</td></tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Hiking Socks</td>
+            <td data-label="Detail"><span class="gear-detail">Darn Tough Micro Crew</span></td>
+            <td data-label="Weight"><span class="gear-weight">0 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item"><a href="https://www.rei.com/product/881305/injinji-liner-crew-socks?redirect-pup=false" target="_blank" class="gear-link">Hiking Socks</a></td>
+            <td data-label="Detail"><span class="gear-detail">Injinji Liner Toe Socks</span></td>
+            <td data-label="Weight"><span class="gear-weight">0 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Hiking Shirt</td>
+            <td data-label="Detail"><span class="gear-detail">Testing</span></td>
+            <td data-label="Weight"><span class="gear-weight">0 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Hiking Shoes</td>
+            <td data-label="Detail"><span class="gear-detail">Hoka SpeedGoat 7</span></td>
+            <td data-label="Weight"><span class="gear-weight">0 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Baseball Cap</td>
+            <td data-label="Detail"><span class="gear-detail">Black Endorphins Running</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.66 oz</span></td>
+          </tr>
+          <tr class="gear-clothing">
+            <td data-label="Item">Sports Bra</td>
+            <td data-label="Detail"><span class="gear-detail">Lululemon Like a Cloud Bra</span></td>
+            <td data-label="Weight"><span class="gear-weight">0 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-electronics"><td colspan="4">📱 Electronics</td></tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">Headlamp</td>
+            <td data-label="Detail"><span class="gear-detail">Nitecore NU25 UL400</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.66 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">GPS</td>
+            <td data-label="Detail"><span class="gear-detail">Garmin InReach Mini</span></td>
+            <td data-label="Weight"><span class="gear-weight">3.5 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">Power Bank</td>
+            <td data-label="Detail"><span class="gear-detail">Nitecore 20000</span></td>
+            <td data-label="Weight"><span class="gear-weight">10.26 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">Phone</td>
+            <td data-label="Detail"><span class="gear-detail">iPhone 16</span></td>
+            <td data-label="Weight"><span class="gear-weight">8 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">Charging Cord</td>
+            <td data-label="Detail"><span class="gear-detail">USB-C (2)</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.2 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/nlink10-usb-c-charging-cable-by-nitecore?_pos=1&_sid=6864c2a9a&_ss=r" target="_blank" class="gear-link">Charging Cord</a></td>
+            <td data-label="Detail"><span class="gear-detail">USB C short</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.39 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">Charging Cord</td>
+            <td data-label="Detail"><span class="gear-detail">Garmin</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.39 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">Charging Block</td>
+            <td data-label="Detail"><span class="gear-detail">Weigh</span></td>
+            <td data-label="Weight"><span class="gear-weight">3 oz</span></td>
+          </tr>
+          <tr class="gear-electronics">
+            <td data-label="Item">Headphones</td>
+            <td data-label="Detail"><span class="gear-detail">Wired Headphones</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.49 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-toiletries"><td colspan="4">🪥 Toiletries</td></tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/ditty-bag-by-backcountry-exposure?variant=46513279533243" target="_blank" class="gear-link">Toiletries Bag</a></td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.4 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/ultralight-trowel-by-boglerco?_pos=1&_sid=be362587c&_ss=r" target="_blank" class="gear-link">Trowel</a></td>
+            <td data-label="Detail"><span class="gear-detail">BoglerCo Ultralight Trowel</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.48 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Toothbrush</td>
+            <td data-label="Detail"><span class="gear-detail">Weigh</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.5 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Toothpaste</td>
+            <td data-label="Detail"><span class="gear-detail">Travel Size</span></td>
+            <td data-label="Weight"><span class="gear-weight">1 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item"><a href="https://zpacks.com/products/mini-hair-brush-w-mirror?srsltid=AfmBOoqxuMKid92VxpPjnH2v5138C1HOFKZu47hAa9MC-fiQTDWQZadW" target="_blank" class="gear-link">Hairbrush</a></td>
+            <td data-label="Detail"><span class="gear-detail">ZPacks mini hairbrush w/ mirror</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.2 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Hand Sanitizer</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">1.6 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Chapstick</td>
+            <td data-label="Detail"><span class="gear-detail">SPF</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.25 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item"><a href="https://www.rei.com/product/182956/kula-cloth-reusable-antimicrobial-pee-cloth?redirect-pup=false" target="_blank" class="gear-link">Kula Cloth</a></td>
+            <td data-label="Detail"><span class="gear-detail">Kula Cloth</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.4 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Sunscreen</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">1 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Bug Spray</td>
+            <td data-label="Detail"><span class="gear-detail">100% Deet</span></td>
+            <td data-label="Weight"><span class="gear-weight">3 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item"><a href="https://www.rei.com/product/730925/dr-bronners-organic-liquid-soap-travel-size?redirect-pup=false" target="_blank" class="gear-link">Soap</a></td>
+            <td data-label="Detail"><span class="gear-detail">Dr. Bronners</span></td>
+            <td data-label="Weight"><span class="gear-weight">2 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Wipes</td>
+            <td data-label="Detail"><span class="gear-detail">Rag</span></td>
+            <td data-label="Weight"><span class="gear-weight">1 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Contact Case</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.32 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Contact Solution</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">3 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Glasses</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.78 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Comb</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.5 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/pstyle-urination-device-by-pstyle?_pos=1&_sid=d6c9df129&_ss=r" target="_blank" class="gear-link">PStyle</a></td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.8 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Toilet Paper</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">1 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Meds</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">2 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Razor Top</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.3 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">3 Tampons / 6 Liners</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.88 oz</span></td>
+          </tr>
+          <tr class="gear-toiletries">
+            <td data-label="Item">Tweezers</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.5 oz</span></td>
+          </tr>
+          <tr class="cat-header gear-firstaid"><td colspan="4">🩹 First Aid / Repairs / Misc</td></tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/ultra-fine-mesh-mosquito-head-net-by-sea-to-summit?_pos=1&_sid=c5615a01a&_ss=r" target="_blank" class="gear-link">Bug Net</a></td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.8 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item">Mini Towel</td>
+            <td data-label="Detail"><span class="gear-detail">Weigh Purple</span></td>
+            <td data-label="Weight"><span class="gear-weight">1 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/classic-sd-swiss-army-knife-by-victorinox?srsltid=AfmBOorKJhjCaiO-h7p7SHT_eQ9ZMwsMAcLaiyNeA5D28QkenluHSVBy" target="_blank" class="gear-link">Knife</a></td>
+            <td data-label="Detail"><span class="gear-detail">Victorinox Swiss Army Knife</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.7 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item">Tape</td>
+            <td data-label="Detail"><span class="gear-detail">Tenacious Tape</span></td>
+            <td data-label="Weight"><span class="gear-weight">? oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item">Patch Kit</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">? oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item">Iodine Tablets</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">? oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/ultralight-leukotape-spool-by-igneous?_pos=1&_sid=445a8cd88&_ss=r" target="_blank" class="gear-link">Leukotape</a></td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.49 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item">Alcohol Wipes</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">0.5 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item">Bandaids</td>
+            <td data-label="Detail"></td>
+            <td data-label="Weight"><span class="gear-weight">? oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item">Wallet/Cards</td>
+            <td data-label="Detail"><span class="gear-detail">ID, Credit Card, Insurance Card, Cash</span></td>
+            <td data-label="Weight"><span class="gear-weight">3 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/ultralight-carabiner-by-jereko-gear?_pos=1&_sid=473f257eb&_ss=r" target="_blank" class="gear-link">Ultralight Carabiners</a></td>
+            <td data-label="Detail"><span class="gear-detail">Jereko (2)</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.28 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/zipper-pull-thermometer-by-thermodrop?_pos=1&_sid=334c3d18c&_ss=r" target="_blank" class="gear-link">Thermometer</a></td>
+            <td data-label="Detail"><span class="gear-detail">Zipper Pull Hiking Thermometer</span></td>
+            <td data-label="Weight"><span class="gear-weight">0.5 oz</span></td>
+          </tr>
+          <tr class="gear-firstaid">
+            <td data-label="Item"><a href="https://www.garagegrowngear.com/products/cork-massage-balls-by-rawlogy?variant=28170315006026" target="_blank" class="gear-link">Cork Massage Ball</a></td>
+            <td data-label="Detail"><span class="gear-detail">Rawlogy</span></td>
+            <td data-label="Weight"><span class="gear-weight">1.4 oz</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-logo">Laura on Trail</div>
+  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
+</footer>
+
+<script>
+  // Category weight data
+  const catData = [
+    { cat: 'Camp Clothes', oz: 59.5 },
+    { cat: 'Sleep System',  oz: 37.6 },
+    { cat: 'Shelter',       oz: 36.6 },
+    { cat: 'Backpack',      oz: 33.4 },
+    { cat: 'Electronics',   oz: 29.0 },
+    { cat: 'Cookware',      oz: 22.0 },
+    { cat: 'Toiletries',    oz: 20.0 },
+    { cat: 'Water',         oz: 10.8 },
+    { cat: 'First Aid',     oz: 5.0  },
+  ];
+
+  const maxOz = catData[0].oz;
+  const barsEl = document.getElementById('weightBars');
+  catData.forEach(d => {
+    barsEl.innerHTML += `
+      <div class="cwb-row">
+        <div class="cwb-label">${d.cat}</div>
+        <div class="cwb-track"><div class="cwb-fill" style="width:0%" data-pct="${(d.oz/maxOz*100).toFixed(1)}"></div></div>
+        <div class="cwb-val">${d.oz} oz</div>
+      </div>`;
+  });
+
+  // Animate bars on load
+  setTimeout(() => {
+    document.querySelectorAll('.cwb-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 200);
+
+  // Category filter
+  function filterGear(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    if (cat === 'all') {
+      document.querySelectorAll('tr[class^="gear-"], tr.cat-header').forEach(r => r.style.display = '');
+      return;
+    }
+
+    document.querySelectorAll('tbody tr').forEach(r => {
+      const classes = r.className;
+      if (r.classList.contains('cat-header')) {
+        r.style.display = classes.includes('gear-' + cat) ? '' : 'none';
+      } else {
+        r.style.display = classes.includes('gear-' + cat) ? '' : 'none';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T-Minus 34 Days — Laura on Trail</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .post-hero {
+      background: var(--bark);
+      padding: 3.5rem 2rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .post-hero .hero-bg-lines { opacity: 0.05; }
+    .post-nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .back-link {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--sand);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(201,169,110,0.3);
+      padding-bottom: 1px;
+    }
+    .back-link:hover { color: var(--fog); }
+    .post-date-stamp {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--trail);
+    }
+    .post-hero h1 { color: var(--white); line-height: 1.15; }
+    .post-hero h1 em { color: var(--sand); font-style: italic; }
+    .post-stats-row {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .post-stat {
+      display: flex;
+      flex-direction: column;
+    }
+    .post-stat-val {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--sand);
+      line-height: 1;
+    }
+    .post-stat-lbl {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--trail);
+      margin-top: 3px;
+    }
+    .post-divider { width: 40px; height: 2px; background: var(--sand); margin: 2rem 0; opacity: 0.5; }
+
+    /* Article prose */
+    .post-prose { font-size: 1.05rem; line-height: 1.8; color: var(--ink); }
+    .post-prose p { margin-bottom: 1.3rem; }
+    .post-prose p:first-child::first-letter {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      font-weight: 900;
+      float: left;
+      line-height: 0.85;
+      margin-right: 8px;
+      margin-top: 4px;
+      color: var(--pine);
+    }
+    .post-prose h3 {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      margin: 2rem 0 0.75rem;
+      color: var(--bark);
+    }
+    .post-prose blockquote {
+      border-left: 3px solid var(--sand);
+      padding: 0.5rem 1.2rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: var(--earth);
+      background: var(--white);
+    }
+    .post-prose .callout {
+      background: var(--fog);
+      border-radius: 3px;
+      padding: 1rem 1.2rem;
+      font-size: 0.9rem;
+      color: var(--earth);
+      margin: 1.5rem 0;
+    }
+    .post-prose .callout strong { color: var(--bark); }
+
+    /* Photo placeholder */
+    .photo-placeholder {
+      background: var(--fog);
+      border-radius: 3px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.5rem 0;
+      color: var(--trail);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: 1px dashed var(--sand);
+    }
+
+    /* Post nav (prev / next) */
+    .post-pagination {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--fog);
+    }
+    .page-nav-link {
+      text-decoration: none;
+      color: inherit;
+      padding: 1rem;
+      background: var(--white);
+      border: 1px solid var(--fog);
+      border-radius: 3px;
+      transition: background 0.15s;
+    }
+    .page-nav-link:hover { background: var(--fog); }
+    .page-nav-link .nav-dir {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--trail);
+      margin-bottom: 0.25rem;
+    }
+    .page-nav-link .nav-title {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .page-nav-link.next { text-align: right; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="blog.html" class="active">Trail Log</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+</nav>
+
+<!-- POST HERO -->
+<header class="post-hero">
+  <div class="hero-bg-lines"></div>
+  <div class="container-narrow" style="position:relative;z-index:1">
+    <div class="post-nav-row">
+      <a href="blog.html" class="back-link">← All entries</a>
+      <span class="post-date-stamp">March 25, 2026</span>
+    </div>
+    <h1>T-Minus 34 Days — <em>spreadsheets, scales, and the stairmaster</em></h1>
+
+    <div class="post-stats-row">
+      <div class="post-stat">
+        <span class="post-stat-val">34</span>
+        <span class="post-stat-lbl">Days to start</span>
+      </div>
+      <div class="post-stat">
+        <span class="post-stat-val">16.4</span>
+        <span class="post-stat-lbl">Base weight (lbs)</span>
+      </div>
+      <div class="post-stat">
+        <span class="post-stat-val">∞</span>
+        <span class="post-stat-lbl">Stairmaster hours</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="topo-divider" style="background:var(--bark)">
+  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
+  </svg>
+</div>
+
+<main>
+  <section>
+    <div class="container-narrow">
+
+      <article class="post-prose">
+
+        <p>
+          Thirty-four days. I keep refreshing the weather forecast for northern Georgia like that's
+          a productive use of my time. It is not. What has been productive: an embarrassing number
+          of hours on the stairmaster, a gear spreadsheet that has taken on a life of its own, and
+          a postal scale that now lives permanently on my kitchen counter.
+        </p>
+
+        <h3>The spreadsheet situation</h3>
+
+        <p>
+          I'll be honest — the planning spreadsheet started as a simple gear list and turned into
+          something I'm genuinely a little proud of. Every shelter and campsite from Springer to
+          well past the Smokies. Three pace scenarios (fast, medium, slow). Resupply towns flagged.
+          Visitor windows mapped out. At some point I started tracking estimated arrival dates at
+          every state border, which is either thorough preparation or a sign I need to go outside
+          more. Possibly both.
+        </p>
+
+        <p>
+          The gear tab is where things got obsessive. Every single item weighed. The base weight
+          sits at 16.4 lbs right now — everything in the pack except worn clothing and consumables.
+          That sounds reasonable until you remember that food and water will add another 10 lbs on
+          a full resupply. I've been staring at that number long enough that I started researching
+          whether I actually need a pot cozy. (I do. 0.9 oz is 0.9 oz.)
+        </p>
+
+        <div class="callout">
+          <strong>Current obsession:</strong> The fuel canister is listed as 7.4 oz but that's full.
+          By mile 100 it'll be half that. I have not yet made a separate spreadsheet tab to model
+          this. I have thought about it.
+        </div>
+
+        <h3>The stairmaster</h3>
+
+        <p>
+          My training plan has been: stairmaster, stairmaster, long walk, stairmaster. The AT's
+          first week out of Springer involves somewhere around 15,000 feet of climbing, so I've
+          been treating the gym stairmaster like a very boring preview of Georgia. I put on a
+          podcast, load up a day pack with whatever's heaviest in my apartment, and go. My
+          neighbors think I'm moving out. I am, technically, in 34 days.
+        </p>
+
+        <blockquote>
+          The best training for hiking is hiking. The second best is apparently standing on an
+          escalator that hates you for 45 minutes.
+        </blockquote>
+
+        <p>
+          Pack is mostly set. Resupply boxes half-planned. Flights to Atlanta booked. The
+          countdown is real now in a way it wasn't when April felt abstract. Four weeks and
+          change to Springer Mountain. Let's go.
+        </p>
+
+        <div class="post-divider"></div>
+
+        <p style="font-style:italic;color:var(--earth)">
+          Next up: shaking down the full kit on an overnight before departure.
+        </p>
+
+      </article>
+
+      <div class="post-pagination">
+        <div></div>
+        <div></div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-logo">Laura on Trail</div>
+  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
+</footer>
+
+</body>
+</html>

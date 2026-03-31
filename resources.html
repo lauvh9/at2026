@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resources — Laura on Trail</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .res-hero {
+      background: var(--bark);
+      padding: 3rem 2rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .res-hero .hero-bg-lines { opacity: 0.05; }
+
+    .res-section { margin-bottom: 3rem; }
+    .res-section h2 { margin-bottom: 1.25rem; }
+
+    .resource-card {
+      background: var(--white);
+      border: 1px solid var(--fog);
+      border-radius: 4px;
+      padding: 1.4rem;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .resource-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(45,31,14,0.08);
+    }
+    .resource-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--sand);
+      border-radius: 4px 4px 0 0;
+    }
+    .resource-card.pine::before { background: var(--pine); }
+    .resource-card.accent::before { background: var(--accent); }
+    .resource-card.sky::before   { background: var(--sky); }
+
+    .resource-icon-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.75rem;
+    }
+    .res-icon {
+      width: 36px; height: 36px;
+      border-radius: 3px;
+      background: var(--bark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .res-name {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .res-desc {
+      font-size: 0.88rem;
+      color: var(--earth);
+      line-height: 1.6;
+    }
+    .res-how {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--fog);
+      font-size: 0.82rem;
+      color: var(--trail);
+      font-style: italic;
+    }
+    .res-links {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .res-link {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--pine);
+      text-decoration: none;
+      border-bottom: 1px solid var(--fern);
+      padding-bottom: 1px;
+    }
+    .res-link:hover { color: var(--moss); }
+
+    .faq-item {
+      border-bottom: 1px solid var(--fog);
+      padding: 1.25rem 0;
+    }
+    .faq-q {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 1rem;
+    }
+    .faq-q::after { content: '+'; font-family: var(--mono); color: var(--trail); flex-shrink: 0; transition: transform 0.2s; }
+    .faq-q.open::after { transform: rotate(45deg); }
+    .faq-a {
+      font-size: 0.9rem;
+      color: var(--earth);
+      line-height: 1.7;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.2s;
+    }
+    .faq-a.open { max-height: 400px; padding-top: 0.75rem; }
+
+    .tip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .tip-card {
+      background: var(--fog);
+      border-radius: 3px;
+      padding: 1rem;
+    }
+    .tip-num {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--sand);
+      line-height: 1;
+      display: block;
+    }
+    .tip-text { font-size: 0.85rem; color: var(--earth); margin-top: 0.3rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="blog.html">Trail Log</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html" class="active">Resources</a></li>
+  </ul>
+</nav>
+
+<header class="res-hero">
+  <div class="hero-bg-lines"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label" style="color:var(--sand)">Tools, apps & trail wisdom</span>
+    <h1 style="color:var(--white);font-size:clamp(2rem,4vw,3rem)">Resources</h1>
+    <p style="color:var(--fog);font-style:italic;margin-top:0.5rem;font-size:1rem">
+      Everything I'm using to plan, navigate, and survive 2,198 miles.
+    </p>
+  </div>
+</header>
+
+<div class="topo-divider" style="background:var(--bark)">
+  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
+  </svg>
+</div>
+
+<main>
+  <section>
+    <div class="container">
+
+      <!-- Maps & Navigation -->
+      <div class="res-section">
+        <span class="section-label">Maps & navigation</span>
+        <h2>Maps & Navigation</h2>
+        <div class="resource-grid">
+
+          <div class="resource-card pine">
+            <div class="resource-icon-row">
+              <div class="res-icon">🗺</div>
+              <div class="res-name">FarOut Guides</div>
+            </div>
+            <p class="res-desc">
+              The essential AT navigation app. Nearly every shelter, campsite, water source, 
+              hostel, and town along the trail — with crowd-sourced comments and mile markers. 
+              Requires a one-time purchase of the Appalachian Trail bundle, or text me for my login info!
+            </p>
+            <div class="res-links">
+              <a href="https://app.faroutguides.com/guides/Appalachian%20Trail" target="_blank" class="res-link">Open app →</a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon-row">
+              <div class="res-icon">📈</div>
+              <div class="res-name">WikiTrail</div>
+            </div>
+            <p class="res-desc">
+              Trip planning tool for calculating finish estimates. Input hiking speed, hours per day, 
+              and zero days to project arrival. Most useful once I'm moving — can restart from any 
+              town for updated estimates.
+            </p>
+            <div class="res-how">
+              Log in with Gmail to create your own plans, or check out one of my three plans below for a ROUGH estimate of where I'll be, when!
+            </div>
+            <div class="res-links">
+              <a href="http://www.wikitrail.org/planner/view/at/6192804776640512" target="_blank" class="res-link">Fast estimate →</a>
+              <a href="http://www.wikitrail.org/planner/view/at/4803087417999360" target="_blank" class="res-link">Medium →</a>
+              <a href="http://www.wikitrail.org/planner/view/at/6293006875361280" target="_blank" class="res-link">Slow →</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- More Information -->
+      <div class="res-section">
+        <span class="section-label">More information</span>
+        <h2>More Information</h2>
+        <div class="resource-grid">
+
+          <div class="resource-card sky">
+            <div class="resource-icon-row">
+              <div class="res-icon">🏔</div>
+              <div class="res-name">Appalachian Trail Conservancy</div>
+            </div>
+            <p class="res-desc">
+              Official non-profit managing the AT. Comprehensive educational resources, 
+              permit info, trail conditions, and hiker stats.
+            </p>
+            <div class="res-links">
+              <a href="https://appalachiantrail.org" target="_blank" class="res-link">ATC home →</a>
+              <a href="https://appalachiantrail.org/experience/hike-the-trail/" target="_blank" class="res-link">Hiking guide →</a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-icon-row">
+              <div class="res-icon">🏕</div>
+              <div class="res-name">The Trek</div>
+            </div>
+            <p class="res-desc">
+              The biggest AT hiking community and blog network. Good for trail news, 
+              shelter conditions, and stories from other hikers. Useful for understanding 
+              what to expect ahead.
+            </p>
+            <div class="res-links">
+              <a href="https://thetrek.co" target="_blank" class="res-link">The Trek →</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <!-- FAQ -->
+      <div class="res-section">
+        <span class="section-label">Common questions</span>
+        <h2>FAQ</h2>
+        <div class="card" style="padding:0.5rem 1.5rem">
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How long is the hike taking?</div>
+            <div class="faq-a">Planning roughly 5–6 months on trail. Based on my WikiTrail estimates: fast pace finishes September 13, medium pace finishes October 3, and slow pace finishes October 11. Check the WikiTrail links above for a rough sense of where I'll be at any given point!</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How can I visit you on trail?</div>
+            <div class="faq-a">Visiting me won't be an easy feat. You can either choose WHERE you visit me, or WHEN, but not both! If you have a free weekend, you have to be willing to meet me where I am. If you have a specific section you want to hike, you have to meet me whenever I get there! Use WikiTrail as I hike to get an estimate of when I'll be near you. I also have to make it to Maine before the snow falls, which means I have to keep to a pretty strict pace. Unfortunately, I won't be able to stay long in towns, and if you want to hike with me, you better keep up!</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What's a zero day / nero day?</div>
+            <div class="faq-a">A "zero day" is a full rest day with zero miles hiked — usually in a town for resupply, laundry, and recovery. A "nero" is a near-zero, typically less than 5 miles, often to get into or out of a town.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Is the trail safe?</div>
+            <div class="faq-a">Generally yes — millions of people hike the AT safely each year. The bigger risks are minor injuries, weather, and exhaustion rather than dramatic dangers. I have a GPS device, first aid kit, and a solid community of fellow hikers (the "tramily") for the journey.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What's a "tramily"?</div>
+            <div class="faq-a">A trail family — the group of hikers you naturally fall into step with on the trail. Since most NOBO hikers start around the same time and hike similar daily distances, you end up leap-frogging the same people for weeks and eventually become a little community. I'll likely pick up a trail name too!</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What do you eat out there?</div>
+            <div class="faq-a">Mostly lightweight, calorie-dense food — oatmeal, nut butter, tortillas, instant meals, lots of snacks. The rule of thumb is around 100 calories per ounce. In town I'll be eating everything in sight. Hiker hunger is real.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How do you sleep?</div>
+            <div class="faq-a">In a tent (see the gear page!) or in one of the free, three-sided wooden shelters spaced every 8–10 miles along the trail. Shelters are first-come first-served and can get crowded, so I carry a tent for backup.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Will you have cell service?</div>
+            <div class="faq-a">Spotty but more than you'd think. Most ridge tops and town stops have signal. I'll have a Garmin InReach satellite communicator for emergencies, which works anywhere regardless of cell coverage.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What happens if you get hurt?</div>
+            <div class="faq-a">Minor injuries (blisters, twisted ankles) are par for the course and I'm prepared for those. For anything serious, the trail passes road crossings every few days and the hiking community is tight-knit — help is usually not far away. I also carry the Garmin InReach which can send an SOS from anywhere.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What's the hardest part of the trail?</div>
+            <div class="faq-a">The White Mountains in New Hampshire and the 100-Mile Wilderness in Maine are widely considered the toughest stretches — steep, rocky, and remote. The good news is by that point I'll have 1,800+ miles of trail legs under me.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How much does a thru-hike cost?</div>
+            <div class="faq-a">Most hikers budget $5,000–$8,000 for the whole trip — roughly $1,000 a month. The big costs are gear upfront, food resupply, and town expenses (lodging, restaurants, laundry).</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What's the weather like?</div>
+            <div class="faq-a">Starting in Georgia in late April means chilly nights and warming days. The mid-Atlantic gets hot and humid in summer. New England turns cold fast in September — which is exactly why I need to keep moving!</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Do you hike every single day?</div>
+            <div class="faq-a">Almost. Zero days (full rest days in town) are necessary for recovery and sanity. I'm aiming to keep them rare to stay on pace for Katahdin before the snow hits.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What's a "white blaze"?</div>
+            <div class="faq-a">The AT is marked the entire way by white rectangular blazes painted on trees and rocks — about 2"×6" each. Following the white blazes is essentially the entire navigation strategy for 2,198 miles. Blue blazes mark side trails (to water, shelters, viewpoints).</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-logo">Laura on Trail</div>
+  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
+</footer>
+
+<script>
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+    const answer = el.nextElementSibling;
+    answer.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

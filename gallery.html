@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery — Laura on Trail</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .gallery-hero {
+      background: var(--bark);
+      padding: 3rem 2rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .gallery-hero .hero-bg-lines { opacity: 0.05; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .filter-btn {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 14px;
+      border-radius: 2px;
+      border: 1.5px solid var(--fog);
+      background: transparent;
+      color: var(--trail);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--pine);
+      color: var(--white);
+      border-color: var(--pine);
+    }
+
+    /* ── MASONRY GRID ── */
+    .masonry {
+      columns: 3 280px;
+      column-gap: 14px;
+    }
+
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 14px;
+      position: relative;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--fog);
+    }
+
+    .masonry-item img,
+    .masonry-item video {
+      width: 100%;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .masonry-item:hover img,
+    .masonry-item:hover video {
+      transform: scale(1.03);
+    }
+
+    .masonry-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(29,20,8,0.75) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.25s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem;
+    }
+
+    .masonry-item:hover .overlay { opacity: 1; }
+
+    .overlay-caption {
+      font-family: var(--body);
+      font-size: 0.85rem;
+      color: var(--white);
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    .overlay-meta {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--sand);
+      margin-top: 4px;
+    }
+
+    .overlay-link {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fern);
+      text-decoration: none;
+      margin-top: 6px;
+      display: inline-block;
+      border-bottom: 1px solid var(--fern);
+      padding-bottom: 1px;
+    }
+
+    .video-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(29,20,8,0.7);
+      color: var(--sand);
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 2px;
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,18,8,0.95);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lightbox-inner img,
+    .lightbox-inner video {
+      max-width: 100%;
+      max-height: 75vh;
+      object-fit: contain;
+      border-radius: 3px;
+      display: block;
+    }
+
+    .lightbox-caption {
+      margin-top: 1rem;
+      text-align: center;
+      color: var(--fog);
+      font-style: italic;
+      font-size: 0.95rem;
+      max-width: 600px;
+    }
+
+    .lightbox-meta {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--trail);
+      margin-top: 0.4rem;
+    }
+
+    .lightbox-post-link {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fern);
+      text-decoration: none;
+      border-bottom: 1px solid var(--fern);
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -2.5rem;
+      right: 0;
+      background: none;
+      border: none;
+      color: var(--fog);
+      font-size: 1.5rem;
+      cursor: pointer;
+      font-family: var(--mono);
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.15s;
+    }
+    .lightbox-close:hover { color: var(--white); }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(244,237,224,0.1);
+      border: none;
+      color: var(--fog);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.75rem 1rem;
+      border-radius: 2px;
+      transition: background 0.15s;
+      font-family: var(--mono);
+    }
+    .lightbox-nav:hover { background: rgba(244,237,224,0.2); }
+    .lightbox-nav.prev { left: -4rem; }
+    .lightbox-nav.next { right: -4rem; }
+
+    /* ── EMPTY STATE ── */
+    .empty-section {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: var(--trail);
+      font-style: italic;
+    }
+
+    /* ── HOW TO ADD PHOTOS NOTE ── */
+    .add-photos-note {
+      background: var(--fog);
+      border-left: 3px solid var(--sand);
+      padding: 1rem 1.2rem;
+      font-size: 0.85rem;
+      color: var(--earth);
+      border-radius: 0 3px 3px 0;
+      margin-bottom: 2rem;
+    }
+    .add-photos-note code {
+      background: var(--white);
+      padding: 1px 5px;
+      border-radius: 2px;
+      font-size: 0.8rem;
+      font-family: var(--mono);
+    }
+
+    @media (max-width: 600px) {
+      .masonry { columns: 2 160px; }
+      .lightbox-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="blog.html">Trail Log</a></li>
+    <li><a href="gallery.html" class="active">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+</nav>
+
+<header class="gallery-hero">
+  <div class="hero-bg-lines"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label" style="color:var(--sand)">Photos & video from the trail</span>
+    <h1 style="color:var(--white);font-size:clamp(2rem,4vw,3rem)">Gallery</h1>
+  </div>
+</header>
+
+<div class="topo-divider" style="background:var(--bark)">
+  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
+  </svg>
+</div>
+
+<main>
+  <section>
+    <div class="container">
+
+      <!-- How to add photos -->
+      <div class="add-photos-note">
+        <strong>Adding media:</strong> Place photos/videos in a <code>photos/</code> folder, 
+        then add an entry to the <code>GALLERY_ITEMS</code> array at the bottom of this page. 
+        Photos embedded in blog posts are pulled in automatically when you add them with 
+        <code>class="gallery-photo"</code>.
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterGallery('all', this)">All</button>
+        <button class="filter-btn" onclick="filterGallery('photo', this)">Photos</button>
+        <button class="filter-btn" onclick="filterGallery('video', this)">Video</button>
+        <button class="filter-btn" onclick="filterGallery('standalone', this)">Standalone</button>
+        <button class="filter-btn" onclick="filterGallery('from-post', this)">From posts</button>
+      </div>
+
+      <!-- Masonry grid -->
+      <div class="masonry" id="gallery-grid"></div>
+
+    </div>
+  </section>
+</main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightboxOnBg(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <button class="lightbox-nav prev" onclick="navigateLightbox(-1)">‹</button>
+    <button class="lightbox-nav next" onclick="navigateLightbox(1)">›</button>
+    <div id="lightbox-media"></div>
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+    <div id="lightbox-meta" class="lightbox-meta"></div>
+    <a id="lightbox-post-link" class="lightbox-post-link" style="display:none" href="#">→ Read the post</a>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-logo">Laura on Trail</div>
+  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════
+//  GALLERY ITEMS
+//  Add your standalone photos and videos here.
+//  Photos from blog posts are added separately below.
+//
+//  Each item:
+//  {
+//    src:      'photos/my-photo.jpg',   // path to file
+//    type:     'photo' | 'video',
+//    caption:  'A description',
+//    date:     'Apr 28, 2026',
+//    location: 'Springer Mountain, GA',
+//    source:   'standalone',            // always 'standalone' here
+//    postLink: null,                    // no post link for standalone
+//  }
+// ══════════════════════════════════════════════════
+const STANDALONE_ITEMS = [
+  // Example (remove or replace):
+  // {
+  //   src: 'photos/pre-hike-gear.jpg',
+  //   type: 'photo',
+  //   caption: 'Everything I'm carrying for 2,198 miles, laid out on the floor.',
+  //   date: 'Mar 25, 2026',
+  //   location: 'Newton, MA',
+  //   source: 'standalone',
+  //   postLink: null,
+  // },
+];
+
+// ══════════════════════════════════════════════════
+//  BLOG POST PHOTOS
+//  When you add a photo to a post using:
+//    <img src="photos/foo.jpg" class="gallery-photo"
+//         data-caption="..." data-date="..." data-location="..."
+//         data-post-link="post.html" data-post-title="Day 1 — ...">
+//  ...also add a matching entry here so the gallery picks it up.
+// ══════════════════════════════════════════════════
+const POST_ITEMS = [
+  // Example (remove or replace):
+  // {
+  //   src: 'photos/springer-plaque.jpg',
+  //   type: 'photo',
+  //   caption: 'The southern terminus. It starts here.',
+  //   date: 'Apr 28, 2026',
+  //   location: 'Springer Mountain, GA',
+  //   source: 'from-post',
+  //   postLink: 'post.html',
+  //   postTitle: 'Day 1 — The approach trail nearly broke me',
+  // },
+];
+
+// ── BUILD GALLERY ──────────────────────────────────
+const ALL_ITEMS = [...POST_ITEMS, ...STANDALONE_ITEMS];
+let currentIndex = 0;
+let filteredItems = [...ALL_ITEMS];
+
+function buildGallery(items) {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '';
+
+  if (items.length === 0) {
+    grid.innerHTML = '<p class="empty-section">No media yet — check back once the hike starts.</p>';
+    return;
+  }
+
+  items.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'masonry-item';
+    el.dataset.index = i;
+    el.onclick = () => openLightbox(i);
+
+    const videoBadge = item.type === 'video'
+      ? '<div class="video-badge">▶ Video</div>' : '';
+
+    const postLinkHtml = item.postLink
+      ? `<a class="overlay-link" href="${item.postLink}" onclick="event.stopPropagation()">→ ${item.postTitle || 'Read post'}</a>`
+      : '';
+
+    const media = item.type === 'video'
+      ? `<video src="${item.src}" muted playsinline preload="metadata"></video>`
+      : `<img src="${item.src}" alt="${item.caption || ''}" loading="lazy">`;
+
+    el.innerHTML = `
+      ${videoBadge}
+      ${media}
+      <div class="overlay">
+        ${item.caption ? `<div class="overlay-caption">${item.caption}</div>` : ''}
+        <div class="overlay-meta">${[item.date, item.location].filter(Boolean).join(' · ')}</div>
+        ${postLinkHtml}
+      </div>`;
+
+    grid.appendChild(el);
+  });
+}
+
+// ── FILTER ────────────────────────────────────────
+function filterGallery(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  filteredItems = type === 'all'
+    ? [...ALL_ITEMS]
+    : ALL_ITEMS.filter(item =>
+        type === 'photo' || type === 'video'
+          ? item.type === type
+          : item.source === type
+      );
+
+  buildGallery(filteredItems);
+}
+
+// ── LIGHTBOX ──────────────────────────────────────
+function openLightbox(index) {
+  currentIndex = index;
+  renderLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+  // Pause any playing video
+  document.querySelectorAll('#lightbox-media video').forEach(v => v.pause());
+}
+
+function closeLightboxOnBg(e) {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+}
+
+function navigateLightbox(dir) {
+  currentIndex = (currentIndex + dir + filteredItems.length) % filteredItems.length;
+  renderLightbox();
+}
+
+function renderLightbox() {
+  const item = filteredItems[currentIndex];
+  if (!item) return;
+
+  const mediaEl = document.getElementById('lightbox-media');
+  if (item.type === 'video') {
+    mediaEl.innerHTML = `<video src="${item.src}" controls autoplay style="max-width:100%;max-height:75vh;border-radius:3px"></video>`;
+  } else {
+    mediaEl.innerHTML = `<img src="${item.src}" alt="${item.caption || ''}" style="max-width:100%;max-height:75vh;object-fit:contain;border-radius:3px">`;
+  }
+
+  document.getElementById('lightbox-caption').textContent = item.caption || '';
+  document.getElementById('lightbox-meta').textContent =
+    [item.date, item.location].filter(Boolean).join(' · ');
+
+  const link = document.getElementById('lightbox-post-link');
+  if (item.postLink) {
+    link.href = item.postLink;
+    link.textContent = `→ ${item.postTitle || 'Read the post'}`;
+    link.style.display = 'inline-block';
+  } else {
+    link.style.display = 'none';
+  }
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') navigateLightbox(1);
+  if (e.key === 'ArrowLeft')  navigateLightbox(-1);
+  if (e.key === 'Escape')     closeLightbox();
+});
+
+// ── INIT ──────────────────────────────────────────
+buildGallery(ALL_ITEMS);
+</script>
+
+</body>
+</html>
