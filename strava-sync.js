@@ -22,6 +22,7 @@ const path = require('path');
 const CLIENT_ID     = process.env.STRAVA_CLIENT_ID;
 const CLIENT_SECRET = process.env.STRAVA_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.STRAVA_REFRESH_TOKEN;
+const SYNC_START_DATE = new Date('2026-04-20'); // No activities before this date
 
 const STATUS_FILE   = path.join(__dirname, 'data', 'trail-status.json');
 const POSTS_DIR     = path.join(__dirname, 'posts');
@@ -315,6 +316,8 @@ async function main() {
   const newPosts = [];
 
   for (const activity of activities) {
+    if (new Date(activity.start_date) < SYNC_START_DATE) continue;
+    const fullActivity = await fetchActivity(token, activity.id);
     const fullActivity = await fetchActivity(token, activity.id);
     const endMile      = parseMile(fullActivity.description);
     const dateInfo     = formatDate(fullActivity.start_date_local);
