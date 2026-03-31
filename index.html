@@ -288,8 +288,8 @@
                 Q 172,42 168,30
               " fill="none" stroke="#c9a96e" stroke-width="1" stroke-dasharray="4 2" opacity="0.4"/>
 
-              <!-- Solid trail completed (just the start for now) -->
-              <path d="M 100,575 Q 95,562 108,555" fill="none" stroke="#2d4a2d" stroke-width="3" stroke-linecap="round" id="completedTrail"/>
+              <!-- Solid trail completed — animated by JS -->
+              <path id="completedTrail" d="M 100,575 Q 95,562 108,555" fill="none" stroke="#2d4a2d" stroke-width="3" stroke-linecap="round"/>
 
               <!-- Start marker -->
               <g transform="translate(93,575)">
@@ -305,6 +305,10 @@
                   <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
                 </circle>
                 <circle cx="7" cy="0" r="5" fill="#c0392b" stroke="#f4ede0" stroke-width="1.5"/>
+                <!-- Label pill — positioned and filled by JS -->
+                <rect id="markerLabelBg" x="16" y="-14" width="0" height="18" rx="3" fill="#1a1a1a" opacity="0.82"/>
+                <text id="markerLabelMile" x="22" y="-3" font-family="'Space Mono',monospace" font-size="7" font-weight="bold" fill="#c9a96e"></text>
+                <text id="markerLabelPlace" x="22" y="8" font-family="'Space Mono',monospace" font-size="6" fill="#f4ede0"></text>
               </g>
 
               <!-- End marker -->
@@ -567,6 +571,124 @@
           </div>
         </div>`;
     }).join('');
+
+    // ── ANIMATED TRAIL MAP ───────────────────────────────────────────────────
+    // The full trail path is the same curve as the dashed background path.
+    // We use getPointAtLength() to find where the hiker is and stroke-dasharray
+    // to draw only the completed portion as a solid green line.
+
+    const trailPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    trailPath.setAttribute('d', `
+      M 100,575
+      Q 95,562 108,555
+      Q 118,548 105,538
+      Q 92,528 112,518
+      Q 125,510 115,500
+      Q 102,490 118,480
+      Q 130,470 120,460
+      Q 108,450 125,440
+      Q 138,432 128,422
+      Q 118,412 130,400
+      Q 142,390 132,378
+      Q 120,365 135,352
+      Q 148,340 140,328
+      Q 130,315 145,302
+      Q 158,290 148,278
+      Q 138,265 150,252
+      Q 162,240 155,228
+      Q 146,215 158,202
+      Q 170,190 160,178
+      Q 148,165 160,152
+      Q 170,140 162,128
+      Q 152,115 164,102
+      Q 175,90 165,78
+      Q 155,65 165,52
+      Q 172,42 168,30
+    `);
+
+    const totalPathLen = trailPath.getTotalLength();
+    const pctComplete  = Math.min(MILES_HIKED / TOTAL_MILES, 1);
+    const hikedLen     = totalPathLen * pctComplete;
+
+    // Update completed trail stroke using dash trick:
+    // dasharray "hikedLen totalPathLen" draws exactly hikedLen px of stroke
+    const completedEl = document.getElementById('completedTrail');
+    completedEl.setAttribute('d', trailPath.getAttribute('d'));
+    completedEl.setAttribute('stroke-dasharray', `0 ${totalPathLen}`);
+    completedEl.setAttribute('stroke-dashoffset', '0');
+
+    // Animate the stroke growing from 0 to hikedLen over 1.4s
+    setTimeout(() => {
+      completedEl.style.transition = 'stroke-dasharray 1.4s cubic-bezier(0.4,0,0.2,1)';
+      completedEl.setAttribute('stroke-dasharray', `${hikedLen} ${totalPathLen}`);
+    }, 400);
+
+    // Move the current position marker to the correct point on the path
+    const pos = trailPath.getPointAtLength(hikedLen);
+    const marker = document.getElementById('currentPosMarker');
+    marker.setAttribute('transform', `translate(${pos.x - 7}, ${pos.y})`);
+
+    // ── MARKER LABEL ─────────────────────────────────────────────────────────
+    // Find the nearest waypoint and build a label string
+    if (MILES_HIKED > 0) {
+      // Check if we're AT a waypoint (within 3 miles)
+      const AT_THRESHOLD = 3;
+      const nearby = TRAIL_WAYPOINTS.find(w => Math.abs(w.mile - MILES_HIKED) <= AT_THRESHOLD);
+
+      let placeLine;
+      if (nearby) {
+        // At or very near a named waypoint
+        placeLine = nearby.name.length > 18 ? nearby.name.slice(0, 17) + '…' : nearby.name;
+      } else {
+        // Find the next waypoint ahead and say "X mi from ..."
+        const next = TRAIL_WAYPOINTS.find(w => w.mile > MILES_HIKED);
+        if (next) {
+          const diff = Math.round(next.mile - MILES_HIKED);
+          const shortName = next.name.replace(/,.*$/, '').trim(); // drop ", STATE" suffix
+          const clipped = shortName.length > 14 ? shortName.slice(0, 13) + '…' : shortName;
+          placeLine = `${diff} mi to ${clipped}`;
+        } else {
+          placeLine = 'Near Katahdin';
+        }
+      }
+
+      const mileLine = `Mile ${MILES_HIKED}`;
+
+      // Measure approximate text widths (monospace ~5.5px/char at font-size 7,  ~4.8px at 6)
+      const mileW  = mileLine.length  * 5.5;
+      const placeW = placeLine.length * 4.8;
+      const labelW = Math.max(mileW, placeW) + 16; // 8px padding each side
+
+      const mileEl  = document.getElementById('markerLabelMile');
+      const placeEl = document.getElementById('markerLabelPlace');
+      const bgEl    = document.getElementById('markerLabelBg');
+
+      mileEl.textContent  = mileLine;
+      placeEl.textContent = placeLine;
+
+      // Flip label to the LEFT of the dot if too close to right edge of viewBox (280px)
+      // pos.x is in SVG coords; dot center is at pos.x (after the -7 translate)
+      const dotCenterX = pos.x; // absolute SVG x of dot center
+      const flipLeft   = dotCenterX + labelW + 20 > 260;
+
+      if (flipLeft) {
+        // Label sits to the left: anchor at x = -labelW - 10 relative to group origin
+        const lx = -(labelW + 10);
+        bgEl.setAttribute('x',      lx);
+        bgEl.setAttribute('width',  labelW);
+        mileEl.setAttribute('x',    lx + 8);
+        placeEl.setAttribute('x',   lx + 8);
+      } else {
+        // Label sits to the right (default)
+        bgEl.setAttribute('x',     16);
+        bgEl.setAttribute('width', labelW);
+        mileEl.setAttribute('x',   22);
+        placeEl.setAttribute('x',  22);
+      }
+
+      bgEl.setAttribute('width', labelW);
+    }
+
   });
 </script>
 
