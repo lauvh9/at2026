@@ -379,12 +379,13 @@
 </footer>
 
 <script>
-  // ─── UPDATE THIS ONE NUMBER FROM THE TRAIL ───
-  const MILES_HIKED = 0;
-  // ─────────────────────────────────────────────
-
   const TOTAL_MILES = 2198.4;
   const START_DATE  = new Date('2026-04-28');
+
+  // MILES_HIKED is loaded from data/trail-status.json (auto-updated by Strava sync).
+  // If the file is missing or the site isn't connected to Strava yet,
+  // change the fallback value below manually instead.
+  const FALLBACK_MILES = 0;
 
   // ── TRAIL WAYPOINTS ──────────────────────────────────────────────────────────
   // type: 'resupply' | 'poi' | 'state'
@@ -480,7 +481,21 @@
     { mile: 2189, name: 'Mount Katahdin — Summit!', type: 'poi',     emoji: '🏁', desc: 'The northern terminus. The finish line. We made it.' },
   ];
 
-  window.addEventListener('load', () => {
+  window.addEventListener('load', async () => {
+    // Try to load miles from the auto-updated JSON file.
+    // Falls back to FALLBACK_MILES if running locally or file doesn't exist.
+    let MILES_HIKED = FALLBACK_MILES;
+    try {
+      const res  = await fetch('data/trail-status.json');
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof data.miles_hiked === 'number') {
+          MILES_HIKED = data.miles_hiked;
+        }
+      }
+    } catch (e) {
+      console.log('trail-status.json not found — using fallback miles.');
+    }
     const today = new Date();
     const startDate = new Date('2026-04-28');
     document.getElementById('statusHeading').textContent =
