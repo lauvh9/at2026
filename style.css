@@ -7,8 +7,8 @@
 
 :root {
   /* Core palette */
-  --cream:       #f0ead8;   /* aged paper background */
-  --paper:       #e8e0cc;   /* slightly darker paper for cards */
+  --cream:       #f2f4ef;   /* aged paper background */
+  --paper:       #e8ece3;   /* slightly darker paper for cards */
   --ink:         #1a1208;   /* near-black letterpress ink */
   --earth:       #3a2e1a;   /* dark brown body text */
   --trail:       #5c4a2a;   /* medium brown, muted text */
@@ -23,7 +23,7 @@
   --rust:        #8b3a1a;   /* warm rust/terracotta */
   --accent:      #8b3a1a;   /* alias for rust */
   --bark:        #5c4a2a;   /* alias for trail */
-  --white:       #ffffff;
+  --white:       #f4f6f0;
 
   /* Backward-compat aliases */
   --nps-navy:    #1a1208;

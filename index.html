@@ -19,7 +19,7 @@
     }
     .current-location-card .loc-label {
       font-family: var(--mono);
-      font-size: 0.6rem;
+      font-size: 0.48rem;
       text-transform: uppercase;
       letter-spacing: 0.15em;
       color: var(--white);
@@ -37,7 +37,7 @@
     }
     .loc-badge {
       background: var(--fern);
-      color: var(--pine);
+      color: var(--white);
       font-family: var(--mono);
       font-size: 0.6rem;
       text-transform: uppercase;
@@ -131,13 +131,13 @@
 <header class="hero">
   <div class="hero-bg-lines"></div>
   <div class="hero-content">
-    <span class="hero-eyebrow fade-up">Hiking 2,198 miles from Georgia to Maine</span>
+    <span class="hero-eyebrow fade-up" style="font-size:0.85rem;letter-spacing:0.15em">Hiking 2,198 miles from Georgia to Maine</span>
     <hr style="border:none;border-top:1px solid var(--ink);margin:0.6rem auto;width:70%">
-    <h1 class="fade-up fade-up-1">
+    <h1 class="fade-up fade-up-1" style="font-size:clamp(1.6rem,4vw,3rem)">
       Appalachian Trail Northbound 2026
     </h1>
     <hr style="border:none;border-top:1px solid rgba(26,18,8,0.25);margin:0.6rem auto;width:70%">
-    <p class="hero-sub fade-up fade-up-2">
+    <p class="hero-sub fade-up fade-up-2" style="font-style:normal">
       Starting April 28, 2026 — Springer Mountain, GA
     </p>
     <div class="hero-actions fade-up fade-up-3">
@@ -348,6 +348,26 @@
           <div style="padding:1.5rem 0;text-align:center;color:var(--trail);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase">
             <div style="font-size:1.5rem;margin-bottom:0.5rem">✦</div>
             More entries coming from the trail
+          </div>
+
+          <!-- Resources preview -->
+          <div style="margin-top:0.5rem;border-top:1px solid var(--fog);padding-top:1.2rem">
+            <span class="section-label">Resources</span>
+            <h2 style="margin-bottom:0.75rem">Quick Links</h2>
+            <div style="display:flex;flex-direction:column;gap:0.5rem">
+              <a href="resources.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
+                <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">FarOut Guides</span>
+                <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pine)">Navigation →</span>
+              </a>
+              <a href="resources.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
+                <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">WikiTrail Planner</span>
+                <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pine)">Planning →</span>
+              </a>
+              <a href="resources.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
+                <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">City to Trail</span>
+                <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pine)">Getting there →</span>
+              </a>
+            </div>
           </div>
 
           <!-- Resources (below trail log) -->
