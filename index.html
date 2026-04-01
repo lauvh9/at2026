@@ -19,7 +19,7 @@
     }
     .current-location-card .loc-label {
       font-family: var(--mono);
-      font-size: 0.48rem;
+      font-size: 0.38rem;
       text-transform: uppercase;
       letter-spacing: 0.15em;
       color: var(--white);
@@ -137,7 +137,7 @@
       Appalachian Trail Northbound 2026
     </h1>
     <hr style="border:none;border-top:1px solid rgba(26,18,8,0.25);margin:0.6rem auto;width:70%">
-    <p class="hero-sub fade-up fade-up-2" style="font-style:normal;color:#c9a84c">
+    <p class="hero-sub fade-up fade-up-2" style="font-style:normal;color:#b5a57a">
       Starting April 28, 2026 — Springer Mountain, GA
     </p>
     <div class="hero-actions fade-up fade-up-3">
@@ -557,6 +557,13 @@
     }
 
     const typeColors = {
+      const typeSymbol = {
+      resupply: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="12" height="9" rx="0" stroke="#507856" stroke-width="1.5"/><path d="M5 5V4a3 3 0 0 1 6 0v1" stroke="#507856" stroke-width="1.5"/><line x1="8" y1="8" x2="8" y2="11" stroke="#507856" stroke-width="1.5"/><line x1="6" y1="9.5" x2="10" y2="9.5" stroke="#507856" stroke-width="1.5"/></svg>`,
+      poi:      `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L14 8L8 14L2 8Z" stroke="#7a4a1a" stroke-width="1.5"/></svg>`,
+      state:    `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2" y1="8" x2="14" y2="8" stroke="#1e5630" stroke-width="1.5" stroke-dasharray="3 2"/><line x1="8" y1="2" x2="8" y2="6" stroke="#1e5630" stroke-width="1.5"/><line x1="8" y1="10" x2="8" y2="14" stroke="#1e5630" stroke-width="1.5"/></svg>`,
+    };
+
+    const typeColors = {
       resupply: { bg: '#e8f4fd', color: '#3a6b88', label: 'Resupply' },
       poi:      { bg: '#fce8d5', color: '#7a4a1a', label: 'Landmark' },
       state:    { bg: '#d4edda', color: '#1e5630', label: 'State line' },
@@ -565,6 +572,7 @@
     container.innerHTML = show.map((w, i) => {
       const milesAway = (w.mile - MILES_HIKED).toFixed(0);
       const tc = typeColors[w.type] || typeColors.poi;
+      const sym = typeSymbol[w.type] || typeSymbol.poi;
       const isNext = i === 0;
       return `
         <div style="
@@ -576,7 +584,7 @@
           ${i < show.length - 1 ? 'border-bottom:1px solid var(--fog);' : ''}
           ${isNext ? 'opacity:1' : 'opacity:0.75'}
         ">
-          <div style="font-size:1.1rem;line-height:1.4;text-align:center">${w.emoji}</div>
+          <div style="display:flex;align-items:center;justify-content:center;padding-top:3px">${sym}</div>
           <div>
             <div style="font-family:var(--display);font-size:0.95rem;font-weight:600;letter-spacing:0.01em;line-height:1.2;margin-bottom:2px">
               ${isNext ? '<span style="color:var(--accent)">Next: </span>' : ''}${w.name}
