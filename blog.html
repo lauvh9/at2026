@@ -7,31 +7,16 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .blog-hero {
-      background: var(--bark);
+      background: var(--cream);
       padding: 3rem 2rem 2.5rem;
       position: relative;
       overflow: hidden;
     }
-    .blog-hero::after {
-      content: 'TRAIL LOG';
-      position: absolute;
-      right: -1rem;
-      top: 50%;
-      transform: translateY(-50%) rotate(90deg);
-      font-family: var(--serif);
-      font-size: 5rem;
-      font-weight: 900;
-      color: rgba(201,169,110,0.08);
-      letter-spacing: 0.1em;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-    .blog-hero .hero-bg-lines { opacity: 0.05; }
 
     .post-full-card {
       background: var(--white);
       border: 1px solid var(--fog);
-      border-radius: 4px;
+      border-radius: 0;
       margin-bottom: 1.2rem;
       overflow: hidden;
       display: grid;
@@ -45,7 +30,7 @@
       box-shadow: 0 6px 24px rgba(45,31,14,0.1);
     }
     .post-date-col {
-      background: var(--bark);
+      background: var(--ink);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -57,7 +42,7 @@
       font-family: var(--serif);
       font-size: 2.5rem;
       font-weight: 900;
-      color: var(--sand);
+      color: var(--ink);
       line-height: 1;
     }
     .post-date-col .month {
@@ -70,7 +55,7 @@
     .post-date-col .year {
       font-family: var(--mono);
       font-size: 0.55rem;
-      color: rgba(201,169,110,0.5);
+      color: rgba(44,85,48,0.5);
       margin-top: 2px;
     }
     .post-body { padding: 1.2rem 1.4rem; }
@@ -94,7 +79,7 @@
       letter-spacing: 0.07em;
       padding: 2px 8px;
       border-radius: 2px;
-      background: var(--fog);
+      background: var(--paper);
       color: var(--trail);
     }
     .post-tag.miles { background: #d4edda; color: var(--pine); }
@@ -108,7 +93,7 @@
     }
     .empty-state .big-blaze {
       width: 20px; height: 32px;
-      background: var(--fog);
+      background: var(--paper);
       border-radius: 3px;
       margin: 0 auto 1.5rem;
     }
@@ -126,7 +111,7 @@
       gap: 1rem;
     }
     .write-cta h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--white); }
-    .write-cta p { font-size: 0.85rem; color: rgba(244,237,224,0.7); margin-top: 0.2rem; }
+    .write-cta p { font-size: 0.85rem; color: rgba(240,234,216,0.75); margin-top: 0.2rem; }
 
     @media (max-width: 600px) {
       .post-full-card { grid-template-columns: 1fr; }
@@ -154,19 +139,15 @@
 <header class="blog-hero">
   <div class="hero-bg-lines"></div>
   <div class="container" style="position:relative;z-index:1">
-    <span class="section-label" style="color:var(--sand)">Daily dispatches from the trail</span>
-    <h1 style="color:var(--earth);font-size:clamp(2rem,4vw,3rem)">Trail Log</h1>
-    <p style="color:var(--gray);font-style:italic;margin-top:0.5rem;font-size:1rem">
+    <span class="section-label" style="color:var(--pine)">Daily dispatches from the trail</span>
+    <hr style="border:none;border-top:1px solid var(--ink);margin:0.5rem 0;opacity:0.25">
+    <h1 style="color:var(--ink);font-size:clamp(2rem,4vw,3rem)">Trail Log</h1>
+    <p style="color:var(--trail);font-style:italic;margin-top:0.5rem;font-size:1rem">
       Field notes, aching feet, and everything in between.
     </p>
   </div>
 </header>
 
-<div class="topo-divider" style="background:var(--bark)">
-  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
-  </svg>
-</div>
 
 <main>
   <section>
@@ -205,7 +186,7 @@
         <div class="empty-state">
           <div class="big-blaze"></div>
           <p>More entries on the way from the trail.</p>
-          <p style="font-size:0.8rem;color:var(--sand);margin-top:0.5rem;font-family:var(--mono);letter-spacing:0.08em;text-transform:uppercase">Check back after Apr 28</p>
+          <p style="font-size:0.8rem;color:var(--trail);margin-top:0.5rem;font-family:var(--mono);letter-spacing:0.08em;text-transform:uppercase">Check back after Apr 28</p>
         </div>
 
       </div>

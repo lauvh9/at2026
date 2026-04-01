@@ -7,12 +7,11 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .gallery-hero {
-      background: var(--bark);
+      background: var(--cream);
       padding: 3rem 2rem 2.5rem;
       position: relative;
       overflow: hidden;
     }
-    .gallery-hero .hero-bg-lines { opacity: 0.05; }
 
     /* ── FILTER BAR ── */
     .filter-bar {
@@ -53,7 +52,7 @@
       border-radius: 3px;
       overflow: hidden;
       cursor: pointer;
-      background: var(--fog);
+      background: var(--paper);
     }
 
     .masonry-item img,
@@ -95,7 +94,7 @@
       font-size: 0.55rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--sand);
+      color: var(--ink);
       margin-top: 4px;
     }
 
@@ -117,7 +116,7 @@
       top: 10px;
       left: 10px;
       background: rgba(29,20,8,0.7);
-      color: var(--sand);
+      color: var(--ink);
       font-family: var(--mono);
       font-size: 0.55rem;
       text-transform: uppercase;
@@ -208,7 +207,7 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(244,237,224,0.1);
+      background: rgba(26,18,8,0.15);
       border: none;
       color: var(--fog);
       font-size: 1.5rem;
@@ -218,7 +217,7 @@
       transition: background 0.15s;
       font-family: var(--mono);
     }
-    .lightbox-nav:hover { background: rgba(244,237,224,0.2); }
+    .lightbox-nav:hover { background: rgba(26,18,8,0.25); }
     .lightbox-nav.prev { left: -4rem; }
     .lightbox-nav.next { right: -4rem; }
 
@@ -233,8 +232,8 @@
 
     /* ── HOW TO ADD PHOTOS NOTE ── */
     .add-photos-note {
-      background: var(--fog);
-      border-left: 3px solid var(--sand);
+      background: var(--paper);
+      border-left: 3px solid var(--pine);
       padding: 1rem 1.2rem;
       font-size: 0.85rem;
       color: var(--earth);
@@ -274,16 +273,12 @@
 <header class="gallery-hero">
   <div class="hero-bg-lines"></div>
   <div class="container" style="position:relative;z-index:1">
-    <span class="section-label" style="color:var(--sand)">Photos & video from the trail</span>
-    <h1 style="color:var(--earth);font-size:clamp(2rem,4vw,3rem)">Gallery</h1>
+    <span class="section-label" style="color:var(--pine)">Photos & video from the trail</span>
+    <hr style="border:none;border-top:1px solid var(--ink);margin:0.5rem 0;opacity:0.25">
+    <h1 style="color:var(--ink);font-size:clamp(2rem,4vw,3rem)">Gallery</h1>
   </div>
 </header>
 
-<div class="topo-divider" style="background:var(--bark)">
-  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
-  </svg>
-</div>
 
 <main>
   <section>

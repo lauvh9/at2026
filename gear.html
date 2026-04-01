@@ -7,25 +7,11 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .gear-hero {
-      background: var(--bark);
+      background: var(--cream);
       padding: 3rem 2rem 2.5rem;
       position: relative;
       overflow: hidden;
     }
-    .gear-hero::after {
-      content: '16.4 LBS';
-      position: absolute;
-      right: 2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: var(--serif);
-      font-size: 5rem;
-      font-weight: 900;
-      color: rgba(201,169,110,0.07);
-      letter-spacing: -0.02em;
-      pointer-events: none;
-    }
-    .gear-hero .hero-bg-lines { opacity: 0.05; }
 
     /* Category filter bar */
     .filter-bar {
@@ -87,7 +73,7 @@
     .cat-weight-bars { margin-bottom: 2rem; }
     .cwb-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .cwb-label { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--trail); width: 110px; flex-shrink: 0; }
-    .cwb-track { flex: 1; height: 8px; background: var(--fog); border-radius: 1px; overflow: hidden; }
+    .cwb-track { flex: 1; height: 8px; background: var(--paper); border-radius: 1px; overflow: hidden; }
     .cwb-fill { height: 100%; border-radius: 1px; background: var(--pine); transition: width 1s ease; }
     .cwb-val { font-family: var(--mono); font-size: 0.6rem; color: var(--trail); width: 45px; text-align: right; flex-shrink: 0; }
 
@@ -102,8 +88,8 @@
     .gear-link:hover { color: var(--moss); }
 
     .season-note {
-      background: var(--fog);
-      border-left: 3px solid var(--sand);
+      background: var(--paper);
+      border-left: 3px solid var(--pine);
       padding: 0.7rem 1rem;
       font-size: 0.85rem;
       color: var(--earth);
@@ -141,16 +127,12 @@
 <header class="gear-hero">
   <div class="hero-bg-lines"></div>
   <div class="container" style="position:relative;z-index:1">
-    <span class="section-label" style="color:var(--sand)">Every ounce counts</span>
-    <h1 style="color:var(--earth);font-size:clamp(2rem,4vw,3rem)">The Pack</h1>
+    <span class="section-label" style="color:var(--pine)">Every ounce counts</span>
+    <hr style="border:none;border-top:1px solid var(--ink);margin:0.5rem 0;opacity:0.25">
+    <h1 style="color:var(--ink);font-size:clamp(2rem,4vw,3rem)">The Pack</h1>
   </div>
 </header>
 
-<div class="topo-divider" style="background:var(--bark)">
-  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
-  </svg>
-</div>
 
 <main>
   <section>

@@ -7,12 +7,11 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .res-hero {
-      background: var(--bark);
+      background: var(--cream);
       padding: 3rem 2rem 2.5rem;
       position: relative;
       overflow: hidden;
     }
-    .res-hero .hero-bg-lines { opacity: 0.05; }
 
     .res-section { margin-bottom: 3rem; }
     .res-section h2 { margin-bottom: 1.25rem; }
@@ -34,8 +33,8 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 3px;
-      background: var(--sand);
-      border-radius: 4px 4px 0 0;
+      background: var(--pine);
+      border-radius: 0;
     }
     .resource-card.pine::before { background: var(--pine); }
     .resource-card.accent::before { background: var(--accent); }
@@ -50,7 +49,7 @@
     .res-icon {
       width: 36px; height: 36px;
       border-radius: 3px;
-      background: var(--bark);
+      background: var(--ink);
       display: flex; align-items: center; justify-content: center;
       font-size: 1rem;
       flex-shrink: 0;
@@ -119,7 +118,7 @@
 
     .tip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
     .tip-card {
-      background: var(--fog);
+      background: var(--paper);
       border-radius: 3px;
       padding: 1rem;
     }
@@ -127,7 +126,7 @@
       font-family: var(--serif);
       font-size: 2rem;
       font-weight: 900;
-      color: var(--sand);
+      color: var(--ink);
       line-height: 1;
       display: block;
     }
@@ -153,19 +152,15 @@
 <header class="res-hero">
   <div class="hero-bg-lines"></div>
   <div class="container" style="position:relative;z-index:1">
-    <span class="section-label" style="color:var(--sand)">Tools, apps & trail wisdom</span>
-    <h1 style="color:var(--earth);font-size:clamp(2rem,4vw,3rem)">Resources</h1>
-    <p style="color:var(--fog);font-style:italic;margin-top:0.5rem;font-size:1rem">
+    <span class="section-label" style="color:var(--pine)">Tools, apps & trail wisdom</span>
+    <hr style="border:none;border-top:1px solid var(--ink);margin:0.5rem 0;opacity:0.25">
+    <h1 style="color:var(--ink);font-size:clamp(2rem,4vw,3rem)">Resources</h1>
+    <p style="color:var(--trail);font-style:italic;margin-top:0.5rem;font-size:1rem">
       Everything I'm using to plan, navigate, and survive 2,198 miles.
     </p>
   </div>
 </header>
 
-<div class="topo-divider" style="background:var(--bark)">
-  <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,40 L0,20 Q50,5 100,18 Q150,32 200,15 Q250,2 300,20 Q350,35 400,12 Q450,0 500,22 Q550,38 600,16 Q650,4 700,24 Q750,36 800,14 Q850,2 900,20 Q950,34 1000,12 Q1050,0 1100,18 Q1150,30 1200,10 L1200,40 Z" fill="#f4ede0"/>
-  </svg>
-</div>
 
 <main>
   <section>
