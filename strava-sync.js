@@ -318,7 +318,6 @@ async function main() {
   for (const activity of activities) {
     if (new Date(activity.start_date) < SYNC_START_DATE) continue;
     const fullActivity = await fetchActivity(token, activity.id);
-    const fullActivity = await fetchActivity(token, activity.id);
     const endMile      = parseMile(fullActivity.description);
     const dateInfo     = formatDate(fullActivity.start_date_local);
 
