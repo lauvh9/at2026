@@ -99,6 +99,8 @@ nav {
   display: flex;
   gap: 2rem;
   list-style: none;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .nav-links a {
@@ -595,8 +597,8 @@ footer p {
   nav { padding: 0 1rem; }
   .nav-logo { font-size: 0.72rem; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
   .nav-logo .blaze { width: 7px; height: 13px; flex-shrink: 0; }
-  .nav-links { gap: 0.65rem; }
-  .nav-links a { font-size: 0.58rem; letter-spacing: 0.05em; }
+  .nav-links { gap: 0.5rem; }
+  .nav-links a { font-size: 0.52rem; letter-spacing: 0.03em; }
   .container, .container-narrow { padding: 0 1rem; }
   section { padding: 2.5rem 0; }
   .hero { padding: 2.5rem 1rem 2rem; }
