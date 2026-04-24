@@ -437,7 +437,7 @@ init();
 
 <script>
   // Load Disqus for each activity card
-  window.DISQUS_SHORTNAME = 'YOUR_DISQUS_SHORTNAME'; // ← replace with your shortname
+  window.lauraontrail = 'lauraontrail'; // ← replace with your shortname
 
   function loadDisqusForActivity(activityId, pageUrl) {
     const containerId = `disqus-${activityId}`;
@@ -470,7 +470,7 @@ init();
       // Replace placeholder with a "View / Add Comments" link
       // that opens the Disqus thread for that activity
       el.innerHTML = `
-        <a href="https://${window.DISQUS_SHORTNAME}.disqus.com/?url=${encodeURIComponent(url)}&identifier=activity-${actId}"
+        <a href="https://${window.lauraontrail}.disqus.com/?url=${encodeURIComponent(url)}&identifier=activity-${actId}"
            target="_blank"
            style="font-family:var(--sans);font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal);text-decoration:none;border-bottom:1px solid var(--teal)">
            Leave a comment on Disqus →
@@ -484,7 +484,7 @@ init();
           this.page.identifier = 'activity-' + actId;
         };
         var d = document, s = d.createElement('script');
-        s.src = 'https://' + window.DISQUS_SHORTNAME + '.disqus.com/embed.js';
+        s.src = 'https://' + window.lauraontrail + '.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
       }
