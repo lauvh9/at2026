@@ -63,7 +63,7 @@ body::before {
 nav {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   background: var(--cream);
   border-bottom: 2px solid var(--ink);
   padding: 0 2rem;
@@ -155,7 +155,7 @@ nav {
   left: 0; right: 0;
   background: var(--cream);
   border-bottom: 2px solid var(--ink);
-  z-index: 99;
+  z-index: 999;
   padding: 0.5rem 0;
 }
 .nav-mobile-menu.open { display: block; }
@@ -649,7 +649,7 @@ footer p {
 .faq-a.open { max-height: 400px; padding-top: 0.75rem; }
 
 /* ── RESPONSIVE ──────────────────────────────────────── */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   nav { padding: 0 1rem; }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
