@@ -24,9 +24,10 @@ const CLIENT_SECRET = process.env.STRAVA_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.STRAVA_REFRESH_TOKEN;
 const SYNC_START_DATE = new Date('2026-04-20'); // No activities before this date
 
-const STATUS_FILE   = path.join(__dirname, 'data', 'trail-status.json');
-const POSTS_DIR     = path.join(__dirname, 'posts');
-const SEEN_FILE     = path.join(__dirname, 'data', 'seen-activities.json');
+const STATUS_FILE      = path.join(__dirname, 'data', 'trail-status.json');
+const POSTS_DIR        = path.join(__dirname, 'posts');
+const SEEN_FILE        = path.join(__dirname, 'data', 'seen-activities.json');
+const ACTIVITIES_FILE  = path.join(__dirname, 'data', 'strava-activities.json');
 
 // Regex to find "end mile: 342" (case-insensitive, flexible spacing/punctuation)
 const MILE_REGEX = /end\s*mile[:\s\-]+(\d+(\.\d+)?)/i;
@@ -194,7 +195,7 @@ function generatePostHTML(activity, photos, endMile, dateInfo) {
   <ul class="nav-links">
     <li><a href="../index.html">Home</a></li>
     <li><a href="../gallery.html">Gallery</a></li>
-    <li><a href="../blog.html" class="active">Trail Log</a></li>
+    <li><a href="../blog.html" class="active">Blog</a></li>
     <li><a href="../gear.html">Gear</a></li>
     <li><a href="../resources.html">Resources</a></li>
   </ul>
@@ -356,6 +357,35 @@ async function main() {
   } else {
     console.log('No end mile found in recent activities; trail-status.json unchanged.');
   }
+
+  // Write strava-activities.json for the Strava Log page
+  const stravaActivitiesData = activities
+    .filter(a => new Date(a.start_date) >= SYNC_START_DATE)
+    .map(a => ({
+      id:                   a.id,
+      name:                 a.name,
+      description:          a.description || '',
+      start_date:           a.start_date,
+      start_date_local:     a.start_date_local,
+      distance:             a.distance,
+      moving_time:          a.moving_time,
+      elapsed_time:         a.elapsed_time,
+      total_elevation_gain: a.total_elevation_gain,
+      map_polyline:         a.map && a.map.summary_polyline ? a.map.summary_polyline : null,
+      photos:               [], // photos fetched separately below
+    }));
+
+  // Attach photos to each activity in the strava data
+  for (const act of stravaActivitiesData) {
+    try {
+      act.photos = await fetchPhotos(token, act.id);
+    } catch (e) {
+      act.photos = [];
+    }
+  }
+
+  fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(stravaActivitiesData, null, 2), 'utf8');
+  console.log(`Wrote strava-activities.json (${stravaActivitiesData.length} activities)`);
 
   // Prepend new blog cards to blog.html
   if (newPosts.length > 0) {
