@@ -297,6 +297,13 @@
         <div></div>
       </div>
 
+      <!-- ── COMMENTS ─────────────────────────────────────── -->
+      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">
+        <span class="section-label" style="font-size:0.75rem;letter-spacing:0.15em;margin-bottom:0.5rem">Comments</span>
+        <h2 style="margin-bottom:1.5rem">Join the conversation</h2>
+        <div id="disqus_thread"></div>
+      </div>
+
     </div>
   </section>
 </main>
@@ -306,5 +313,17 @@
   <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
 </footer>
 
+<script>
+  var disqus_config = function () {
+    this.page.url = window.location.href;
+    this.page.identifier = window.location.pathname;
+  };
+  (function() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://YOUR_DISQUS_SHORTNAME.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
 </body>
 </html>

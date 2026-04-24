@@ -250,9 +250,27 @@ ${photoHTML}
       <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--fog);font-family:var(--mono);font-size:0.6rem;color:var(--trail);text-transform:uppercase;letter-spacing:0.1em">
         Auto-generated from Strava · ${dateInfo.human}
       </div>
+      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">
+        <span style="font-family:var(--sans);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:#507856;display:block;margin-bottom:0.5rem">Comments</span>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:700;text-transform:uppercase;font-size:1.5rem;border-bottom:2px solid #1a1208;padding-bottom:0.3rem;margin-bottom:1.5rem">Join the conversation</h2>
+        <div id="disqus_thread"></div>
+      </div>
     </div>
   </section>
 </main>
+
+<script>
+  var disqus_config = function () {
+    this.page.url = window.location.href;
+    this.page.identifier = window.location.pathname;
+  };
+  (function() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://YOUR_DISQUS_SHORTNAME.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
 
 <footer>
   <div class="foot-logo">Laura on Trail</div>

@@ -251,23 +251,6 @@
 
         <!-- AUTO-POSTS-START -->
 
-        <!-- AUTO: 2026-04-23 -->
-        <a href="posts/2026-04-23-bittersweet.html" class="post-full-card fade-up">
-          <div class="post-date-col">
-            <span class="day">23</span>
-            <span class="month">Apr</span>
-            <span class="year">2026</span>
-          </div>
-          <div class="post-body">
-            <h3>Bittersweet!</h3>
-            <p class="excerpt">One last Sunny Girl with the Sunny King</p>
-            <div class="post-tags">
-              <span class="post-tag miles">5.3 mi</span>
-              
-            </div>
-          </div>
-        </a>
-
         <div class="empty-state">
           <p>No posts yet — first entry coming April 28.</p>
         </div>
@@ -345,13 +328,13 @@
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────────────
 // Change this to your GitHub repo details
-const GITHUB_OWNER = 'lauvh9';   // ← update this
-const GITHUB_REPO  = 'at2026';          // ← update this
+const GITHUB_OWNER = 'YOUR_GITHUB_USERNAME';   // ← update this
+const GITHUB_REPO  = 'YOUR_REPO_NAME';          // ← update this
 
 // Change this to your own password (only you know this)
 // This is NOT high-security — it just stops random visitors from seeing the editor.
 // For a static site this is the practical limit without a backend.
-const POST_PASSWORD = 'trail2026';         // ← change this
+const POST_PASSWORD = 'trailblaze2026';         // ← change this
 
 // ── MODAL ────────────────────────────────────────────────────────────────────
 function openModal() {
@@ -472,9 +455,28 @@ function generatePostHTML({ title, date, tags, excerpt, body }) {
       <article class="post-prose">
 ${paragraphs}
       </article>
+
+      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">
+        <span style="font-family:var(--sans);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--pine);display:block;margin-bottom:0.5rem">Comments</span>
+        <h2 style="margin-bottom:1.5rem">Join the conversation</h2>
+        <div id="disqus_thread"></div>
+      </div>
     </div>
   </section>
 </main>
+
+<script>
+  var disqus_config = function () {
+    this.page.url = window.location.href;
+    this.page.identifier = window.location.pathname;
+  };
+  (function() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://YOUR_DISQUS_SHORTNAME.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
 
 <footer>
   <div class="foot-logo">Laura on Trail</div>
