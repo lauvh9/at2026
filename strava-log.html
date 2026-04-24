@@ -332,6 +332,7 @@ function renderActivity(activity) {
       <div>
         <span class="activity-date">${dateStr}</span>
         <div class="activity-title">${activity.name || 'Trail Day'}</div>
+        ${cleanDesc ? `<div class="activity-caption" style="border-top:none;padding:0.5rem 0 0">${paragraphs}</div>` : ''}
       </div>
       ${stravaUrl ? `<a href="${stravaUrl}" target="_blank" class="strava-link">View on Strava →</a>` : ''}
     </div>
@@ -358,8 +359,6 @@ function renderActivity(activity) {
     <div class="${hasRoute ? 'activity-map' : 'activity-map no-route'}" id="${mapId}">
       ${hasRoute ? '' : 'No route data available'}
     </div>
-
-    <div class="activity-caption">${paragraphs}</div>
 
     ${photoHTML}
 
