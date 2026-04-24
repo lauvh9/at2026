@@ -377,29 +377,32 @@ async function main() {
   }
 
   // Write strava-activities.json for the Strava Log page
-  const stravaActivitiesData = activities
-    .filter(a => new Date(a.start_date) >= SYNC_START_DATE)
-    .map(a => ({
-      id:                   a.id,
-      name:                 a.name,
-      description:          a.description || '',
-      start_date:           a.start_date,
-      start_date_local:     a.start_date_local,
-      distance:             a.distance,
-      moving_time:          a.moving_time,
-      elapsed_time:         a.elapsed_time,
-      total_elevation_gain: a.total_elevation_gain,
-      map_polyline:         a.map && a.map.summary_polyline ? a.map.summary_polyline : null,
-      photos:               [], // photos fetched separately below
-    }));
-
-  // Attach photos to each activity in the strava data
-  for (const act of stravaActivitiesData) {
+  // Use fullActivityCache which has full descriptions from the individual activity endpoint
+  const stravaActivitiesData = [];
+  for (const activity of activities) {
+    if (new Date(activity.start_date) < SYNC_START_DATE) continue;
+    // Fetch full activity to get description (summary list often has empty description)
+    let full;
     try {
-      act.photos = await fetchPhotos(token, act.id);
+      full = await fetchActivity(token, activity.id);
     } catch (e) {
-      act.photos = [];
+      console.warn(`Could not fetch full activity ${activity.id}:`, e.message);
+      full = activity;
     }
+    const photos = await fetchPhotos(token, activity.id).catch(() => []);
+    stravaActivitiesData.push({
+      id:                   full.id,
+      name:                 full.name,
+      description:          full.description || '',
+      start_date:           full.start_date,
+      start_date_local:     full.start_date_local,
+      distance:             full.distance,
+      moving_time:          full.moving_time,
+      elapsed_time:         full.elapsed_time,
+      total_elevation_gain: full.total_elevation_gain,
+      map_polyline:         full.map && full.map.polyline ? full.map.polyline : (activity.map && activity.map.summary_polyline ? activity.map.summary_polyline : null),
+      photos,
+    });
   }
 
   fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(stravaActivitiesData, null, 2), 'utf8');
