@@ -414,118 +414,86 @@ function generatePostHTML({ title, date, tags, excerpt, body }) {
     ? tags.split(',').map(t => `<span class="post-tag">${t.trim()}</span>`).join('')
     : '';
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title} — Laura on Trail</title>
-  <meta property="og:title" content="${title} — Laura on Trail">
-  <meta property="og:image" content="https://lauratheexplorer.co/preview.jpg">
-  <link rel="icon" type="image/x-icon" href="../favicon.ico">
-  <link rel="stylesheet" href="../style.css" />
-  <style>
-    .post-hero { background: var(--cream); border-bottom: 2px solid var(--ink); padding: 3rem 2rem 2.5rem; }
-    .back-link { font-family: var(--sans); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--pine); text-decoration: none; border-bottom: 1px solid var(--pine); padding-bottom: 1px; }
-    .back-link:hover { color: var(--ink); }
-    .post-date-stamp { font-family: var(--sans); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--trail); }
-    .post-nav-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-    .post-hero h1 { color: var(--ink); font-size: clamp(1.8rem, 4vw, 3rem); border-bottom: none; padding-bottom: 0; }
-    .post-prose { font-size: 1.05rem; line-height: 1.85; color: var(--ink); }
-    .post-prose p { margin-bottom: 1.3rem; }
-    .post-prose p:first-of-type::first-letter { font-family: var(--display); font-size: 3.5rem; font-weight: 900; float: left; line-height: 0.85; margin-right: 8px; margin-top: 4px; color: var(--pine); }
-    .post-tag { font-family: var(--sans); font-size: 0.52rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; background: var(--fog); color: var(--trail); border: 1px solid var(--tan); display: inline-block; margin-right: 4px; }
-  </style>
-</head>
-<body>
-<nav>
-  <a href="index.html" class="nav-logo">
-    <span class="blaze"></span>
-    Laura on Trail
-  </a>
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="strava-log.html">Strava</a></li>
-    <li><a href="blog.html" class="active">Log</a></li>
-    <li><a href="gallery.html">Gallery</a></li>
-    <li><a href="gear.html">Gear</a></li>
-    <li><a href="resources.html">Resources</a></li>
-  </ul>
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
-    <span></span><span></span><span></span>
-  </button>
-  <ul class="nav-mobile-menu" id="nav-mobile-menu">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="strava-log.html">Strava</a></li>
-    <li><a href="blog.html" class="active">Log</a></li>
-    <li><a href="gallery.html">Gallery</a></li>
-    <li><a href="gear.html">Gear</a></li>
-    <li><a href="resources.html">Resources</a></li>
-  </ul>
-</nav>
-
-<header class="post-hero">
-  <div class="container-narrow">
-    <div class="post-nav-row">
-      <a href="../blog.html" class="back-link">← All posts</a>
-      <span class="post-date-stamp">${human}</span>
-    </div>
-    <h1>${title}</h1>
-    ${tagList ? `<div style="margin-top:0.75rem">${tagList}</div>` : ''}
-  </div>
-</header>
-
-<main>
-  <section>
-    <div class="container-narrow">
-      <article class="post-prose">
-${paragraphs}
-      </article>
-
-      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">
-        <span style="font-family:var(--sans);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--pine);display:block;margin-bottom:0.5rem">Comments</span>
-        <h2 style="margin-bottom:1.5rem">Join the conversation</h2>
-        <div id="disqus_thread"></div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<\x73cript>
-  var disqus_config = function () {
-    this.page.url = window.location.href;
-    this.page.identifier = window.location.pathname;
-  };
-  (function() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://lauraontrail.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
-  })();
-<\/script>
-
-<footer>
-  <div class="foot-logo">Laura on Trail</div>
-  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
-</footer>
-<\x73cript>
-function toggleNav() {
-  var btn  = document.getElementById("nav-hamburger");
-  var menu = document.getElementById("nav-mobile-menu");
-  btn.classList.toggle("open");
-  menu.classList.toggle("open");
-}
-document.addEventListener("click", function(e) {
-  var btn  = document.getElementById("nav-hamburger");
-  var menu = document.getElementById("nav-mobile-menu");
-  if (menu && menu.classList.contains("open") && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-    btn.classList.remove("open");
-    menu.classList.remove("open");
-  }
-});
-</script>
-</body>
-</html>`;
+  const lines = [
+    '<!DOCTYPE html>',
+    '<html lang="en">',
+    '<head>',
+    '  <meta charset="UTF-8" />',
+    '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+    '  <title>' + title + ' — Laura on Trail</title>',
+    '  <meta property="og:title" content="' + title + ' — Laura on Trail">',
+    '  <meta property="og:image" content="https://lauratheexplorer.co/preview.jpg">',
+    '  <link rel="icon" type="image/x-icon" href="../favicon.ico">',
+    '  <link rel="stylesheet" href="../style.css" />',
+    '  <style>',
+    '    .post-hero { background: var(--cream); border-bottom: 2px solid var(--ink); padding: 3rem 2rem 2.5rem; text-align:center; }',
+    '    .back-link { font-family: var(--sans); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--pine); text-decoration: none; border-bottom: 1px solid var(--pine); padding-bottom: 1px; }',
+    '    .back-link:hover { color: var(--ink); }',
+    '    .post-date-stamp { font-family: var(--sans); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--trail); }',
+    '    .post-nav-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }',
+    '    .post-hero h1 { color: var(--ink); font-size: clamp(1.8rem, 4vw, 3rem); border-bottom: none; padding-bottom: 0; }',
+    '    .post-prose { font-size: 1.05rem; line-height: 1.85; color: var(--ink); }',
+    '    .post-prose p { margin-bottom: 1.3rem; }',
+    '    .post-prose p:first-of-type::first-letter { font-family: var(--display); font-size: 3.5rem; font-weight: 900; float: left; line-height: 0.85; margin-right: 8px; margin-top: 4px; color: var(--pine); }',
+    '    .post-tag { font-family: var(--sans); font-size: 0.52rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; background: var(--fog); color: var(--trail); border: 1px solid var(--tan); display: inline-block; margin-right: 4px; }',
+    '  </style>',
+    '</head>',
+    '<body>',
+    '<nav>',
+    '  <a href="../index.html" class="nav-logo"><span class="blaze"></span>Laura on Trail</a>',
+    '  <ul class="nav-links">',
+    '    <li><a href="../index.html">Home</a></li>',
+    '    <li><a href="../strava-log.html">Strava</a></li>',
+    '    <li><a href="../blog.html" class="active">Log</a></li>',
+    '    <li><a href="../gallery.html">Gallery</a></li>',
+    '    <li><a href="../gear.html">Gear</a></li>',
+    '    <li><a href="../resources.html">Resources</a></li>',
+    '  </ul>',
+    '</nav>',
+    '<header class="post-hero">',
+    '  <div class="container-narrow">',
+    '    <div class="post-nav-row">',
+    '      <a href="../blog.html" class="back-link">← All posts</a>',
+    '      <span class="post-date-stamp">' + human + '</span>',
+    '    </div>',
+    '    <h1>' + title + '</h1>',
+    tagList ? '    <div style="margin-top:0.75rem">' + tagList + '</div>' : '',
+    '  </div>',
+    '</header>',
+    '<main>',
+    '  <section>',
+    '    <div class="container-narrow">',
+    '      <article class="post-prose">',
+    paragraphs,
+    '      </article>',
+    '      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">',
+    '        <span style="font-family:var(--sans);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--pine);display:block;margin-bottom:0.5rem">Comments</span>',
+    '        <h2 style="margin-bottom:1.5rem">Join the conversation</h2>',
+    '        <div id="disqus_thread"></div>',
+    '      </div>',
+    '    </div>',
+    '  </section>',
+    '</main>',
+    '<scr' + 'ipt>',
+    '  var disqus_config = function () {',
+    '    this.page.url = window.location.href;',
+    '    this.page.identifier = window.location.pathname;',
+    '  };',
+    '  (function() {',
+    "    var d = document, s = d.createElement('script');",
+    "    s.src = 'https://lauraontrail.disqus.com/embed.js';",
+    "    s.setAttribute('data-timestamp', +new Date());",
+    '    (d.head || d.body).appendChild(s);',
+    '  })();',
+    '</' + 'script>',
+    '<footer>',
+    '  <div class="foot-logo">Laura on Trail</div>',
+    '  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>',
+    '</footer>',
+    '</body>',
+    '</html>'
+  ];
+  return lines.join('\n');
 }
 
 // ── GENERATE BLOG CARD HTML ───────────────────────────────────────────────────
