@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log — Laura on Trail</title>
+  <meta property="og:title" content="Laura on Trail — AT Thru-Hike 2026">
+  <meta property="og:description" content="Hiking 2,198 miles from Georgia to Maine. Follow along.">
+  <meta property="og:image" content="https://lauratheexplorer.co/preview.jpg">
+  <meta property="og:url" content="https://lauratheexplorer.co">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://lauratheexplorer.co/preview.jpg">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .blog-hero {
+      text-align: center;
+      background: var(--cream);
+      border-bottom: 2px solid var(--ink);
+      padding: 2.5rem 2rem 2rem;
+    }
+    .blog-hero h1 { border-bottom: none; padding-bottom: 0; }
+
+    /* Post listing */
+    .post-full-card {
+      background: var(--white);
+      border: 1px solid var(--fog);
+      border-top: 3px solid var(--pine);
+      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .post-full-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(26,18,8,0.08);
+    }
+    .post-date-col {
+      background: var(--pine);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0.75rem;
+      flex-shrink: 0;
+    }
+    .post-date-col .day {
+      font-family: var(--display);
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1;
+    }
+    .post-date-col .month {
+      font-family: var(--sans);
+      font-size: 0.55rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(240,234,216,0.7);
+    }
+    .post-date-col .year {
+      font-family: var(--sans);
+      font-size: 0.5rem;
+      color: rgba(44,85,48,0.5);
+      margin-top: 2px;
+    }
+    .post-body { padding: 1rem 1.2rem; }
+    .post-body h3 {
+      font-family: var(--display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      line-height: 1.2;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .post-body .excerpt {
+      font-size: 0.85rem;
+      color: var(--earth);
+      line-height: 1.6;
+      font-style: italic;
+    }
+    .post-tags { display: flex; gap: 5px; margin-top: 0.6rem; flex-wrap: wrap; }
+    .post-tag {
+      font-family: var(--sans);
+      font-size: 0.52rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      background: var(--fog);
+      color: var(--trail);
+      border: 1px solid var(--tan);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--trail);
+      font-style: italic;
+    }
+
+    /* ── WRITE POST BUTTON ── */
+    .write-btn-wrap { text-align: right; margin-bottom: 1.5rem; }
+
+    /* ── EDITOR MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,18,8,0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+    }
+    .modal h2 {
+      font-family: var(--display);
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 0.3rem;
+      margin-bottom: 1.25rem;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: none; border: none;
+      font-size: 1.2rem; cursor: pointer;
+      color: var(--trail); font-family: var(--mono);
+    }
+    .modal-close:hover { color: var(--ink); }
+
+    /* Form fields */
+    .field { margin-bottom: 1rem; }
+    .field label {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--pine);
+      margin-bottom: 0.3rem;
+    }
+    .field input, .field textarea, .field select {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      font-family: var(--body);
+      font-size: 0.9rem;
+      color: var(--ink);
+      background: var(--white);
+      border: 1.5px solid var(--tan);
+      border-radius: 0;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field textarea:focus {
+      border-color: var(--pine);
+    }
+    .field textarea {
+      min-height: 240px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+    .field input[type="password"] { letter-spacing: 0.1em; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .field-note {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      color: var(--trail);
+      margin-top: 0.25rem;
+      font-style: italic;
+    }
+
+    .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+    .modal-status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      display: none;
+    }
+    .modal-status.success { background: #d4edda; color: #1e5630; border-left: 3px solid var(--pine); }
+    .modal-status.error   { background: #fde8e8; color: #8b1a1a; border-left: 3px solid #8b1a1a; }
+    .modal-status.open    { display: block; }
+
+    /* Password screen */
+    #pass-screen, #editor-screen { display: none; }
+    #pass-screen.active, #editor-screen.active { display: block; }
+
+    @media (max-width: 600px) {
+      .post-full-card { grid-template-columns: 1fr; }
+      .post-date-col { flex-direction: row; gap: 8px; padding: 0.6rem 1rem; justify-content: flex-start; }
+      .field-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-mobile-menu" id="nav-mobile-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+</nav>
+
+<header class="blog-hero">
+  <div class="container">
+    <h1>Log</h1>
+    <span class="section-label" style="margin-top:0.4rem;display:block">Updates from the trail</span>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="container-narrow">
+
+      <div class="write-btn-wrap">
+        <button class="btn btn-primary" onclick="openModal()">✎ &nbsp;Write a post</button>
+      </div>
+
+      <!-- Posts list — auto-populated by strava-sync.js -->
+      <div id="posts-list">
+
+        <!-- AUTO-POSTS-START -->
+
+        <div class="empty-state">
+          <p>No posts yet — first entry coming April 28.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-logo">Laura on Trail</div>
+  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
+</footer>
+
+<!-- ── EDITOR MODAL ─────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- Password screen -->
+    <div id="pass-screen" class="active">
+      <h2>Write a Post</h2>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password-input" placeholder="Enter your password"
+               onkeydown="if(event.key==='Enter') checkPassword()">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="checkPassword()">Continue →</button>
+      </div>
+      <div class="modal-status" id="pass-status"></div>
+    </div>
+
+    <!-- Editor screen -->
+    <div id="editor-screen">
+      <h2>New Post</h2>
+      <div class="field">
+        <label>Post title</label>
+        <input type="text" id="post-title" placeholder="Day 12 — The Smokies finally broke me">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="post-date">
+        </div>
+        <div class="field">
+          <label>Tags (comma separated)</label>
+          <input type="text" id="post-tags" placeholder="Day 12, Tennessee, Zero day">
+        </div>
+      </div>
+      <div class="field">
+        <label>Excerpt (short preview — 1–2 sentences)</label>
+        <input type="text" id="post-excerpt" placeholder="A short teaser that shows on the blog list…">
+      </div>
+      <div class="field">
+        <label>Post body</label>
+        <textarea id="post-body" placeholder="Write your post here. Blank lines between paragraphs will create paragraph breaks.&#10;&#10;You can write as much as you want — this becomes the full post page."></textarea>
+        <div class="field-note">Tip: Leave a blank line between paragraphs. No special formatting needed.</div>
+      </div>
+      <div class="field">
+        <label>GitHub personal access token</label>
+        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <div class="field-note">Needs repo write access. Go to GitHub → Settings → Developer Settings → Personal access tokens → Generate new token (classic) → check "repo".</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="publish-btn" onclick="publishPost()">Publish post →</button>
+        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      </div>
+      <div class="modal-status" id="publish-status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// Change this to your GitHub repo details
+const GITHUB_OWNER = 'lauvh9';   // ← update this
+const GITHUB_REPO  = 'at2026';          // ← update this
+
+// Change this to your own password (only you know this)
+// This is NOT high-security — it just stops random visitors from seeing the editor.
+// For a static site this is the practical limit without a backend.
+const POST_PASSWORD = 'trailblaze2026';         // ← change this
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+  // Reset to password screen
+  document.getElementById('pass-screen').classList.add('active');
+  document.getElementById('editor-screen').classList.remove('active');
+  document.getElementById('password-input').value = '';
+  setStatus('pass-status', '', '');
+  setStatus('publish-status', '', '');
+}
+
+// Close on background click
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── PASSWORD ─────────────────────────────────────────────────────────────────
+function checkPassword() {
+  const val = document.getElementById('password-input').value;
+  if (val === POST_PASSWORD) {
+    document.getElementById('pass-screen').classList.remove('active');
+    document.getElementById('editor-screen').classList.add('active');
+    // Restore any saved token
+    const saved = sessionStorage.getItem('gh_token');
+    if (saved) document.getElementById('gh-token').value = saved;
+  } else {
+    setStatus('pass-status', 'error', 'Incorrect password.');
+  }
+}
+
+// ── STATUS ────────────────────────────────────────────────────────────────────
+function setStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'modal-status' + (type ? ` ${type} open` : '');
+}
+
+// ── SLUG ──────────────────────────────────────────────────────────────────────
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ── GENERATE POST HTML ───────────────────────────────────────────────────────
+function generatePostHTML({ title, date, tags, excerpt, body }) {
+  const d = new Date(date + 'T12:00:00');
+  const day   = d.getDate();
+  const month = d.toLocaleDateString('en-US', { month: 'short' });
+  const year  = d.getFullYear();
+  const human = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const paragraphs = body
+    .split(/\n\n+/)
+    .map(p => `        <p>${p.replace(/\n/g, ' ').trim()}</p>`)
+    .filter(p => p.includes('<p></p>') === false)
+    .join('\n');
+
+  const tagList = tags
+    ? tags.split(',').map(t => `<span class="post-tag">${t.trim()}</span>`).join('')
+    : '';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${title} — Laura on Trail</title>
+  <meta property="og:title" content="${title} — Laura on Trail">
+  <meta property="og:image" content="https://lauratheexplorer.co/preview.jpg">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .post-hero { background: var(--cream); border-bottom: 2px solid var(--ink); padding: 3rem 2rem 2.5rem; }
+    .back-link { font-family: var(--sans); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--pine); text-decoration: none; border-bottom: 1px solid var(--pine); padding-bottom: 1px; }
+    .back-link:hover { color: var(--ink); }
+    .post-date-stamp { font-family: var(--sans); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--trail); }
+    .post-nav-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .post-hero h1 { color: var(--ink); font-size: clamp(1.8rem, 4vw, 3rem); border-bottom: none; padding-bottom: 0; }
+    .post-prose { font-size: 1.05rem; line-height: 1.85; color: var(--ink); }
+    .post-prose p { margin-bottom: 1.3rem; }
+    .post-prose p:first-of-type::first-letter { font-family: var(--display); font-size: 3.5rem; font-weight: 900; float: left; line-height: 0.85; margin-right: 8px; margin-top: 4px; color: var(--pine); }
+    .post-tag { font-family: var(--sans); font-size: 0.52rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; background: var(--fog); color: var(--trail); border: 1px solid var(--tan); display: inline-block; margin-right: 4px; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-mobile-menu" id="nav-mobile-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+</nav>
+
+<header class="post-hero">
+  <div class="container-narrow">
+    <div class="post-nav-row">
+      <a href="../blog.html" class="back-link">← All posts</a>
+      <span class="post-date-stamp">${human}</span>
+    </div>
+    <h1>${title}</h1>
+    ${tagList ? `<div style="margin-top:0.75rem">${tagList}</div>` : ''}
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="container-narrow">
+      <article class="post-prose">
+${paragraphs}
+      </article>
+
+      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">
+        <span style="font-family:var(--sans);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--pine);display:block;margin-bottom:0.5rem">Comments</span>
+        <h2 style="margin-bottom:1.5rem">Join the conversation</h2>
+        <div id="disqus_thread"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<\x73cript>
+  var disqus_config = function () {
+    this.page.url = window.location.href;
+    this.page.identifier = window.location.pathname;
+  };
+  (function() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://lauraontrail.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+<\/script>
+
+<footer>
+  <div class="foot-logo">Laura on Trail</div>
+  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
+</footer>
+<\x73cript>
+function toggleNav() {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  btn.classList.toggle("open");
+  menu.classList.toggle("open");
+}
+document.addEventListener("click", function(e) {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  if (menu && menu.classList.contains("open") && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    btn.classList.remove("open");
+    menu.classList.remove("open");
+  }
+});
+</script>
+</body>
+</html>`;
+}
+
+// ── GENERATE BLOG CARD HTML ───────────────────────────────────────────────────
+function generateBlogCard({ title, date, excerpt, tags, filename }) {
+  const d = new Date(date + 'T12:00:00');
+  const day   = d.getDate();
+  const month = d.toLocaleDateString('en-US', { month: 'short' });
+  const year  = d.getFullYear();
+
+  const tagHTML = tags
+    ? tags.split(',').map(t => `<span class="post-tag">${t.trim()}</span>`).join('')
+    : '';
+
+  return `
+        <!-- BLOG-POST: ${date} -->
+        <a href="blog-posts/${filename}" class="post-full-card fade-up">
+          <div class="post-date-col">
+            <span class="day">${day}</span>
+            <span class="month">${month}</span>
+            <span class="year">${year}</span>
+          </div>
+          <div class="post-body">
+            <h3>${title}</h3>
+            <p class="excerpt">${excerpt || ''}</p>
+            ${tagHTML ? `<div class="post-tags">${tagHTML}</div>` : ''}
+          </div>
+        </a>`;
+}
+
+// ── PUBLISH TO GITHUB ─────────────────────────────────────────────────────────
+async function publishPost() {
+  const title   = document.getElementById('post-title').value.trim();
+  const date    = document.getElementById('post-date').value;
+  const tags    = document.getElementById('post-tags').value.trim();
+  const excerpt = document.getElementById('post-excerpt').value.trim();
+  const body    = document.getElementById('post-body').value.trim();
+  const token   = document.getElementById('gh-token').value.trim();
+
+  if (!title || !date || !body || !token) {
+    setStatus('publish-status', 'error', 'Title, date, body, and GitHub token are all required.');
+    return;
+  }
+
+  const btn = document.getElementById('publish-btn');
+  btn.disabled = true;
+  btn.textContent = 'Publishing…';
+  setStatus('publish-status', '', '');
+
+  // Save token for the session
+  sessionStorage.setItem('gh_token', token);
+
+  try {
+    const filename  = `${date}-${slugify(title)}.html`;
+    const postHTML  = generatePostHTML({ title, date, tags, excerpt, body });
+    const postPath  = `blog-posts/${filename}`;
+    const b64       = btoa(unescape(encodeURIComponent(postHTML)));
+
+    // 1. Create the post file
+    const postRes = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${postPath}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: `Add blog post: ${title}`,
+          content: b64,
+        }),
+      }
+    );
+    if (!postRes.ok) {
+      const err = await postRes.json();
+      throw new Error(err.message || `GitHub API error ${postRes.status}`);
+    }
+
+    // 2. Prepend card to blog.html
+    const blogRes = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/blog.html`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (!blogRes.ok) throw new Error('Could not fetch blog.html from GitHub');
+
+    const blogData   = await blogRes.json();
+    const blogDecoded = decodeURIComponent(escape(atob(blogData.content.replace(/\n/g,''))));
+    const marker     = '<!-- AUTO-POSTS-START -->';
+
+    if (!blogDecoded.includes(marker)) throw new Error('blog.html is missing the AUTO-POSTS-START marker');
+
+    const card       = generateBlogCard({ title, date, excerpt, tags, filename });
+    const updatedBlog = blogDecoded.replace(marker, marker + '\n' + card);
+    const blogB64    = btoa(unescape(encodeURIComponent(updatedBlog)));
+
+    const updateRes = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/blog.html`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: `Add blog card for: ${title}`,
+          content: blogB64,
+          sha: blogData.sha,
+        }),
+      }
+    );
+    if (!updateRes.ok) {
+      const err = await updateRes.json();
+      throw new Error(err.message || 'Failed to update blog.html');
+    }
+
+    setStatus('publish-status', 'success',
+      `✓ Published! Your post will be live at lauratheexplorer.co/blog-posts/${filename} in about 1–2 minutes.`);
+    btn.textContent = 'Published ✓';
+
+    // Clear form
+    setTimeout(() => {
+      document.getElementById('post-title').value = '';
+      document.getElementById('post-tags').value = '';
+      document.getElementById('post-excerpt').value = '';
+      document.getElementById('post-body').value = '';
+      btn.disabled = false;
+      btn.textContent = 'Publish post →';
+    }, 4000);
+
+  } catch (err) {
+    setStatus('publish-status', 'error', `Error: ${err.message}`);
+    btn.disabled = false;
+    btn.textContent = 'Publish post →';
+  }
+}
+</script>
+
+<script>
+function toggleNav() {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  btn.classList.toggle("open");
+  menu.classList.toggle("open");
+}
+document.addEventListener("click", function(e) {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  if (menu && menu.classList.contains("open") && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    btn.classList.remove("open");
+    menu.classList.remove("open");
+  }
+});
+</script>
+</body>
+</html>
