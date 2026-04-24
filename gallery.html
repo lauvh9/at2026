@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .gallery-hero {
+      text-align: center;
       background: var(--cream);
       padding: 3rem 2rem 2.5rem;
       position: relative;
@@ -288,6 +289,19 @@
   </a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html">Log</a></li>
+    <li><a href="gallery.html" class="active">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-mobile-menu" id="nav-mobile-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html">Log</a></li>
     <li><a href="gallery.html" class="active">Gallery</a></li>
     <li><a href="gear.html">Gear</a></li>
     <li><a href="resources.html">Resources</a></li>
@@ -296,8 +310,7 @@
 
 <header class="gallery-hero">
   <div class="hero-bg-lines"></div>
-  <div class="container" style="position:relative;z-index:1">
-    <hr style="border:none;border-top:1px solid var(--ink);margin:0.5rem 0;opacity:0.25">
+  <div class="container" style="position:relative;z-index:1;text-align:center">
     <h1 style="color:var(--ink);font-size:clamp(2rem,4vw,3rem)">Gallery</h1>
     <span class="section-label" style="color:var(--pine)">Photos & video from the trail</span>
   </div>

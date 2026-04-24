@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog — Laura on Trail</title>
+  <title>Log — Laura on Trail</title>
   <meta property="og:title" content="Laura on Trail — AT Thru-Hike 2026">
   <meta property="og:description" content="Hiking 2,198 miles from Georgia to Maine. Follow along.">
   <meta property="og:image" content="https://lauratheexplorer.co/preview.jpg">
@@ -18,10 +18,10 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .blog-hero {
+      text-align: center;
       background: var(--cream);
       border-bottom: 2px solid var(--ink);
       padding: 2.5rem 2rem 2rem;
-      text-align: center;
     }
     .blog-hero h1 { border-bottom: none; padding-bottom: 0; }
 
@@ -225,7 +225,18 @@
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="strava-log.html">Strava</a></li>
-    <li><a href="blog.html" class="active">Blog</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-mobile-menu" id="nav-mobile-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
     <li><a href="gallery.html">Gallery</a></li>
     <li><a href="gear.html">Gear</a></li>
     <li><a href="resources.html">Resources</a></li>
@@ -233,9 +244,10 @@
 </nav>
 
 <header class="blog-hero">
-  <hr style="border:none;border-top:1px solid var(--ink);margin:0.5rem auto;width:60%;opacity:0.2">
-    <h1>Blog</h1>
-    <span class="section-label" style="font-size:0.85rem;letter-spacing:0.15em">Updates from the trail</span>
+  <div class="container">
+    <h1>Log</h1>
+    <span class="section-label" style="margin-top:0.4rem;display:block">Updates from the trail</span>
+  </div>
 </header>
 
 <main>
@@ -427,14 +439,28 @@ function generatePostHTML({ title, date, tags, excerpt, body }) {
 </head>
 <body>
 <nav>
-  <a href="../index.html" class="nav-logo"><span class="blaze"></span>Laura on Trail</a>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
   <ul class="nav-links">
-    <li><a href="../index.html">Home</a></li>
-    <li><a href="../strava-log.html">Strava</a></li>
-    <li><a href="../blog.html" class="active">Blog</a></li>
-    <li><a href="../gallery.html">Gallery</a></li>
-    <li><a href="../gear.html">Gear</a></li>
-    <li><a href="../resources.html">Resources</a></li>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-mobile-menu" id="nav-mobile-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html" class="active">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
   </ul>
 </nav>
 

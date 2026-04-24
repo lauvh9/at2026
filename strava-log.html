@@ -21,10 +21,10 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     .strava-hero {
+      text-align: center;
       background: var(--cream);
       border-bottom: 2px solid var(--ink);
       padding: 2.5rem 2rem 2rem;
-      text-align: center;
     }
     .strava-hero h1 { border-bottom: none; padding-bottom: 0; }
 
@@ -206,7 +206,18 @@
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="strava-log.html" class="active">Strava</a></li>
-    <li><a href="blog.html">Blog</a></li>
+    <li><a href="blog.html">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-mobile-menu" id="nav-mobile-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html" class="active">Strava</a></li>
+    <li><a href="blog.html">Log</a></li>
     <li><a href="gallery.html">Gallery</a></li>
     <li><a href="gear.html">Gear</a></li>
     <li><a href="resources.html">Resources</a></li>
@@ -214,10 +225,10 @@
 </nav>
 
 <header class="strava-hero">
-  <span class="section-label">Every mile, logged</span>
-  <hr style="border:none;border-top:1px solid var(--ink);margin:0.5rem auto;width:60%;opacity:0.2">
-  <h1>Strava Log</h1>
-  <span class="section-label" style="margin-top:0.5rem">Data synced from Strava. Updates nightly if I have service.</span>
+  <div class="container">
+    <h1>Strava Log</h1>
+    <span class="section-label" style="margin-top:0.4rem;display:block">Data synced from Strava. Updates nightly if I have service.</span>
+  </div>
 </header>
 
 <main>
