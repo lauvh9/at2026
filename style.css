@@ -85,6 +85,7 @@ nav {
   align-items: center;
   gap: 10px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-logo .blaze {
@@ -121,6 +122,61 @@ nav {
   color: var(--pine);
   border-bottom-color: var(--pine);
 }
+
+/* Hamburger button — hidden on desktop */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  transition: all 0.2s;
+  border-radius: 1px;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile dropdown menu */
+.nav-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 56px;
+  left: 0; right: 0;
+  background: var(--cream);
+  border-bottom: 2px solid var(--ink);
+  z-index: 99;
+  padding: 0.5rem 0;
+}
+.nav-mobile-menu.open { display: block; }
+.nav-mobile-menu li {
+  list-style: none;
+  border-bottom: 1px solid var(--fog);
+}
+.nav-mobile-menu li:last-child { border-bottom: none; }
+.nav-mobile-menu a {
+  display: block;
+  padding: 0.85rem 2rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-mobile-menu a.active,
+.nav-mobile-menu a:hover { color: var(--pine); }
 
 /* ── TOPO DIVIDER ────────────────────────────────────── */
 .topo-divider {
@@ -595,10 +651,10 @@ footer p {
 /* ── RESPONSIVE ──────────────────────────────────────── */
 @media (max-width: 680px) {
   nav { padding: 0 1rem; }
-  .nav-logo { font-size: 0.72rem; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
-  .nav-logo .blaze { width: 7px; height: 13px; flex-shrink: 0; }
-  .nav-links { gap: 0.5rem; }
-  .nav-links a { font-size: 0.52rem; letter-spacing: 0.03em; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-logo { font-size: 0.85rem; }
+  .nav-logo .blaze { width: 8px; height: 14px; }
   .container, .container-narrow { padding: 0 1rem; }
   section { padding: 2.5rem 0; }
   .hero { padding: 2.5rem 1rem 2rem; }
