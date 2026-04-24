@@ -812,5 +812,21 @@
   })();
 </script>
 
+<script>
+function toggleNav() {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  btn.classList.toggle("open");
+  menu.classList.toggle("open");
+}
+document.addEventListener("click", function(e) {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  if (menu && menu.classList.contains("open") && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    btn.classList.remove("open");
+    menu.classList.remove("open");
+  }
+});
+</script>
 </body>
 </html>

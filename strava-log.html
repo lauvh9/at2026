@@ -32,7 +32,7 @@
     .activity-card {
       background: var(--white);
       border: 1px solid var(--fog);
-      border-top: 4px solid var(--pine);
+      border-top: 4px solid #c4621a;
       margin-bottom: 2rem;
       overflow: hidden;
     }
@@ -103,7 +103,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--pine);
+      color: #c4621a;
       margin-top: 3px;
       display: block;
     }
@@ -368,7 +368,7 @@ function renderActivity(activity) {
     ${photoHTML}
 
     <div style="padding:1.5rem 1.4rem;border-top:1px solid var(--fog)">
-      <span style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--pine);display:block;margin-bottom:0.75rem">Comments</span>
+      <span style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:#c4621a;display:block;margin-bottom:0.75rem">Comments</span>
       <div id="disqus-${activity.id || mapId}"></div>
     </div>
   `;
@@ -390,7 +390,7 @@ function renderActivity(activity) {
         maxZoom: 19,
       }).addTo(map);
       const polyline = L.polyline(points, {
-        color: '#507856',
+        color: '#c4621a',
         weight: 3.5,
         opacity: 0.9,
       }).addTo(map);
@@ -399,7 +399,7 @@ function renderActivity(activity) {
       // Start/end markers
       if (points.length > 1) {
         const dot = { radius: 6, fillOpacity: 1, weight: 2, color: '#fff' };
-        L.circleMarker(points[0], { ...dot, fillColor: '#507856' }).addTo(map);
+        L.circleMarker(points[0], { ...dot, fillColor: '#c4621a' }).addTo(map);
         L.circleMarker(points[points.length - 1], { ...dot, fillColor: '#8b3a1a' }).addTo(map);
       }
     }, 0);
@@ -499,6 +499,22 @@ init();
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initDisqus, 1000);
   });
+</script>
+<script>
+function toggleNav() {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  btn.classList.toggle("open");
+  menu.classList.toggle("open");
+}
+document.addEventListener("click", function(e) {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  if (menu && menu.classList.contains("open") && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    btn.classList.remove("open");
+    menu.classList.remove("open");
+  }
+});
 </script>
 </body>
 </html>

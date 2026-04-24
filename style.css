@@ -649,7 +649,7 @@ footer p {
 .faq-a.open { max-height: 400px; padding-top: 0.75rem; }
 
 /* ── RESPONSIVE ──────────────────────────────────────── */
-@media (max-width: 680px) {
+@media (max-width: 900px) {
   nav { padding: 0 1rem; }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
