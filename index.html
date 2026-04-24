@@ -376,20 +376,30 @@
             More entries coming from the trail
           </div>
 
+          <!-- Last Strava activity -->
+          <div style="border-top:1px solid var(--fog);padding-top:1.2rem;margin-top:0.5rem">
+            <span class="section-label">Latest activity</span>
+            <h2 style="margin-bottom:0.75rem">On the Trail</h2>
+            <div id="last-strava-activity">
+              <div style="font-family:var(--sans);font-size:0.65rem;color:var(--trail);font-style:italic">No activities yet — check back after April 28.</div>
+            </div>
+            <a href="strava-log.html" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--pine);text-decoration:none;border-bottom:1px solid var(--pine)">View all activities →</a>
+          </div>
+
           <!-- Resources preview -->
           <div style="margin-top:0.5rem;border-top:1px solid var(--fog);padding-top:1.2rem">
             <span class="section-label">Resources</span>
             <h2 style="margin-bottom:0.75rem">Quick Links</h2>
             <div style="display:flex;flex-direction:column;gap:0.5rem">
-              <a href="resources.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
+              <a href="https://app.faroutguides.com/guides/Appalachian%20Trail" target="_blank" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
                 <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">FarOut Guides</span>
                 <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pine)">Navigation →</span>
               </a>
-              <a href="resources.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
+              <a href="http://www.wikitrail.org/planner/view/at/4803087417999360" target="_blank" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
                 <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">WikiTrail Planner</span>
                 <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pine)">Planning →</span>
               </a>
-              <a href="resources.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
+              <a href="https://citytotrail.com/" target="_blank" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid var(--fog)">
                 <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">City to Trail</span>
                 <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pine)">Getting there →</span>
               </a>
@@ -748,6 +758,54 @@
     }
 
   });
+
+  // ── LAST STRAVA ACTIVITY PREVIEW ─────────────────────────────────────────
+  (async function() {
+    try {
+      const res = await fetch('data/strava-activities.json?t=' + Date.now());
+      if (!res.ok) throw new Error('No data');
+      const activities = await res.json();
+      if (!activities.length) return;
+
+      const a = activities[0]; // most recent
+      const d = new Date(a.start_date_local || a.start_date);
+      const dateStr = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+      const distMi = (a.distance / 1609.34).toFixed(2);
+      const h = Math.floor(a.moving_time / 3600);
+      const m = Math.floor((a.moving_time % 3600) / 60);
+      const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+      const elevFt = Math.round(a.total_elevation_gain * 3.28084).toLocaleString();
+      const cleanDesc = (a.description || '').replace(/end\s*mile[:\s\-]+[\d.]+/gi, '').trim();
+
+      const container = document.getElementById('last-strava-activity');
+      if (!container) return;
+
+      container.innerHTML = `
+        <div style="border:1px solid var(--fog);border-top:3px solid var(--pine)">
+          <div style="padding:0.8rem 1rem;border-bottom:1px solid var(--fog)">
+            <div style="font-family:var(--sans);font-size:0.55rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--pine);margin-bottom:0.2rem">${dateStr}</div>
+            <div style="font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.2">${a.name || 'Trail Day'}</div>
+            ${cleanDesc ? `<div style="font-size:0.82rem;color:var(--earth);font-style:italic;margin-top:0.4rem;line-height:1.55">${cleanDesc.split('\n\n')[0]}</div>` : ''}
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--fog)">
+            <div style="padding:0.6rem 0.5rem;text-align:center;border-right:1px solid var(--fog)">
+              <span style="font-family:var(--display);font-size:1.1rem;font-weight:900;color:var(--ink);display:block;line-height:1">${distMi}</span>
+              <span style="font-family:var(--sans);font-size:0.48rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--pine)">Miles</span>
+            </div>
+            <div style="padding:0.6rem 0.5rem;text-align:center;border-right:1px solid var(--fog)">
+              <span style="font-family:var(--display);font-size:1.1rem;font-weight:900;color:var(--ink);display:block;line-height:1">${timeStr}</span>
+              <span style="font-family:var(--sans);font-size:0.48rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--pine)">Time</span>
+            </div>
+            <div style="padding:0.6rem 0.5rem;text-align:center">
+              <span style="font-family:var(--display);font-size:1.1rem;font-weight:900;color:var(--ink);display:block;line-height:1">${elevFt} ft</span>
+              <span style="font-family:var(--sans);font-size:0.48rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--pine)">Elevation</span>
+            </div>
+          </div>
+        </div>`;
+    } catch(e) {
+      // silently fail — empty state already shown
+    }
+  })();
 </script>
 
 </body>
