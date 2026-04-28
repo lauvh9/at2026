@@ -1,11 +1,13 @@
 /**
  * comments.js — Lightweight guest comment system for Laura on Trail
  *
+ * Supports multiple comment sections on the same page.
+ * Usage:
+ *   Single post page:  <div id="comments-section"></div>
+ *   Multiple on page:  <div class="comments-widget" data-slug="activity-12345"></div>
+ *
  * Comments are submitted via a Cloudflare Worker proxy (worker.js).
  * The GitHub token lives in the Worker as a secret — never in this file.
- *
- * Setup: see worker.js for deployment instructions.
- * Once deployed, paste your Worker URL below as WORKER_URL.
  */
 
 (function () {
@@ -15,7 +17,7 @@
   const WORKER_URL   = 'https://at2026-comments.noah-f08.workers.dev';
   // ─────────────────────────────────────────────────────────────────────────
 
-  function getSlug() {
+  function getSlugFromPath() {
     return window.location.pathname
       .replace(/^\/|\/$/g, '')
       .replace(/\.html$/, '')
@@ -40,7 +42,6 @@
     } catch { return []; }
   }
 
-  // Posts to the Cloudflare Worker, which holds the GitHub token server-side.
   async function submitComment(slug, comment) {
     if (!WORKER_URL) throw new Error('Comments not configured yet.');
     const res = await fetch(`${WORKER_URL}/comment`, {
@@ -71,7 +72,6 @@
     }).join('');
   }
 
-  // Poll until the new comment appears (workflow takes ~20-40s).
   function pollForNewComment(slug, previousCount, onUpdate) {
     const MAX_ATTEMPTS = 15;
     let   attempts     = 0;
@@ -88,87 +88,93 @@
     }, 5000);
   }
 
-  async function init() {
-    const container = document.getElementById('comments-section');
-    if (!container) return;
-
-    const slug     = getSlug();
+  // Initialise a single comment widget inside `container` using `slug`.
+  async function initWidget(container, slug) {
     const comments = await loadComments(slug);
 
     container.innerHTML = `
-      <div id="comments-list" style="margin-bottom:1.5rem">${renderComments(comments)}</div>
-
+      <div class="cw-list" style="margin-bottom:1.5rem">${renderComments(comments)}</div>
       <div style="background:var(--fog);padding:1.25rem 1.5rem;border:1px solid var(--tan)">
         <div style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--pine);margin-bottom:1rem">Leave a comment</div>
-
         <div style="margin-bottom:0.75rem">
-          <input id="comment-name" type="text" placeholder="Your name" maxlength="80"
+          <input class="cw-name" type="text" placeholder="Your name" maxlength="80"
             style="width:100%;padding:0.55rem 0.75rem;font-family:var(--body);font-size:0.9rem;color:var(--ink);background:var(--white);border:1.5px solid var(--tan);outline:none;box-sizing:border-box;transition:border-color 0.15s"
             onfocus="this.style.borderColor='var(--pine)'" onblur="this.style.borderColor='var(--tan)'">
         </div>
-
         <div style="margin-bottom:0.75rem">
-          <textarea id="comment-message" placeholder="Write your comment..." maxlength="2000" rows="4"
+          <textarea class="cw-message" placeholder="Write your comment..." maxlength="2000" rows="4"
             style="width:100%;padding:0.55rem 0.75rem;font-family:var(--body);font-size:0.9rem;color:var(--ink);background:var(--white);border:1.5px solid var(--tan);outline:none;resize:vertical;line-height:1.65;box-sizing:border-box;transition:border-color 0.15s"
             onfocus="this.style.borderColor='var(--pine)'" onblur="this.style.borderColor='var(--tan)'"></textarea>
         </div>
-
         <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-          <button id="comment-submit"
+          <button class="cw-submit"
             style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;padding:0.6rem 1.4rem;background:var(--pine);color:var(--white);border:none;cursor:pointer">
             Post comment
           </button>
-          <span id="comment-status" style="font-family:var(--sans);font-size:0.78rem"></span>
+          <span class="cw-status" style="font-family:var(--sans);font-size:0.78rem"></span>
         </div>
       </div>`;
 
-    document.getElementById('comment-submit').addEventListener('click', async function () {
-      const name    = document.getElementById('comment-name').value.trim();
-      const message = document.getElementById('comment-message').value.trim();
-      const status  = document.getElementById('comment-status');
-      const btn     = this;
+    const nameEl    = container.querySelector('.cw-name');
+    const messageEl = container.querySelector('.cw-message');
+    const submitBtn = container.querySelector('.cw-submit');
+    const statusEl  = container.querySelector('.cw-status');
+    const listEl    = container.querySelector('.cw-list');
+
+    submitBtn.addEventListener('click', async function () {
+      const name    = nameEl.value.trim();
+      const message = messageEl.value.trim();
 
       if (!name) {
-        status.textContent = 'Please enter your name.';
-        status.style.color = '#8b1a1a';
-        document.getElementById('comment-name').focus();
+        statusEl.textContent = 'Please enter your name.';
+        statusEl.style.color = '#8b1a1a';
+        nameEl.focus();
         return;
       }
       if (!message) {
-        status.textContent = 'Please write a comment.';
-        status.style.color = '#8b1a1a';
-        document.getElementById('comment-message').focus();
+        statusEl.textContent = 'Please write a comment.';
+        statusEl.style.color = '#8b1a1a';
+        messageEl.focus();
         return;
       }
 
-      btn.disabled       = true;
-      btn.textContent    = 'Posting...';
-      status.textContent = '';
+      submitBtn.disabled       = true;
+      submitBtn.textContent    = 'Posting...';
+      statusEl.textContent     = '';
 
       const comment       = { name, message, timestamp: new Date().toISOString() };
       const previousCount = (await loadComments(slug)).length;
 
       try {
         await submitComment(slug, comment);
-
-        document.getElementById('comment-name').value    = '';
-        document.getElementById('comment-message').value = '';
-        status.textContent = "Comment submitted! It'll appear here in ~30 seconds.";
-        status.style.color = '#1e5630';
-        btn.textContent    = 'Post comment';
-        btn.disabled       = false;
+        nameEl.value    = '';
+        messageEl.value = '';
+        statusEl.textContent = "Comment submitted! It'll appear here in ~30 seconds.";
+        statusEl.style.color = '#1e5630';
+        submitBtn.textContent = 'Post comment';
+        submitBtn.disabled    = false;
 
         pollForNewComment(slug, previousCount, updated => {
-          document.getElementById('comments-list').innerHTML = renderComments(updated);
-          status.textContent = 'Comment posted!';
+          listEl.innerHTML     = renderComments(updated);
+          statusEl.textContent = 'Comment posted!';
         });
       } catch (e) {
-        status.textContent = 'Error: ' + e.message;
-        status.style.color = '#8b1a1a';
-        btn.disabled       = false;
-        btn.textContent    = 'Post comment';
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.style.color = '#8b1a1a';
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'Post comment';
       }
     });
+  }
+
+  function init() {
+    // Multi-instance: any element with class="comments-widget" and data-slug
+    const widgets = document.querySelectorAll('.comments-widget[data-slug]');
+    widgets.forEach(el => initWidget(el, el.dataset.slug));
+
+    // Single-instance legacy: id="comments-section" (blog post pages)
+    const legacy = document.getElementById('comments-section');
+    if (legacy) initWidget(legacy, getSlugFromPath());
   }
 
   if (document.readyState === 'loading') {

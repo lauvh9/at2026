@@ -251,6 +251,7 @@
   <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
 </footer>
 
+<script src="comments.js"></script>
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────────────
 // This page reads from data/strava-activities.json, which is written by
@@ -372,7 +373,7 @@ function renderActivity(activity) {
 
     <div style="padding:1.5rem 1.4rem;border-top:1px solid var(--fog)">
       <span style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:#c4621a;display:block;margin-bottom:0.75rem">Comments</span>
-      <div id="disqus-${activity.id || mapId}"></div>
+      <div class="comments-widget" data-slug="activity-${activity.id || mapId}"></div>
     </div>
   `;
 
@@ -442,67 +443,6 @@ async function init() {
 init();
 </script>
 
-<script>
-  // Load Disqus for each activity card
-  window.DISQUS_SHORTNAME = 'lauraontrail'; // ← replace with your shortname
-
-  function loadDisqusForActivity(activityId, pageUrl) {
-    const containerId = `disqus-${activityId}`;
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    // Create an iframe-like embed per thread using DISQUS embed
-    const threadDiv = document.createElement('div');
-    threadDiv.id = 'disqus_thread_' + activityId;
-    container.appendChild(threadDiv);
-
-    // Disqus only supports one embed per page natively.
-    // We use their single-sign-on thread approach via embed with identifier.
-    if (window.DISQUS) {
-      DISQUS.reset({ reload: true, config: function() {
-        this.page.identifier = 'activity-' + activityId;
-        this.page.url = pageUrl;
-      }});
-    }
-  }
-
-  // Standard Disqus embed — loads once, tied to first activity
-  // For multiple comments sections, each links out to Disqus thread
-  function initDisqus() {
-    const cards = document.querySelectorAll('[id^="disqus-"]');
-    cards.forEach((el, i) => {
-      const actId = el.id.replace('disqus-', '');
-      const url   = window.location.href + '#activity-' + actId;
-
-      // Replace placeholder with a "View / Add Comments" link
-      // that opens the Disqus thread for that activity
-      el.innerHTML = `
-        <a href="https://${window.DISQUS_SHORTNAME}.disqus.com/?url=${encodeURIComponent(url)}&identifier=activity-${actId}"
-           target="_blank"
-           style="font-family:var(--sans);font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal);text-decoration:none;border-bottom:1px solid var(--teal)">
-           Leave a comment on Disqus →
-        </a>`;
-
-      // For the first activity, embed the full comment thread inline
-      if (i === 0) {
-        el.innerHTML = '<div id="disqus_thread"></div>';
-        var disqus_config = function() {
-          this.page.url = url;
-          this.page.identifier = 'activity-' + actId;
-        };
-        var d = document, s = d.createElement('script');
-        s.src = 'https://' + window.DISQUS_SHORTNAME + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-      }
-    });
-  }
-
-  // Run after activities render
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initDisqus, 1000);
-  });
-</script>
 <script>
 function toggleNav() {
   var btn  = document.getElementById("nav-hamburger");
