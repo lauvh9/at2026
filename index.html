@@ -368,21 +368,8 @@
           <span class="section-label">Trail log</span>
           <h2 style="margin-bottom:1.5rem"><a href="blog.html" style="color:inherit;text-decoration:none;border-bottom:2px solid var(--sand)">Recent entries</a></h2>
 
-          <a href="post.html" class="post-card">
-            <div class="post-date-block">
-              <span class="post-day">25</span>
-              <span class="post-month">Mar</span>
-            </div>
-            <div>
-              <div class="post-title">T-Minus 34 Days — spreadsheets, scales, and the stairmaster</div>
-              <div class="post-excerpt">Every item weighed. Every shelter mapped. The gear spreadsheet has taken on a life of its own, and the stairmaster and I have a complicated relationship...</div>
-              <div class="post-meta">Pre-hike · 34 days to go</div>
-            </div>
-          </a>
-
-          <div style="padding:1.5rem 0;text-align:center;color:var(--trail);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase">
-            <div style="font-size:1.5rem;margin-bottom:0.5rem">✦</div>
-            More entries coming from the trail
+          <div id="recent-posts">
+            <div style="font-family:var(--mono);font-size:0.65rem;color:var(--trail);text-transform:uppercase;letter-spacing:0.1em;padding:1rem 0">Loading…</div>
           </div>
 
           <!-- Last Strava activity -->
@@ -762,6 +749,66 @@
     }
 
   });
+
+  // ── RECENT BLOG POSTS ────────────────────────────────────────────────────
+  (async function() {
+    const container = document.getElementById('recent-posts');
+    if (!container) return;
+    try {
+      const res = await fetch('blog.html?t=' + Date.now());
+      if (!res.ok) throw new Error('fetch failed');
+      const text = await res.text();
+      const doc  = new DOMParser().parseFromString(text, 'text/html');
+
+      // Grab all BLOG-POST cards (anchors preceded by <!-- BLOG-POST: -->)
+      const cards = Array.from(doc.querySelectorAll('a.post-full-card'));
+      // Keep only cards that follow a BLOG-POST comment (not AUTO: strava ones)
+      const blogCards = cards.filter(card => {
+        let node = card.previousSibling;
+        while (node) {
+          if (node.nodeType === 8 && node.nodeValue.trim().startsWith('BLOG-POST:')) return true;
+          if (node.nodeType === 1) break; // hit another element — stop
+          node = node.previousSibling;
+        }
+        return false;
+      });
+
+      if (!blogCards.length) {
+        container.innerHTML = '<div style="padding:1.5rem 0;text-align:center;color:var(--trail);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase"><div style="font-size:1.5rem;margin-bottom:0.5rem">✦</div>First entry coming soon</div>';
+        return;
+      }
+
+      // Show up to 3 most recent
+      const recent = blogCards.slice(0, 3);
+      container.innerHTML = recent.map(card => {
+        const href    = card.getAttribute('href');
+        const day     = card.querySelector('.day')   ?.textContent.trim() || '';
+        const month   = card.querySelector('.month') ?.textContent.trim() || '';
+        const year    = card.querySelector('.year')  ?.textContent.trim() || '';
+        const title   = card.querySelector('h3')     ?.textContent.trim() || '';
+        const excerpt = card.querySelector('.excerpt')?.textContent.trim() || '';
+        const tagEls  = Array.from(card.querySelectorAll('.post-tag'));
+        const tags    = tagEls.map(t => t.textContent.trim()).join(' · ');
+        return `<a href="${href}" class="post-card">
+          <div class="post-date-block">
+            <span class="post-day">${day}</span>
+            <span class="post-month">${month}</span>
+          </div>
+          <div>
+            <div class="post-title">${title}</div>
+            ${excerpt ? `<div class="post-excerpt">${excerpt}</div>` : ''}
+            ${tags    ? `<div class="post-meta">${tags}</div>` : ''}
+          </div>
+        </a>`;
+      }).join('');
+
+      if (blogCards.length > 3) {
+        container.innerHTML += `<div style="padding-top:0.75rem;text-align:center"><a href="blog.html" style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--pine);text-decoration:none;border-bottom:1px solid var(--pine)">View all entries →</a></div>`;
+      }
+    } catch(e) {
+      container.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--trail);font-style:italic">Could not load recent posts.</div>';
+    }
+  })();
 
   // ── LAST STRAVA ACTIVITY PREVIEW ─────────────────────────────────────────
   (async function() {

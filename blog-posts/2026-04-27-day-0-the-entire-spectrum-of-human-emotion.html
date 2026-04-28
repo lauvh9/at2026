@@ -54,23 +54,12 @@
       <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">
         <span style="font-family:var(--sans);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--pine);display:block;margin-bottom:0.5rem">Comments</span>
         <h2 style="margin-bottom:1.5rem">Join the conversation</h2>
-        <div id="disqus_thread"></div>
+        <div id="comments-section"></div>
       </div>
     </div>
   </section>
 </main>
-<script>
-  var disqus_config = function () {
-    this.page.url = window.location.href;
-    this.page.identifier = window.location.pathname;
-  };
-  (function() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://lauraontrail.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
-  })();
-</script>
+<script src="../comments.js"></script>
 <footer>
   <div class="foot-logo">Laura on Trail</div>
   <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>

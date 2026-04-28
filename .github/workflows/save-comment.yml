@@ -1,0 +1,73 @@
+name: Save Comment
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Post slug (used as filename)
+        required: true
+        type: string
+      name:
+        description: Commenter name
+        required: true
+        type: string
+      message:
+        description: Comment body
+        required: true
+        type: string
+      timestamp:
+        description: ISO 8601 timestamp
+        required: true
+        type: string
+
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Append comment to JSON
+        uses: actions/github-script@v7
+        env:
+          COMMENT_SLUG:      ${{ inputs.slug }}
+          COMMENT_NAME:      ${{ inputs.name }}
+          COMMENT_MESSAGE:   ${{ inputs.message }}
+          COMMENT_TIMESTAMP: ${{ inputs.timestamp }}
+        with:
+          script: |
+            const fs   = require('fs');
+            const path = require('path');
+
+            const slug      = process.env.COMMENT_SLUG;
+            const name      = process.env.COMMENT_NAME;
+            const message   = process.env.COMMENT_MESSAGE;
+            const timestamp = process.env.COMMENT_TIMESTAMP;
+
+            // Guard against path traversal
+            if (!/^[\w\-/]+$/.test(slug)) {
+              core.setFailed('Invalid slug');
+              return;
+            }
+
+            const filePath = `data/comments/${slug}.json`;
+            fs.mkdirSync('data/comments', { recursive: true });
+
+            let comments = [];
+            if (fs.existsSync(filePath)) {
+              try { comments = JSON.parse(fs.readFileSync(filePath, 'utf8')); }
+              catch { comments = []; }
+            }
+
+            comments.push({ name, message, timestamp });
+            fs.writeFileSync(filePath, JSON.stringify(comments, null, 2));
+
+      - name: Commit and push
+        run: |
+          git config user.name  "Trail Bot"
+          git config user.email "trail-bot@users.noreply.github.com"
+          git add data/comments/
+          git diff --cached --quiet || git commit -m "Add comment on ${{ inputs.slug }}"
+          git push
