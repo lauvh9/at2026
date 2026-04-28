@@ -26,6 +26,7 @@ const SYNC_START_DATE = new Date('2026-04-20'); // No activities before this dat
 
 const STATUS_FILE      = path.join(__dirname, 'data', 'trail-status.json');
 const ACTIVITIES_FILE  = path.join(__dirname, 'data', 'strava-activities.json');
+const GALLERY_FILE     = path.join(__dirname, 'data', 'gallery.json');
 
 // Regex to find "end mile: 342" (case-insensitive, flexible spacing/punctuation)
 const MILE_REGEX = /end\s*mile[:\s\-]+(\d+(\.\d+)?)/i;
@@ -195,6 +196,31 @@ async function main() {
 
   fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(stravaActivitiesData, null, 2), 'utf8');
   console.log(`Wrote strava-activities.json (${stravaActivitiesData.length} activities)`);
+
+  // Update gallery.json with any new Strava photos (deduplicate by URL)
+  const gallery     = loadJSON(GALLERY_FILE, []);
+  const existingUrls = new Set(gallery.map(e => e.src));
+  let addedPhotos   = 0;
+  for (const entry of stravaActivitiesData) {
+    const date = formatDate(entry.start_date_local);
+    for (const photoUrl of (entry.photos || [])) {
+      if (!existingUrls.has(photoUrl)) {
+        gallery.unshift({
+          src:          photoUrl,
+          type:         'photo',
+          caption:      entry.name,
+          date:         date.human,
+          source:       'strava',
+          activityId:   entry.id,
+          activityName: entry.name,
+        });
+        existingUrls.add(photoUrl);
+        addedPhotos++;
+      }
+    }
+  }
+  fs.writeFileSync(GALLERY_FILE, JSON.stringify(gallery, null, 2), 'utf8');
+  console.log(`Updated gallery.json (+${addedPhotos} Strava photos, ${gallery.length} total)`);
 
   console.log('Sync complete.');
 }

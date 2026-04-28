@@ -208,6 +208,66 @@
     #pass-screen, #editor-screen { display: none; }
     #pass-screen.active, #editor-screen.active { display: block; }
 
+    /* Photo upload */
+    .photo-drop-zone {
+      border: 2px dashed var(--tan);
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--trail);
+    }
+    .photo-drop-zone:hover, .photo-drop-zone.drag-over {
+      border-color: var(--pine);
+      background: var(--paper);
+    }
+    .photo-previews {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .photo-preview-item {
+      position: relative;
+      width: 110px;
+    }
+    .photo-preview-item img {
+      width: 110px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 2px;
+      display: block;
+      border: 1px solid var(--tan);
+    }
+    .photo-preview-item input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 3px 5px;
+      font-size: 0.7rem;
+      border: 1px solid var(--tan);
+      outline: none;
+      box-sizing: border-box;
+      font-family: var(--body);
+    }
+    .photo-preview-remove {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      background: rgba(26,18,8,0.7);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.65rem;
+      cursor: pointer;
+      line-height: 18px;
+      text-align: center;
+      padding: 0;
+    }
+
     @media (max-width: 600px) {
       .post-full-card { grid-template-columns: 1fr; }
       .post-date-col { flex-direction: row; gap: 8px; padding: 0.6rem 1rem; justify-content: flex-start; }
@@ -335,6 +395,19 @@
         <div class="field-note">Tip: Leave a blank line between paragraphs. No special formatting needed.</div>
       </div>
       <div class="field">
+        <label>Photos <span style="font-weight:400;opacity:0.7">(optional — appear in post &amp; gallery)</span></label>
+        <div class="photo-drop-zone" id="photo-drop-zone"
+             onclick="document.getElementById('photo-file-input').click()"
+             ondragover="event.preventDefault();this.classList.add('drag-over')"
+             ondragleave="this.classList.remove('drag-over')"
+             ondrop="handlePhotoDrop(event)">
+          Click to add photos, or drag &amp; drop here
+        </div>
+        <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none"
+               onchange="handlePhotoFiles(this.files)">
+        <div class="photo-previews" id="photo-previews"></div>
+      </div>
+      <div class="field">
         <label>GitHub personal access token</label>
         <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
         <div class="field-note">Needs repo write access. Go to GitHub → Settings → Developer Settings → Personal access tokens → Generate new token (classic) → check "repo".</div>
@@ -374,6 +447,9 @@ function closeModal() {
   document.getElementById('password-input').value = '';
   setStatus('pass-status', '', '');
   setStatus('publish-status', '', '');
+  // Clear pending photos
+  pendingPhotos.length = 0;
+  renderPhotoPreviews();
 }
 
 // Close on background click
@@ -402,13 +478,82 @@ function setStatus(id, type, msg) {
   el.className = 'modal-status' + (type ? ` ${type} open` : '');
 }
 
+// ── PHOTO UPLOAD ─────────────────────────────────────────────────────────────
+const pendingPhotos = []; // [{ file, dataUrl, caption }]
+
+function handlePhotoDrop(e) {
+  e.preventDefault();
+  document.getElementById('photo-drop-zone').classList.remove('drag-over');
+  handlePhotoFiles(e.dataTransfer.files);
+}
+
+function handlePhotoFiles(files) {
+  Array.from(files).forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const entry = { file, dataUrl: ev.target.result, caption: '' };
+      pendingPhotos.push(entry);
+      renderPhotoPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  // Reset input so same file can be re-selected
+  document.getElementById('photo-file-input').value = '';
+}
+
+function removePhoto(index) {
+  pendingPhotos.splice(index, 1);
+  renderPhotoPreviews();
+}
+
+function renderPhotoPreviews() {
+  const container = document.getElementById('photo-previews');
+  container.innerHTML = '';
+  pendingPhotos.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'photo-preview-item';
+    div.innerHTML = `
+      <img src="${p.dataUrl}" alt="">
+      <button class="photo-preview-remove" onclick="removePhoto(${i})" title="Remove">✕</button>
+      <input type="text" placeholder="Caption (optional)" value="${p.caption}"
+             oninput="pendingPhotos[${i}].caption = this.value">`;
+    container.appendChild(div);
+  });
+}
+
+// Resize an image File to max 1200px wide, returns base64 JPEG string (no data: prefix)
+async function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const MAX = 1200;
+      let { width, height } = img;
+      if (width > MAX) {
+        height = Math.round(height * MAX / width);
+        width  = MAX;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width  = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      // Remove "data:image/jpeg;base64," prefix
+      resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 // ── SLUG ──────────────────────────────────────────────────────────────────────
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 // ── GENERATE POST HTML ───────────────────────────────────────────────────────
-function generatePostHTML({ title, date, tags, excerpt, body }) {
+function generatePostHTML({ title, date, tags, excerpt, body, photoFilenames = [] }) {
   const d = new Date(date + 'T12:00:00');
   const day   = d.getDate();
   const month = d.toLocaleDateString('en-US', { month: 'short' });
@@ -477,6 +622,15 @@ function generatePostHTML({ title, date, tags, excerpt, body }) {
     '      <article class="post-prose">',
     paragraphs,
     '      </article>',
+    ...(photoFilenames.length ? [
+      '      <div style="margin-top:2.5rem">',
+      photoFilenames.map(({ filename, caption }) =>
+        `        <figure style="margin:0 0 1.5rem">\n          <img src="../${filename}" alt="${caption || ''}" style="width:100%;border-radius:3px;display:block">\n` +
+        (caption ? `          <figcaption style="font-family:var(--sans);font-size:0.75rem;color:var(--trail);margin-top:0.5rem;font-style:italic">${caption}</figcaption>\n` : '') +
+        `        </figure>`
+      ).join('\n'),
+      '      </div>',
+    ] : []),
     '      <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink)">',
     '        <span style="font-family:var(--sans);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--pine);display:block;margin-bottom:0.5rem">Comments</span>',
     '        <h2 style="margin-bottom:1.5rem">Join the conversation</h2>',
@@ -524,6 +678,34 @@ function generateBlogCard({ title, date, excerpt, tags, filename }) {
 }
 
 // ── PUBLISH TO GITHUB ─────────────────────────────────────────────────────────
+async function putGitHub(token, path, content, sha, commitMsg) {
+  const res = await fetch(
+    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`,
+    {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: commitMsg, content, ...(sha ? { sha } : {}) }),
+    }
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub API error ${res.status} on ${path}`);
+  }
+  return res.json();
+}
+
+async function getGitHub(token, path) {
+  const res = await fetch(
+    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(`GitHub read error ${res.status} on ${path}`);
+  }
+  return res.json();
+}
+
 async function publishPost() {
   const title   = document.getElementById('post-title').value.trim();
   const date    = document.getElementById('post-date').value;
@@ -539,85 +721,83 @@ async function publishPost() {
 
   const btn = document.getElementById('publish-btn');
   btn.disabled = true;
-  btn.textContent = 'Publishing…';
   setStatus('publish-status', '', '');
-
-  // Save token for the session
   sessionStorage.setItem('gh_token', token);
 
+  const postSlug = `${date}-${slugify(title)}`;
+  const filename = `${postSlug}.html`;
+
   try {
-    const filename  = `${date}-${slugify(title)}.html`;
-    const postHTML  = generatePostHTML({ title, date, tags, excerpt, body });
-    const postPath  = `blog-posts/${filename}`;
-    const b64       = btoa(unescape(encodeURIComponent(postHTML)));
-
-    // 1. Create the post file
-    const postRes = await fetch(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${postPath}`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: `Add blog post: ${title}`,
-          content: b64,
-        }),
+    // ── 1. Upload photos ────────────────────────────────────────────────────
+    const photoFilenames = []; // [{ filename, caption, repoPath }]
+    if (pendingPhotos.length) {
+      btn.textContent = `Uploading photos (0/${pendingPhotos.length})…`;
+      for (let i = 0; i < pendingPhotos.length; i++) {
+        const p      = pendingPhotos[i];
+        const b64img = await resizeImage(p.file);
+        const fname  = `photos/${postSlug}-${i + 1}.jpg`;
+        await putGitHub(token, fname, b64img, null, `Add photo for: ${title}`);
+        photoFilenames.push({ filename: fname, caption: p.caption });
+        btn.textContent = `Uploading photos (${i + 1}/${pendingPhotos.length})…`;
       }
-    );
-    if (!postRes.ok) {
-      const err = await postRes.json();
-      throw new Error(err.message || `GitHub API error ${postRes.status}`);
     }
 
-    // 2. Prepend card to blog.html
-    const blogRes = await fetch(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/blog.html`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    if (!blogRes.ok) throw new Error('Could not fetch blog.html from GitHub');
+    // ── 2. Update gallery.json ──────────────────────────────────────────────
+    if (photoFilenames.length) {
+      btn.textContent = 'Updating gallery…';
+      const galData = await getGitHub(token, 'data/gallery.json');
+      const existing = galData
+        ? JSON.parse(decodeURIComponent(escape(atob(galData.content.replace(/\n/g,'')))))
+        : [];
+      const d = new Date(date + 'T12:00:00');
+      const humanDate = d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
 
-    const blogData   = await blogRes.json();
+      const newEntries = photoFilenames.map(({ filename: pf, caption }) => ({
+        src:       pf,
+        type:      'photo',
+        caption:   caption || '',
+        date:      humanDate,
+        source:    'blog',
+        postLink:  `blog-posts/${filename}`,
+        postTitle: title,
+      }));
+
+      const updatedGal    = [...newEntries, ...existing];
+      const galB64        = btoa(unescape(encodeURIComponent(JSON.stringify(updatedGal, null, 2))));
+      await putGitHub(token, 'data/gallery.json', galB64, galData ? galData.sha : null,
+        `Add gallery photos for: ${title}`);
+    }
+
+    // ── 3. Create post HTML ─────────────────────────────────────────────────
+    btn.textContent = 'Publishing post…';
+    const postHTML = generatePostHTML({ title, date, tags, excerpt, body, photoFilenames });
+    const postB64  = btoa(unescape(encodeURIComponent(postHTML)));
+    await putGitHub(token, `blog-posts/${filename}`, postB64, null, `Add blog post: ${title}`);
+
+    // ── 4. Prepend card to blog.html ────────────────────────────────────────
+    const blogData    = await getGitHub(token, 'blog.html');
+    if (!blogData) throw new Error('Could not fetch blog.html from GitHub');
     const blogDecoded = decodeURIComponent(escape(atob(blogData.content.replace(/\n/g,''))));
-    const marker     = '<!-- AUTO-POSTS-START -->';
-
+    const marker      = '<!-- AUTO-POSTS-START -->';
     if (!blogDecoded.includes(marker)) throw new Error('blog.html is missing the AUTO-POSTS-START marker');
-
-    const card       = generateBlogCard({ title, date, excerpt, tags, filename });
+    const card        = generateBlogCard({ title, date, excerpt, tags, filename });
     const updatedBlog = blogDecoded.replace(marker, marker + '\n' + card);
-    const blogB64    = btoa(unescape(encodeURIComponent(updatedBlog)));
-
-    const updateRes = await fetch(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/blog.html`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: `Add blog card for: ${title}`,
-          content: blogB64,
-          sha: blogData.sha,
-        }),
-      }
-    );
-    if (!updateRes.ok) {
-      const err = await updateRes.json();
-      throw new Error(err.message || 'Failed to update blog.html');
-    }
+    const blogB64     = btoa(unescape(encodeURIComponent(updatedBlog)));
+    await putGitHub(token, 'blog.html', blogB64, blogData.sha, `Add blog card for: ${title}`);
 
     setStatus('publish-status', 'success',
-      `✓ Published! Your post will be live at lauratheexplorer.co/blog-posts/${filename} in about 1–2 minutes.`);
+      `✓ Published! Live at lauratheexplorer.co/blog-posts/${filename} in ~1 min.` +
+      (photoFilenames.length ? ` ${photoFilenames.length} photo(s) added to gallery.` : ''));
     btn.textContent = 'Published ✓';
 
-    // Clear form
+    // Clear form & photos
     setTimeout(() => {
       document.getElementById('post-title').value = '';
       document.getElementById('post-tags').value = '';
       document.getElementById('post-excerpt').value = '';
       document.getElementById('post-body').value = '';
+      pendingPhotos.length = 0;
+      renderPhotoPreviews();
       btn.disabled = false;
       btn.textContent = 'Publish post →';
     }, 4000);

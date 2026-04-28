@@ -321,20 +321,11 @@
   <section>
     <div class="container">
 
-      <!--
-        HOW TO ADD MEDIA:
-        Place photos/videos in a photos/ folder, then add an entry to the
-        STANDALONE_ITEMS array in the script below.
-        Photos from blog posts: add a matching entry to POST_ITEMS.
-      -->
-
       <!-- Filter bar -->
       <div class="filter-bar">
         <button class="filter-btn active" onclick="filterGallery('all', this)">All</button>
-        <button class="filter-btn" onclick="filterGallery('photo', this)">Photos</button>
-        <button class="filter-btn" onclick="filterGallery('video', this)">Video</button>
-        <button class="filter-btn" onclick="filterGallery('standalone', this)">Standalone</button>
-        <button class="filter-btn" onclick="filterGallery('from-post', this)">From posts</button>
+        <button class="filter-btn" onclick="filterGallery('strava', this)">From Strava</button>
+        <button class="filter-btn" onclick="filterGallery('blog', this)">From Blog</button>
       </div>
 
       <!-- Masonry grid -->
@@ -363,68 +354,29 @@
 </footer>
 
 <script>
-// ══════════════════════════════════════════════════
-//  GALLERY ITEMS
-//  Add your standalone photos and videos here.
-//  Photos from blog posts are added separately below.
-//
-//  Each item:
-//  {
-//    src:      'photos/my-photo.jpg',   // path to file
-//    type:     'photo' | 'video',
-//    caption:  'A description',
-//    date:     'Apr 28, 2026',
-//    location: 'Springer Mountain, GA',
-//    source:   'standalone',            // always 'standalone' here
-//    postLink: null,                    // no post link for standalone
-//  }
-// ══════════════════════════════════════════════════
-const STANDALONE_ITEMS = [
-  // Example (remove or replace):
-  // {
-  //   src: 'photos/pre-hike-gear.jpg',
-  //   type: 'photo',
-  //   caption: 'Everything I'm carrying for 2,198 miles, laid out on the floor.',
-  //   date: 'Mar 25, 2026',
-  //   location: 'Newton, MA',
-  //   source: 'standalone',
-  //   postLink: null,
-  // },
-];
+let ALL_ITEMS     = [];
+let filteredItems = [];
+let currentIndex  = 0;
 
-// ══════════════════════════════════════════════════
-//  BLOG POST PHOTOS
-//  When you add a photo to a post using:
-//    <img src="photos/foo.jpg" class="gallery-photo"
-//         data-caption="..." data-date="..." data-location="..."
-//         data-post-link="post.html" data-post-title="Day 1 — ...">
-//  ...also add a matching entry here so the gallery picks it up.
-// ══════════════════════════════════════════════════
-const POST_ITEMS = [
-  // Example (remove or replace):
-  // {
-  //   src: 'photos/springer-plaque.jpg',
-  //   type: 'photo',
-  //   caption: 'The southern terminus. It starts here.',
-  //   date: 'Apr 28, 2026',
-  //   location: 'Springer Mountain, GA',
-  //   source: 'from-post',
-  //   postLink: 'post.html',
-  //   postTitle: 'Day 1 — The approach trail nearly broke me',
-  // },
-];
+// ── FETCH & INIT ──────────────────────────────────
+async function initGallery() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '<p class="empty-section" style="font-style:normal;opacity:0.5">Loading…</p>';
+  try {
+    const res = await fetch(`data/gallery.json?t=${Date.now()}`);
+    ALL_ITEMS = res.ok ? await res.json() : [];
+  } catch { ALL_ITEMS = []; }
+  filteredItems = [...ALL_ITEMS];
+  buildGallery(filteredItems);
+}
 
 // ── BUILD GALLERY ──────────────────────────────────
-const ALL_ITEMS = [...POST_ITEMS, ...STANDALONE_ITEMS];
-let currentIndex = 0;
-let filteredItems = [...ALL_ITEMS];
-
 function buildGallery(items) {
   const grid = document.getElementById('gallery-grid');
   grid.innerHTML = '';
 
   if (items.length === 0) {
-    grid.innerHTML = '<p class="empty-section">No media yet — check back once the hike starts.</p>';
+    grid.innerHTML = '<p class="empty-section">No photos yet — check back once the hike starts.</p>';
     return;
   }
 
@@ -459,17 +411,13 @@ function buildGallery(items) {
 }
 
 // ── FILTER ────────────────────────────────────────
-function filterGallery(type, btn) {
+function filterGallery(source, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
-  filteredItems = type === 'all'
+  filteredItems = source === 'all'
     ? [...ALL_ITEMS]
-    : ALL_ITEMS.filter(item =>
-        type === 'photo' || type === 'video'
-          ? item.type === type
-          : item.source === type
-      );
+    : ALL_ITEMS.filter(item => item.source === source);
 
   buildGallery(filteredItems);
 }
@@ -485,7 +433,6 @@ function openLightbox(index) {
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow = '';
-  // Pause any playing video
   document.querySelectorAll('#lightbox-media video').forEach(v => v.pause());
 }
 
@@ -531,8 +478,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape')     closeLightbox();
 });
 
-// ── INIT ──────────────────────────────────────────
-buildGallery(ALL_ITEMS);
+initGallery();
 </script>
 
 <script>
