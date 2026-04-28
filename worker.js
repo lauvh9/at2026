@@ -29,39 +29,45 @@
 
 const GITHUB_OWNER = 'lauvh9';
 const GITHUB_REPO  = 'at2026';
-const ALLOWED_ORIGIN = 'https://lauratheexplorer.co';
+const ALLOWED_ORIGINS = [
+  'https://lauratheexplorer.co',
+  'http://localhost:8080',
+  'http://127.0.0.1:8080',
+];
 
 export default {
   async fetch(request, env) {
+    const origin = request.headers.get('Origin') || '';
+
     // CORS preflight
     if (request.method === 'OPTIONS') {
-      return corsResponse(null, 204, env);
+      return corsResponse(null, 204, env, origin);
     }
 
     if (request.method !== 'POST' || new URL(request.url).pathname !== '/comment') {
-      return corsResponse(JSON.stringify({ error: 'Not found' }), 404, env);
+      return corsResponse(JSON.stringify({ error: 'Not found' }), 404, env, origin);
     }
 
     let body;
     try {
       body = await request.json();
     } catch {
-      return corsResponse(JSON.stringify({ error: 'Invalid JSON' }), 400, env);
+      return corsResponse(JSON.stringify({ error: 'Invalid JSON' }), 400, env, origin);
     }
 
     const { slug, name, message, timestamp } = body;
 
     if (!slug || !name || !message || !timestamp) {
-      return corsResponse(JSON.stringify({ error: 'Missing required fields' }), 400, env);
+      return corsResponse(JSON.stringify({ error: 'Missing required fields' }), 400, env, origin);
     }
 
     // Guard against path traversal
     if (!/^[\w\-]+$/.test(slug)) {
-      return corsResponse(JSON.stringify({ error: 'Invalid slug' }), 400, env);
+      return corsResponse(JSON.stringify({ error: 'Invalid slug' }), 400, env, origin);
     }
 
     if (name.length > 80 || message.length > 2000) {
-      return corsResponse(JSON.stringify({ error: 'Input too long' }), 400, env);
+      return corsResponse(JSON.stringify({ error: 'Input too long' }), 400, env, origin);
     }
 
     // Trigger the GitHub Actions workflow
@@ -87,18 +93,20 @@ export default {
       return corsResponse(
         JSON.stringify({ error: err.message || `GitHub error ${ghRes.status}` }),
         502,
-        env
+        env,
+        origin
       );
     }
 
-    return corsResponse(JSON.stringify({ ok: true }), 200, env);
+    return corsResponse(JSON.stringify({ ok: true }), 200, env, origin);
   },
 };
 
-function corsResponse(body, status, env) {
+function corsResponse(body, status, env, requestOrigin) {
+  const origin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : ALLOWED_ORIGINS[0];
   const headers = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin':  ALLOWED_ORIGIN,
+    'Access-Control-Allow-Origin':  origin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };

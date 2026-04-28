@@ -430,6 +430,7 @@ async function init() {
 
     container.innerHTML = '';
     activities.forEach(a => container.appendChild(renderActivity(a)));
+    if (window.initComments) window.initComments();
 
   } catch (e) {
     container.innerHTML = `

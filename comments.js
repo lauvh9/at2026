@@ -167,19 +167,29 @@
     });
   }
 
-  function init() {
-    // Multi-instance: any element with class="comments-widget" and data-slug
-    const widgets = document.querySelectorAll('.comments-widget[data-slug]');
-    widgets.forEach(el => initWidget(el, el.dataset.slug));
-
+  // Initialise all comment widgets within a given root element (default: document).
+  // Call window.initComments(root) after dynamically adding widgets to the DOM.
+  function initComments(root) {
+    root = root || document;
+    root.querySelectorAll('.comments-widget[data-slug]').forEach(el => {
+      if (!el.dataset.cwInit) {
+        el.dataset.cwInit = '1';
+        initWidget(el, el.dataset.slug);
+      }
+    });
     // Single-instance legacy: id="comments-section" (blog post pages)
-    const legacy = document.getElementById('comments-section');
-    if (legacy) initWidget(legacy, getSlugFromPath());
+    const legacy = root.getElementById ? root.getElementById('comments-section') : null;
+    if (legacy && !legacy.dataset.cwInit) {
+      legacy.dataset.cwInit = '1';
+      initWidget(legacy, getSlugFromPath());
+    }
   }
 
+  window.initComments = initComments;
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => initComments());
   } else {
-    init();
+    initComments();
   }
 })();
