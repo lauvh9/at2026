@@ -31,6 +31,7 @@ const GITHUB_OWNER = 'lauvh9';
 const GITHUB_REPO  = 'at2026';
 const ALLOWED_ORIGINS = [
   'https://lauratheexplorer.co',
+  'https://at2026-ann.pages.dev',
   'http://localhost:8080',
   'http://127.0.0.1:8080',
 ];
