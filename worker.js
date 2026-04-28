@@ -71,35 +71,48 @@ export default {
       return corsResponse(JSON.stringify({ error: 'Input too long' }), 400, env, origin);
     }
 
-    // Trigger the GitHub Actions workflow
-    const ghRes = await fetch(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/save-comment.yml/dispatches`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization:  `Bearer ${env.GITHUB_TOKEN}`,
-          'Content-Type': 'application/json',
-          Accept:         'application/vnd.github+json',
-          'User-Agent':   'at2026-comments-worker',
-        },
-        body: JSON.stringify({
-          ref: 'main',
-          inputs: { slug, name, message, timestamp },
-        }),
-      }
-    );
+    // Write comment directly to GitHub Contents API
+    const path   = `data/comments/${slug}.json`;
+    const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
+    const ghHeaders = {
+      Authorization:  `Bearer ${env.GITHUB_TOKEN}`,
+      'Content-Type': 'application/json',
+      Accept:         'application/vnd.github+json',
+      'User-Agent':   'at2026-comments-worker',
+    };
 
-    if (!ghRes.ok) {
-      const err = await ghRes.json().catch(() => ({}));
-      return corsResponse(
-        JSON.stringify({ error: err.message || `GitHub error ${ghRes.status}` }),
-        502,
-        env,
-        origin
-      );
+    // Fetch existing comments + SHA
+    let sha      = null;
+    let existing = [];
+    const getRes = await fetch(apiUrl, { headers: ghHeaders });
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha      = data.sha;
+      existing = JSON.parse(atob(data.content.replace(/\n/g, '')));
+    } else if (getRes.status !== 404) {
+      return corsResponse(JSON.stringify({ error: `GitHub read error ${getRes.status}` }), 502, env, origin);
     }
 
-    return corsResponse(JSON.stringify({ ok: true }), 200, env, origin);
+    existing.push({ name, message, timestamp });
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(existing, null, 2))));
+
+    const putRes = await fetch(apiUrl, {
+      method:  'PUT',
+      headers: ghHeaders,
+      body: JSON.stringify({
+        message: `Add comment on ${slug}`,
+        content,
+        ...(sha ? { sha } : {}),
+      }),
+    });
+
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      return corsResponse(JSON.stringify({ error: err.message || `GitHub write error ${putRes.status}` }), 502, env, origin);
+    }
+
+    // Return the full updated comments list so the client can render immediately
+    return corsResponse(JSON.stringify({ ok: true, comments: existing }), 200, env, origin);
   },
 };
 

@@ -42,6 +42,7 @@
     } catch { return []; }
   }
 
+  // Returns the updated comments array from the worker so we can render immediately.
   async function submitComment(slug, comment) {
     if (!WORKER_URL) throw new Error('Comments not configured yet.');
     const res = await fetch(`${WORKER_URL}/comment`, {
@@ -51,6 +52,7 @@
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+    return data.comments || null;
   }
 
   function renderComments(comments) {
@@ -70,22 +72,6 @@
           <p style="font-size:0.92rem;line-height:1.65;color:var(--ink);margin:0">${escapeHtml(c.message).replace(/\n/g, '<br>')}</p>
         </div>`;
     }).join('');
-  }
-
-  function pollForNewComment(slug, previousCount, onUpdate) {
-    const MAX_ATTEMPTS = 15;
-    let   attempts     = 0;
-    const timer = setInterval(async () => {
-      attempts++;
-      try {
-        const updated = await loadComments(slug);
-        if (updated.length > previousCount) {
-          clearInterval(timer);
-          onUpdate(updated);
-        }
-      } catch { /* keep polling */ }
-      if (attempts >= MAX_ATTEMPTS) clearInterval(timer);
-    }, 5000);
   }
 
   // Initialise a single comment widget inside `container` using `slug`.
@@ -142,22 +128,17 @@
       submitBtn.textContent    = 'Posting...';
       statusEl.textContent     = '';
 
-      const comment       = { name, message, timestamp: new Date().toISOString() };
-      const previousCount = (await loadComments(slug)).length;
+      const comment = { name, message, timestamp: new Date().toISOString() };
 
       try {
-        await submitComment(slug, comment);
+        const updated = await submitComment(slug, comment);
         nameEl.value    = '';
         messageEl.value = '';
-        statusEl.textContent = "Comment submitted! It'll appear here in ~30 seconds.";
-        statusEl.style.color = '#1e5630';
+        listEl.innerHTML      = renderComments(updated || [comment]);
+        statusEl.textContent  = 'Comment posted!';
+        statusEl.style.color  = '#1e5630';
         submitBtn.textContent = 'Post comment';
         submitBtn.disabled    = false;
-
-        pollForNewComment(slug, previousCount, updated => {
-          listEl.innerHTML     = renderComments(updated);
-          statusEl.textContent = 'Comment posted!';
-        });
       } catch (e) {
         statusEl.textContent = 'Error: ' + e.message;
         statusEl.style.color = '#8b1a1a';
