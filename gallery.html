@@ -366,6 +366,8 @@ async function initGallery() {
     const res = await fetch(`data/gallery.json?t=${Date.now()}`);
     ALL_ITEMS = res.ok ? await res.json() : [];
   } catch { ALL_ITEMS = []; }
+  // Sort newest first
+  ALL_ITEMS.sort((a, b) => new Date(b.date) - new Date(a.date));
   filteredItems = [...ALL_ITEMS];
   buildGallery(filteredItems);
 }
