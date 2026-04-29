@@ -582,11 +582,14 @@
       let locName;
       if (nearest) {
         const diff = MILES_HIKED - nearest.mile;
-        locName = diff <= 5 ? `Near ${nearest.name}` : (next ? `Between ${nearest.name.replace(/,.*$/,'')} & ${next.name.replace(/,.*/,'')}` : nearest.name);
-      } else if (next) {
-        locName = `Approaching ${next.name}`;
+        locName = diff <= 5
+          ? `Near ${nearest.name}`
+          : (next ? `Between ${nearest.name.replace(/,.*$/,'')} & ${next.name.replace(/,.*/,'')}` : nearest.name);
+      } else {
+        // Before the first named waypoint — still in the Springer area
+        locName = 'Near Springer Mountain, GA';
       }
-      if (locName) document.getElementById('locName').textContent = locName;
+      document.getElementById('locName').textContent = locName;
     }
 
     const avg = days > 0 ? (MILES_HIKED / days).toFixed(1) : 0;
