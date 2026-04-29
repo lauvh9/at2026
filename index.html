@@ -563,9 +563,9 @@
       document.getElementById('progressFill').style.width = pct + '%';
     }, 300);
 
-    document.getElementById('milesHiked').textContent = MILES_WALKED.toLocaleString() + ' miles hiked';
+    document.getElementById('milesHiked').textContent = MILES_HIKED.toLocaleString() + ' miles hiked';
     document.getElementById('milesRemain').textContent = (TOTAL_MILES - MILES_HIKED).toLocaleString() + ' remaining';
-    document.getElementById('milesHikedStat').textContent = MILES_WALKED.toLocaleString();
+    document.getElementById('milesHikedStat').textContent = MILES_HIKED.toLocaleString();
 
     const days = Math.max(0, Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24)));
     document.getElementById('daysOut').textContent = days;
