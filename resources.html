@@ -142,6 +142,30 @@
     }
     .faq-a.open { max-height: 400px; padding-top: 0.75rem; }
 
+    .vocab-item {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 0.75rem 1.5rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--fog);
+      align-items: baseline;
+    }
+    .vocab-term {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--pine);
+      line-height: 1.4;
+    }
+    .vocab-def {
+      font-size: 0.88rem;
+      color: var(--earth);
+      line-height: 1.7;
+    }
+    @media (max-width: 600px) {
+      .vocab-item { grid-template-columns: 1fr; gap: 0.25rem; }
+    }
+
     .tip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
     .tip-card {
       background: var(--paper);
@@ -298,6 +322,130 @@
 
 
 
+      <!-- Trail Vocab -->
+      <div class="res-section">
+        <span class="section-label">Glossary</span>
+        <h2>Trail Vocab</h2>
+        <div class="card" style="padding:0.25rem 1.5rem">
+
+          <div class="vocab-item">
+            <div class="vocab-term">Amicalola</div>
+            <div class="vocab-def">Short for Amicalola Falls State Park, Georgia, where the approach trail to Springer Mountain starts.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Approach Trail</div>
+            <div class="vocab-def">An 8-mile trail, not technically part of the Appalachian Trail, that gets you from Amicalola Falls State Park to Springer Mountain, where the trail starts.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">AT</div>
+            <div class="vocab-def">Short for the Appalachian Trail.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Blue-Blaze</div>
+            <div class="vocab-def">To skip a section of the white-blazed AT by walking an alternative route. Often done to catch a better view (the trail skips them shockingly often) or for safety. Purists hate this.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">The Bubble</div>
+            <div class="vocab-def">The dense cluster of northbound thru-hikers who start from Springer Mountain the last week of March and the first week of April. I'll be chasing the bubble and hoping to catch up to them — and may pass through it depending on my pace!</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Flip-flop</div>
+            <div class="vocab-def">A way of hiking the Appalachian Trail that involves a non-contiguous path — for example, hiking from the halfway point going north, then flying back and hiking south to complete the trail. I'm hoping to avoid doing this, but will if it starts looking like I won't make it to Katahdin in time!</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Harpers Ferry</div>
+            <div class="vocab-def">The town of Harpers Ferry, WV. It's a few hundred miles south of the trail's halfway point, but still considered a huge milestone. It's also home of the Appalachian Trail Conservancy (ATC) headquarters.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">HYOH</div>
+            <div class="vocab-def">"Hike Your Own Hike!" — a core AT philosophy encouraging every hiker to do the trail on their own terms.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Katahdin</div>
+            <div class="vocab-def">Mt. Katahdin, located in Baxter State Park in Maine, is the northern terminus of the Appalachian Trail. Baxter State Park closes for the shoulder season at the first snow (generally around October 15th), so that's my rough deadline!</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Nero</div>
+            <div class="vocab-def">Short for "nearly zero" — a partial day off with very few miles walked during a long-distance hike. Often used to get into and out of towns for a resupply.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">NoBo</div>
+            <div class="vocab-def">Short for Northbound, which is the direction I'm hiking — Georgia to Maine.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Privy</div>
+            <div class="vocab-def">An outhouse or compostable toilet at a backcountry campsite.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Purist</div>
+            <div class="vocab-def">A thru-hiker who wants to walk every inch of the AT without any alternate routes. They also tend to think this is the one and only true way to thru-hike. The term is often used condescendingly, since it goes against the concept of Hike Your Own Hike (HYOH).</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Shelter</div>
+            <div class="vocab-def">A structure for backcountry lodging — typically a three-sided wooden structure with a roof, found every 8–10 miles along the trail. First come, first served. Great in the rain, but come with their own issues (mice, snorers, etc.)!</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Slack-pack</div>
+            <div class="vocab-def">To leave your pack with someone (or at a hostel) and hike a section of trail with just a daypack, either returning to town or getting your pack back at the end of the section. Purists don't count this as "real thru-hiking."</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Springer Mountain</div>
+            <div class="vocab-def">The southern terminus of the Appalachian Trail, located in Georgia.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Thru-Hiker</div>
+            <div class="vocab-def">Any hiker who walks the length of the trail within one year.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Trail Angel</div>
+            <div class="vocab-def">Someone who gives trail magic.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Trail Magic</div>
+            <div class="vocab-def">Any act of kindness or gift bestowed on hikers — including water, free meals, transportation, or even money. Most often found at trailheads, where trail angels will set up with grills, food, coolers full of cold drinks, and more!</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Trail Name</div>
+            <div class="vocab-def">A nickname adopted by long-distance backpackers, a tradition on the AT and many other trails. Generally given to you by other hikers — sometimes related to something embarrassing you did in the first few days that they'll never let you forget!</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">Tramily</div>
+            <div class="vocab-def">Short for "trail family." The group of people you spend a significant amount of time hiking with, typically also lodging together in town. As you make different decisions — hiking a different pace or taking an extra zero day — you may lose one tramily and find yourself in another.</div>
+          </div>
+
+          <div class="vocab-item">
+            <div class="vocab-term">White Blaze</div>
+            <div class="vocab-def">Rectangular white marks painted on trees and rocks that indicate the trail. Following white blazes is essentially the entire navigation strategy for 2,198 miles. Blue blazes mark side trails (to water, shelters, viewpoints).</div>
+          </div>
+
+          <div class="vocab-item" style="border-bottom:none">
+            <div class="vocab-term">Zero</div>
+            <div class="vocab-def">A full day off during a long-distance hike in which zero miles are walked.</div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- FAQ -->
       <div class="res-section">
         <span class="section-label">Common questions</span>
@@ -315,18 +463,8 @@
           </div>
 
           <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">What's a zero day / nero day?</div>
-            <div class="faq-a">A "zero day" is a full rest day with zero miles hiked — usually in a town for resupply, laundry, and recovery. A "nero" is a near-zero, typically less than 5 miles, often to get into or out of a town.</div>
-          </div>
-
-          <div class="faq-item">
             <div class="faq-q" onclick="toggleFaq(this)">Is the trail safe?</div>
             <div class="faq-a">Generally yes — millions of people hike the AT safely each year. The bigger risks are minor injuries, weather, and exhaustion rather than dramatic dangers. I have a GPS device, first aid kit, and a solid community of fellow hikers (the "tramily") for the journey.</div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">What's a "tramily"?</div>
-            <div class="faq-a">A trail family — the group of hikers you naturally fall into step with on the trail. Since most NOBO hikers start around the same time and hike similar daily distances, you end up leap-frogging the same people for weeks and eventually become a little community. I'll likely pick up a trail name too!</div>
           </div>
 
           <div class="faq-item">
@@ -367,11 +505,6 @@
           <div class="faq-item">
             <div class="faq-q" onclick="toggleFaq(this)">Do you hike every single day?</div>
             <div class="faq-a">Almost. Zero days (full rest days in town) are necessary for recovery and sanity. I'm aiming to keep them rare to stay on pace for Katahdin before the snow hits.</div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">What's a "white blaze"?</div>
-            <div class="faq-a">The AT is marked the entire way by white rectangular blazes painted on trees and rocks — about 2"×6" each. Following the white blazes is essentially the entire navigation strategy for 2,198 miles. Blue blazes mark side trails (to water, shelters, viewpoints).</div>
           </div>
 
         </div>
