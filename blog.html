@@ -547,6 +547,20 @@ async function resizeImage(file) {
   });
 }
 
+// ── UNICODE-SAFE BASE64 (handles emoji & all Unicode) ────────────────────────
+function toBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function fromBase64(b64) {
+  const binary = atob(b64.replace(/\n/g, ''));
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
 // ── SLUG ──────────────────────────────────────────────────────────────────────
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -747,7 +761,7 @@ async function publishPost() {
       btn.textContent = 'Updating gallery…';
       const galData = await getGitHub(token, 'data/gallery.json');
       const existing = galData
-        ? JSON.parse(decodeURIComponent(escape(atob(galData.content.replace(/\n/g,'')))))
+        ? JSON.parse(fromBase64(galData.content))
         : [];
       const d = new Date(date + 'T12:00:00');
       const humanDate = d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
@@ -763,7 +777,7 @@ async function publishPost() {
       }));
 
       const updatedGal    = [...newEntries, ...existing];
-      const galB64        = btoa(unescape(encodeURIComponent(JSON.stringify(updatedGal, null, 2))));
+      const galB64        = toBase64(JSON.stringify(updatedGal, null, 2));
       await putGitHub(token, 'data/gallery.json', galB64, galData ? galData.sha : null,
         `Add gallery photos for: ${title}`);
     }
@@ -771,18 +785,18 @@ async function publishPost() {
     // ── 3. Create post HTML ─────────────────────────────────────────────────
     btn.textContent = 'Publishing post…';
     const postHTML = generatePostHTML({ title, date, tags, excerpt, body, photoFilenames });
-    const postB64  = btoa(unescape(encodeURIComponent(postHTML)));
+    const postB64  = toBase64(postHTML);
     await putGitHub(token, `blog-posts/${filename}`, postB64, null, `Add blog post: ${title}`);
 
     // ── 4. Prepend card to blog.html ────────────────────────────────────────
     const blogData    = await getGitHub(token, 'blog.html');
     if (!blogData) throw new Error('Could not fetch blog.html from GitHub');
-    const blogDecoded = decodeURIComponent(escape(atob(blogData.content.replace(/\n/g,''))));
+    const blogDecoded = fromBase64(blogData.content);
     const marker      = '<!-- AUTO-POSTS-START -->';
     if (!blogDecoded.includes(marker)) throw new Error('blog.html is missing the AUTO-POSTS-START marker');
     const card        = generateBlogCard({ title, date, excerpt, tags, filename });
     const updatedBlog = blogDecoded.replace(marker, marker + '\n' + card);
-    const blogB64     = btoa(unescape(encodeURIComponent(updatedBlog)));
+    const blogB64     = toBase64(updatedBlog);
     await putGitHub(token, 'blog.html', blogB64, blogData.sha, `Add blog card for: ${title}`);
 
     setStatus('publish-status', 'success',

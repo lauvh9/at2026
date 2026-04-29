@@ -86,15 +86,19 @@ export default {
     let existing = [];
     const getRes = await fetch(apiUrl, { headers: ghHeaders });
     if (getRes.ok) {
-      const data = await getRes.json();
-      sha      = data.sha;
-      existing = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      const data  = await getRes.json();
+      sha         = data.sha;
+      const bytes = Uint8Array.from(atob(data.content.replace(/\n/g, '')), c => c.charCodeAt(0));
+      existing    = JSON.parse(new TextDecoder().decode(bytes));
     } else if (getRes.status !== 404) {
       return corsResponse(JSON.stringify({ error: `GitHub read error ${getRes.status}` }), 502, env, origin);
     }
 
     existing.push({ name, message, timestamp });
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(existing, null, 2))));
+    const encoded = new TextEncoder().encode(JSON.stringify(existing, null, 2));
+    let binary = '';
+    encoded.forEach(b => binary += String.fromCharCode(b));
+    const content = btoa(binary);
 
     const putRes = await fetch(apiUrl, {
       method:  'PUT',
