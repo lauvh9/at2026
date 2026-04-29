@@ -330,10 +330,6 @@ function renderActivity(activity) {
         `<img src="${url}" alt="Trail photo" loading="lazy">`).join('')}</div>`
     : '';
 
-  const stravaUrl = activity.id
-    ? `https://www.strava.com/activities/${activity.id}`
-    : null;
-
   const card = document.createElement('div');
   card.className = 'activity-card';
   card.innerHTML = `
@@ -343,7 +339,6 @@ function renderActivity(activity) {
         <div class="activity-title">${activity.name || 'Trail Day'}</div>
         ${cleanDesc ? `<div class="activity-caption" style="border-top:none;padding:0.5rem 0 0">${paragraphs}</div>` : ''}
       </div>
-      ${stravaUrl ? `<a href="${stravaUrl}" target="_blank" class="strava-link">View on Strava →</a>` : ''}
     </div>
 
     <div class="activity-stats">
