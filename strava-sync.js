@@ -23,6 +23,7 @@ const CLIENT_ID     = process.env.STRAVA_CLIENT_ID;
 const CLIENT_SECRET = process.env.STRAVA_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.STRAVA_REFRESH_TOKEN;
 const SYNC_START_DATE = new Date('2026-04-20'); // No activities before this date
+const HIKE_START_DATE = new Date('2026-04-28'); // Actual hike start — for total distance
 
 const STATUS_FILE      = path.join(__dirname, 'data', 'trail-status.json');
 const ACTIVITIES_FILE  = path.join(__dirname, 'data', 'strava-activities.json');
@@ -162,17 +163,24 @@ async function main() {
     console.log(`Activity: "${fullActivity.name}" (${formatDate(fullActivity.start_date_local).iso})`);
   }
 
+  // Total distance walked since hike start (all activities from Apr 28 onward)
+  const totalDistanceMeters = fullActivities
+    .filter(({ fullActivity: f }) => new Date(f.start_date) >= HIKE_START_DATE)
+    .reduce((sum, { fullActivity: f }) => sum + (f.distance || 0), 0);
+  const totalDistanceMiles = parseFloat((totalDistanceMeters / 1609.34).toFixed(1));
+
   // Write trail status JSON (read by index.html)
-  if (latestMile !== null) {
+  if (latestMile !== null || totalDistanceMiles > 0) {
     const updated = {
       ...latestStatus,
-      miles_hiked:  latestMile,
+      ...(latestMile !== null ? { miles_hiked: latestMile } : {}),
+      total_distance_miles: totalDistanceMiles,
       last_updated: new Date().toISOString(),
     };
     fs.writeFileSync(STATUS_FILE, JSON.stringify(updated, null, 2), 'utf8');
-    console.log(`Updated trail-status.json → miles_hiked: ${latestMile}`);
+    console.log(`Updated trail-status.json → miles_hiked: ${latestMile}, total_distance_miles: ${totalDistanceMiles}`);
   } else {
-    console.log('No end mile found in recent activities; trail-status.json unchanged.');
+    console.log('No mile data found; trail-status.json unchanged.');
   }
 
   // Write strava-activities.json for the Strava Log page

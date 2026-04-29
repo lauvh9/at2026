@@ -540,14 +540,15 @@
   window.addEventListener('load', async () => {
     // Try to load miles from the auto-updated JSON file.
     // Falls back to FALLBACK_MILES if running locally or file doesn't exist.
-    let MILES_HIKED = FALLBACK_MILES;
+    let MILES_HIKED = FALLBACK_MILES;      // AT trail mile position — drives map & location
+    let MILES_WALKED = FALLBACK_MILES;     // Total distance walked — drives stats
     try {
       const res  = await fetch('data/trail-status.json');
       if (res.ok) {
         const data = await res.json();
-        if (typeof data.miles_hiked === 'number') {
-          MILES_HIKED = data.miles_hiked;
-        }
+        if (typeof data.miles_hiked === 'number')         MILES_HIKED  = data.miles_hiked;
+        if (typeof data.total_distance_miles === 'number') MILES_WALKED = data.total_distance_miles;
+        else MILES_WALKED = MILES_HIKED; // fallback if field not yet written
       }
     } catch (e) {
       console.log('trail-status.json not found — using fallback miles.');
@@ -562,9 +563,9 @@
       document.getElementById('progressFill').style.width = pct + '%';
     }, 300);
 
-    document.getElementById('milesHiked').textContent = MILES_HIKED.toLocaleString() + ' miles hiked';
+    document.getElementById('milesHiked').textContent = MILES_WALKED.toLocaleString() + ' miles hiked';
     document.getElementById('milesRemain').textContent = (TOTAL_MILES - MILES_HIKED).toLocaleString() + ' remaining';
-    document.getElementById('milesHikedStat').textContent = MILES_HIKED.toLocaleString();
+    document.getElementById('milesHikedStat').textContent = MILES_WALKED.toLocaleString();
 
     const days = Math.max(0, Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24)));
     document.getElementById('daysOut').textContent = days;
@@ -592,7 +593,7 @@
       document.getElementById('locName').textContent = locName;
     }
 
-    const avg = days > 0 ? (MILES_HIKED / days).toFixed(1) : 0;
+    const avg = days > 0 ? (MILES_WALKED / days).toFixed(1) : 0;
     document.getElementById('avgMiles').textContent = avg;
 
     document.getElementById('milesToGo').textContent = (TOTAL_MILES - MILES_HIKED).toLocaleString();
