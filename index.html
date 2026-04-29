@@ -398,6 +398,10 @@
                 <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">City to Trail</span>
                 <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--pine)">Getting there →</span>
               </a>
+              <a href="#tip-jar" onclick="document.getElementById('tip-jar').scrollIntoView({behavior:'smooth'});return false;" style="text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.8rem;background:var(--paper);border:1px solid #008CFF">
+                <span style="font-family:var(--display);font-weight:700;font-size:0.9rem">Trail Magic Jar</span>
+                <span style="font-family:var(--sans);font-size:0.55rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#008CFF">Tip Laura →</span>
+              </a>
             </div>
             <a href="resources.html" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--pine);text-decoration:none;border-bottom:1px solid var(--pine)">View all resources →</a>
           </div>
@@ -412,9 +416,9 @@
             </div>
 
             <!-- Tip jar -->
-            <div style="margin-top:1.2rem;border:1.5px solid #008CFF;padding:1.25rem 1.5rem;text-align:center">
+            <div id="tip-jar" style="margin-top:1.2rem;border:1.5px solid #008CFF;padding:1.25rem 1.5rem;text-align:center">
               <div style="margin-bottom:0.5rem">
-                <img src="venmo-logo.png" alt="Venmo" style="height:28px;display:inline-block">
+                <img src="venmo-logo.png" alt="Venmo" style="height:20px;display:inline-block">
               </div>
               <div style="font-family:var(--sans);font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--ink);margin-bottom:0.4rem">Trail Magic Jar</div>
               <p style="font-family:var(--body);font-size:0.85rem;color:var(--earth);margin:0 0 1rem;font-style:italic">Buy me a shower, burger, or beer!</p>
