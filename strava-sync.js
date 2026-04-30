@@ -77,6 +77,25 @@ async function fetchRecentActivities(token, perPage = 10) {
   );
 }
 
+// ─── FETCH ALTITUDE STREAM ────────────────────────────────────────────────
+// Returns elevation values in metres only — no lat/lng, no location data.
+async function fetchAltitudeStream(token, activityId) {
+  try {
+    const data = await fetchJSON(
+      `https://www.strava.com/api/v3/activities/${activityId}/streams?keys=altitude&key_by_type=true`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const raw = (data.altitude && data.altitude.data) ? data.altitude.data : [];
+    // Downsample to max 300 points — enough for a precise profile, small enough to store
+    if (raw.length <= 300) return raw;
+    const step = (raw.length - 1) / 299;
+    return Array.from({ length: 300 }, (_, i) => raw[Math.round(i * step)]);
+  } catch (e) {
+    console.warn(`Could not fetch altitude stream for ${activityId}:`, e.message);
+    return [];
+  }
+}
+
 // ─── FETCH ACTIVITY PHOTOS ────────────────────────────────────────────────
 async function fetchPhotos(token, activityId) {
   try {
@@ -186,7 +205,11 @@ async function main() {
   // Write strava-activities.json for the Strava Log page
   const stravaActivitiesData = [];
   for (const { activity, fullActivity: full } of fullActivities) {
-    const photos = await fetchPhotos(token, activity.id).catch(() => []);
+    const [photos, altitude_stream] = await Promise.all([
+      fetchPhotos(token, activity.id).catch(() => []),
+      fetchAltitudeStream(token, activity.id),
+    ]);
+    const end_mile = parseMile(full.description);
     stravaActivitiesData.push({
       id:                   full.id,
       name:                 full.name,
@@ -197,7 +220,8 @@ async function main() {
       moving_time:          full.moving_time,
       elapsed_time:         full.elapsed_time,
       total_elevation_gain: full.total_elevation_gain,
-      map_polyline:         full.map && full.map.polyline ? full.map.polyline : (activity.map && activity.map.summary_polyline ? activity.map.summary_polyline : null),
+      end_mile,
+      altitude_stream,
       photos,
     });
   }

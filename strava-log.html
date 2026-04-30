@@ -16,9 +16,6 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="stylesheet" href="style.css" />
-  <!-- Leaflet for route maps -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     .strava-hero {
       text-align: center;
@@ -108,25 +105,38 @@
       display: block;
     }
 
-    /* Map */
-    .activity-map {
-      height: 260px;
-      width: 100%;
-      background: var(--paper);
-      position: relative;
-      z-index: 0;
-      isolation: isolate;
-      overflow: hidden;
-    }
-    .activity-map.no-route {
-      display: flex;
+    /* AT section badge — sits inside activity header */
+    .activity-section-badge {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 0.4rem;
+      margin-top: 0.55rem;
       font-family: var(--sans);
-      font-size: 0.65rem;
+      font-size: 0.55rem;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--trail);
+      letter-spacing: 0.12em;
+      color: var(--pine);
+    }
+    .section-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--pine);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Elevation chart */
+    .activity-elevation {
+      background: var(--cream);
+      border-top: 1px solid var(--fog);
+      overflow: hidden;
+      line-height: 0;
+    }
+    .activity-elevation svg {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     /* Caption */
@@ -285,32 +295,112 @@ function formatDate(isoString) {
   });
 }
 
-// ── POLYLINE DECODER ────────────────────────────────────────────────────────
-// Decodes a Google-encoded polyline string into [[lat,lng], ...] pairs
-function decodePolyline(encoded) {
-  if (!encoded) return [];
-  const points = [];
-  let index = 0, lat = 0, lng = 0;
-  while (index < encoded.length) {
-    let b, shift = 0, result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    lat += (result & 1) ? ~(result >> 1) : (result >> 1);
-    shift = 0; result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    lng += (result & 1) ? ~(result >> 1) : (result >> 1);
-    points.push([lat / 1e5, lng / 1e5]);
+// ── AT SECTION LOOKUP ────────────────────────────────────────────────────────
+// [maxMile, sectionName, state(s)]
+const AT_SECTIONS = [
+  [30,   'Springer Mountain to Neels Gap',          'Georgia'],
+  [76,   'Blood Mountain Wilderness',               'Georgia'],
+  [106,  'Nantahala National Forest — South',       'North Carolina'],
+  [165,  'Nantahala Gorge',                         'North Carolina'],
+  [237,  'Great Smoky Mountains National Park',     'Tennessee / North Carolina'],
+  [290,  'Hot Springs Region',                      'Tennessee / North Carolina'],
+  [342,  'Roan Highlands',                          'Tennessee / North Carolina'],
+  [400,  'Iron Mountains',                          'Tennessee'],
+  [453,  'Damascus & Grayson Highlands',            'Virginia'],
+  [554,  'Mount Rogers National Recreation Area',   'Virginia'],
+  [680,  'Central Virginia',                        'Virginia'],
+  [723,  'Shenandoah Valley Approach',              'Virginia'],
+  [812,  'Shenandoah National Park',                'Virginia'],
+  [903,  'Northern Virginia & Maryland',            'Maryland'],
+  [1000, 'Pennsylvania — The Rollercoaster',        'Pennsylvania'],
+  [1090, 'Pennsylvania — The Rocks',                'Pennsylvania'],
+  [1160, 'New Jersey & New York',                   'New Jersey / New York'],
+  [1220, 'Connecticut',                             'Connecticut'],
+  [1270, 'Massachusetts',                           'Massachusetts'],
+  [1400, 'Vermont — Long Trail Country',            'Vermont'],
+  [1500, 'White Mountains',                         'New Hampshire'],
+  [1600, 'Southern Maine',                          'Maine'],
+  [1900, '100-Mile Wilderness',                     'Maine'],
+  [2198, 'Baxter State Park',                       'Maine'],
+];
+const AT_TOTAL = 2198;
+
+function getATSection(mile) {
+  return AT_SECTIONS.find(([max]) => mile <= max) || AT_SECTIONS[AT_SECTIONS.length - 1];
+}
+
+function parseMile(description) {
+  if (!description) return null;
+  const m = description.match(/end\s*mile[:\s\-]+([\d.]+)/i);
+  return m ? parseFloat(m[1]) : null;
+}
+
+// Returns a compact inline badge string (injected into the header, not a separate block)
+function sectionBadgeHTML(activity) {
+  const mile = activity.end_mile ?? parseMile(activity.description);
+  if (mile === null) return '';
+  const [, name, state] = getATSection(mile);
+  return `<div class="activity-section-badge"><span class="section-badge-dot"></span>${name} &middot; ${state} &middot; Mile ${mile}</div>`;
+}
+
+// ── ELEVATION CHART ──────────────────────────────────────────────────────────
+function renderElevationChart(activity) {
+  const elev = activity.altitude_stream;
+  if (!elev || elev.length < 2) return '';
+
+  const W = 1000, H = 160;
+  const PL = 62, PR = 12, PT = 14, PB = 18;
+  const CW = W - PL - PR, CH = H - PT - PB;
+  const n = elev.length;
+
+  const minE = Math.min(...elev);
+  const maxE = Math.max(...elev);
+  const range = maxE - minE || 1;
+
+  const pts = elev.map((v, i) => [
+    PL + (i / (n - 1)) * CW,
+    PT + (1 - (v - minE) / range) * CH,
+  ]);
+
+  // Light Catmull-Rom — removes GPS jitter, preserves real terrain shape
+  const T = 0.15;
+  let line = `M ${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < n - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(n - 1, i + 2)];
+    const cp1x = (p1[0] + (p2[0] - p0[0]) * T).toFixed(1);
+    const cp1y = (p1[1] + (p2[1] - p0[1]) * T).toFixed(1);
+    const cp2x = (p2[0] - (p3[0] - p1[0]) * T).toFixed(1);
+    const cp2y = (p2[1] - (p3[1] - p1[1]) * T).toFixed(1);
+    line += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
   }
-  return points;
+
+  const base = PT + CH;
+  const fill = `${line} L ${pts[n-1][0].toFixed(1)},${base} L ${pts[0][0].toFixed(1)},${base} Z`;
+
+  const toFt  = m => Math.round(m * 3.28084).toLocaleString();
+  const gid   = `eg${activity.id}`;
+
+  return `<div class="activity-elevation"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#2c5530" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#2c5530" stop-opacity="0.03"/>
+    </linearGradient>
+  </defs>
+  <line x1="${PL}" y1="${base}" x2="${W-PR}" y2="${base}" stroke="#c8c2b6" stroke-width="0.8"/>
+  <line x1="${PL}" y1="${PT}"   x2="${PL}"   y2="${base}" stroke="#c8c2b6" stroke-width="0.8"/>
+  <path d="${fill}" fill="url(#${gid})"/>
+  <path d="${line}" fill="none" stroke="#2c5530" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="${PL-6}" y="${PT+4}"   text-anchor="end" font-family="monospace" font-size="12" fill="#8a806e">${toFt(maxE)} ft</text>
+  <text x="${PL-6}" y="${base-2}" text-anchor="end" font-family="monospace" font-size="12" fill="#8a806e">${toFt(minE)} ft</text>
+</svg></div>`;
 }
 
 // ── RENDER ACTIVITY ─────────────────────────────────────────────────────────
-let mapCount = 0;
-
 function renderActivity(activity) {
-  const mapId = `map-${mapCount++}`;
-  const points = decodePolyline(activity.map_polyline);
-  const hasRoute = points.length > 0;
-
   const distMi  = metersToMiles(activity.distance);
   const elevFt  = metersToFeet(activity.total_elevation_gain);
   const timeStr = formatTime(activity.moving_time);
@@ -337,6 +427,7 @@ function renderActivity(activity) {
       <div>
         <span class="activity-date">${dateStr}</span>
         <div class="activity-title">${activity.name || 'Trail Day'}</div>
+        ${sectionBadgeHTML(activity)}
         ${cleanDesc ? `<div class="activity-caption" style="border-top:none;padding:0.5rem 0 0">${paragraphs}</div>` : ''}
       </div>
     </div>
@@ -360,49 +451,15 @@ function renderActivity(activity) {
       </div>
     </div>
 
-    <div class="${hasRoute ? 'activity-map' : 'activity-map no-route'}" id="${mapId}">
-      ${hasRoute ? '' : 'No route data available'}
-    </div>
+    ${renderElevationChart(activity)}
 
     ${photoHTML}
 
     <div style="padding:1.5rem 1.4rem;border-top:1px solid var(--fog)">
       <span style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:#c4621a;display:block;margin-bottom:0.75rem">Comments</span>
-      <div class="comments-widget" data-slug="activity-${activity.id || mapId}"></div>
+      <div class="comments-widget" data-slug="activity-${activity.id}"></div>
     </div>
   `;
-
-  // Render map after card is in DOM
-  if (hasRoute) {
-    setTimeout(() => {
-      const mapEl = document.getElementById(mapId);
-      if (!mapEl) return;
-      const map = L.map(mapEl, {
-        zoomControl: false,
-        scrollWheelZoom: false,
-        dragging: false,
-        touchZoom: false,
-        doubleClickZoom: false,
-        attributionControl: false,
-      });
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-      }).addTo(map);
-      const polyline = L.polyline(points, {
-        color: '#c4621a',
-        weight: 3.5,
-        opacity: 0.9,
-      }).addTo(map);
-      map.fitBounds(polyline.getBounds(), { padding: [20, 20] });
-
-      // Start/end markers
-      if (points.length > 1) {
-        const dot = { radius: 6, fillOpacity: 1, weight: 2, color: '#fff' };
-        L.circleMarker(points[0], { ...dot, fillColor: '#c4621a' }).addTo(map);
-        L.circleMarker(points[points.length - 1], { ...dot, fillColor: '#8b3a1a' }).addTo(map);
-      }
-    }, 0);
-  }
 
   return card;
 }
