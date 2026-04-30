@@ -1,9 +1,9 @@
 name: Strava Trail Sync
 
 on:
-  # Runs every day at 8pm ET (midnight UTC)
+  # Runs every day at 10am EST (3pm UTC)
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 15 * * *'
 
   # Also lets you trigger it manually from the GitHub Actions tab
   workflow_dispatch:
