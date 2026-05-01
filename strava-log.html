@@ -156,14 +156,15 @@
       color: var(--trail);
     }
 
-    /* Photos */
+    /* Photos & videos */
     .activity-photos {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 3px;
       border-top: 1px solid var(--fog);
     }
-    .activity-photos img {
+    .activity-photos img,
+    .activity-photos video {
       width: 100%;
       aspect-ratio: 4/3;
       object-fit: cover;
@@ -415,10 +416,37 @@ function renderActivity(activity) {
     ? cleanDesc.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g,' ').trim()}</p>`).join('')
     : `<p class="no-caption">No caption for this activity.</p>`;
 
-  // Photos
-  const photoHTML = activity.photos && activity.photos.length
-    ? `<div class="activity-photos">${activity.photos.map(url =>
-        `<img src="${url}" alt="Trail photo" loading="lazy">`).join('')}</div>`
+  // Media (photos + videos) — use unified media array, fall back to legacy photos field
+  const mediaItems = activity.media
+    || (activity.photos || []).map(src => ({ type: 'photo', src }));
+
+  const stravaActivityUrl = `https://www.strava.com/activities/${activity.id}`;
+
+  const photoHTML = mediaItems.length
+    ? `<div class="activity-photos">${mediaItems.map(item => {
+        if (item.type === 'video') {
+          if (item.playable) {
+            // Actual .mp4 from Strava — embed directly
+            return `<video src="${item.src}" poster="${item.thumbnail || ''}" controls preload="metadata" loading="lazy"></video>`;
+          }
+          // No playable URL — show thumbnail with a play-button overlay linking to Strava
+          return `<a href="${item.stravaUrl || stravaActivityUrl}" target="_blank" rel="noopener"
+              style="position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:var(--ink)">
+              <img src="${item.thumbnail || item.src}" alt="Video thumbnail" loading="lazy"
+                style="width:100%;height:100%;object-fit:cover;opacity:0.8">
+              <span style="
+                position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+                font-size:2.5rem;color:var(--white);text-shadow:0 2px 8px rgba(0,0,0,0.6);
+                pointer-events:none">▶</span>
+              <span style="
+                position:absolute;bottom:0;left:0;right:0;padding:0.4rem 0.6rem;
+                background:rgba(26,18,8,0.65);font-family:var(--sans);font-size:0.5rem;
+                font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--white)">
+                Watch on Strava ↗</span>
+            </a>`;
+        }
+        return `<img src="${item.src}" alt="Trail photo" loading="lazy">`;
+      }).join('')}</div>`
     : '';
 
   const card = document.createElement('div');

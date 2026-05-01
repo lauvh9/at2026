@@ -414,9 +414,14 @@ function buildGallery(items) {
       ? `<a class="overlay-link" href="${item.postLink}" onclick="event.stopPropagation()">→ ${item.postTitle || 'Read post'}</a>`
       : '';
 
-    const media = item.type === 'video'
-      ? `<video src="${item.src}" muted playsinline preload="metadata"></video>`
-      : `<img src="${item.src}" alt="${item.caption || ''}" loading="lazy">`;
+    let media;
+    if (item.type === 'video') {
+      media = item.playable
+        ? `<video src="${item.src}" poster="${item.thumbnail || ''}" muted playsinline preload="metadata"></video>`
+        : `<img src="${item.thumbnail || item.src}" alt="${item.caption || ''}" loading="lazy">`;
+    } else {
+      media = `<img src="${item.src}" alt="${item.caption || ''}" loading="lazy">`;
+    }
 
     el.innerHTML = `
       ${videoBadge}
@@ -474,7 +479,25 @@ function renderLightbox() {
 
   const mediaEl = document.getElementById('lightbox-media');
   if (item.type === 'video') {
-    mediaEl.innerHTML = `<video src="${item.src}" controls autoplay style="max-width:100%;max-height:75vh;border-radius:3px"></video>`;
+    if (item.playable) {
+      mediaEl.innerHTML = `<video src="${item.src}" poster="${item.thumbnail || ''}" controls autoplay style="max-width:100%;max-height:75vh;border-radius:3px"></video>`;
+    } else {
+      // No embeddable video — show thumbnail + link to Strava
+      const href = item.stravaUrl || `https://www.strava.com/activities/${item.activityId}`;
+      mediaEl.innerHTML = `
+        <div style="position:relative;display:inline-block">
+          <img src="${item.thumbnail || item.src}" style="max-width:100%;max-height:65vh;border-radius:3px;display:block">
+          <a href="${href}" target="_blank" rel="noopener" style="
+            position:absolute;inset:0;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;gap:0.5rem;
+            background:rgba(26,18,8,0.55);border-radius:3px;text-decoration:none">
+            <span style="font-size:3rem;color:var(--white);text-shadow:0 2px 10px rgba(0,0,0,0.5)">▶</span>
+            <span style="font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;
+              letter-spacing:0.12em;color:var(--white);border-bottom:1px solid rgba(255,255,255,0.5);padding-bottom:2px">
+              Watch on Strava ↗</span>
+          </a>
+        </div>`;
+    }
   } else {
     mediaEl.innerHTML = `<img src="${item.src}" alt="${item.caption || ''}" style="max-width:100%;max-height:75vh;object-fit:contain;border-radius:3px">`;
   }

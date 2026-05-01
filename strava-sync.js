@@ -96,21 +96,46 @@ async function fetchAltitudeStream(token, activityId) {
   }
 }
 
-// ─── FETCH ACTIVITY PHOTOS ────────────────────────────────────────────────
-async function fetchPhotos(token, activityId) {
+// ─── FETCH ACTIVITY MEDIA (photos + videos) ───────────────────────────────
+// Strava returns type=1 for photos and type=2 for videos.
+// For videos, urls may contain an .mp4 URL; if not we store the best
+// thumbnail and flag it so the UI can fall back to a Strava link.
+async function fetchMedia(token, activityId) {
   try {
-    const photos = await fetchJSON(
+    const items = await fetchJSON(
       `https://www.strava.com/api/v3/activities/${activityId}/photos?photo_sources=true&size=1800`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    // Return array of the best-quality URL for each photo
-    return photos
-      .filter(p => p.urls)
-      .map(p => p.urls['1800'] || p.urls[Object.keys(p.urls).pop()])
-      .filter(Boolean);
+
+    const photos = [];
+    const videos = [];
+
+    for (const item of items) {
+      if (!item.urls) continue;
+      const urlEntries = Object.entries(item.urls);
+
+      if (item.type === 2) {
+        // Video item — look for a playable URL (.mp4), fall back to thumbnail
+        const videoSrc = urlEntries.find(([, v]) => v && /\.mp4/i.test(v))?.[1] || null;
+        const thumbnail = item.urls['1800'] || urlEntries[urlEntries.length - 1]?.[1] || null;
+        if (thumbnail || videoSrc) {
+          videos.push({
+            src:       videoSrc || thumbnail,  // playable url if we have it
+            thumbnail: thumbnail,
+            playable:  !!videoSrc,             // true → use <video>, false → thumbnail + Strava link
+          });
+        }
+      } else {
+        // Photo item
+        const url = item.urls['1800'] || urlEntries[urlEntries.length - 1]?.[1];
+        if (url) photos.push(url);
+      }
+    }
+
+    return { photos, videos };
   } catch (e) {
-    console.warn(`Could not fetch photos for activity ${activityId}:`, e.message);
-    return [];
+    console.warn(`Could not fetch media for activity ${activityId}:`, e.message);
+    return { photos: [], videos: [] };
   }
 }
 
@@ -216,11 +241,18 @@ async function main() {
   // Write strava-activities.json for the Strava Log page
   const stravaActivitiesData = [];
   for (const { activity, fullActivity: full } of fullActivities) {
-    const [photos, altitude_stream] = await Promise.all([
-      fetchPhotos(token, activity.id).catch(() => []),
+    const [{ photos, videos }, altitude_stream] = await Promise.all([
+      fetchMedia(token, activity.id).catch(() => ({ photos: [], videos: [] })),
       fetchAltitudeStream(token, activity.id),
     ]);
     const end_mile = parseMile(full.description);
+
+    // Unified media array consumed by strava-log.html
+    const media = [
+      ...photos.map(src => ({ type: 'photo', src })),
+      ...videos.map(v  => ({ type: 'video', ...v })),
+    ];
+
     stravaActivitiesData.push({
       id:                   full.id,
       name:                 full.name,
@@ -233,37 +265,51 @@ async function main() {
       total_elevation_gain: full.total_elevation_gain,
       end_mile,
       altitude_stream,
-      photos,
+      photos,   // kept for backwards compat
+      videos,
+      media,
     });
   }
 
   fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(stravaActivitiesData, null, 2), 'utf8');
   console.log(`Wrote strava-activities.json (${stravaActivitiesData.length} activities)`);
 
-  // Update gallery.json with any new Strava photos (deduplicate by URL)
-  const gallery     = loadJSON(GALLERY_FILE, []);
+  // Update gallery.json with any new Strava photos + videos (deduplicate by URL)
+  const gallery      = loadJSON(GALLERY_FILE, []);
   const existingUrls = new Set(gallery.map(e => e.src));
-  let addedPhotos   = 0;
+  let addedPhotos    = 0;
+  let addedVideos    = 0;
   for (const entry of stravaActivitiesData) {
-    const date = formatDate(entry.start_date_local);
+    const date        = formatDate(entry.start_date_local);
+    const stravaUrl   = `https://www.strava.com/activities/${entry.id}`;
+    const sharedMeta  = { date: date.human, source: 'strava', activityId: entry.id, activityName: entry.name, caption: entry.name };
+
     for (const photoUrl of (entry.photos || [])) {
       if (!existingUrls.has(photoUrl)) {
-        gallery.unshift({
-          src:          photoUrl,
-          type:         'photo',
-          caption:      entry.name,
-          date:         date.human,
-          source:       'strava',
-          activityId:   entry.id,
-          activityName: entry.name,
-        });
+        gallery.unshift({ ...sharedMeta, src: photoUrl, type: 'photo' });
         existingUrls.add(photoUrl);
         addedPhotos++;
       }
     }
+
+    for (const video of (entry.videos || [])) {
+      const key = video.src || video.thumbnail;
+      if (key && !existingUrls.has(key)) {
+        gallery.unshift({
+          ...sharedMeta,
+          src:        video.src,
+          thumbnail:  video.thumbnail,
+          type:       'video',
+          playable:   video.playable,
+          stravaUrl,
+        });
+        existingUrls.add(key);
+        addedVideos++;
+      }
+    }
   }
   fs.writeFileSync(GALLERY_FILE, JSON.stringify(gallery, null, 2), 'utf8');
-  console.log(`Updated gallery.json (+${addedPhotos} Strava photos, ${gallery.length} total)`);
+  console.log(`Updated gallery.json (+${addedPhotos} photos, +${addedVideos} videos, ${gallery.length} total)`);
 
   console.log('Sync complete.');
 }
