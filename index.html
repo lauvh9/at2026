@@ -585,7 +585,7 @@
     document.getElementById('milesRemain').textContent = (TOTAL_MILES - MILES_HIKED).toLocaleString() + ' remaining';
     document.getElementById('milesHikedStat').textContent = MILES_HIKED.toLocaleString();
 
-    const days = Math.max(0, Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24)));
+    const days = Math.max(0, Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24)) + 1);
     document.getElementById('daysOut').textContent = days;
 
     // ── LOCATION CARD ────────────────────────────────────────────────────────
