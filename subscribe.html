@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscribe — Laura on Trail</title>
+  <meta property="og:title" content="Follow Laura on Trail — AT Thru-Hike 2026">
+  <meta property="og:description" content="Get trail updates, blog posts, and photos from Laura's 2026 Appalachian Trail thru-hike.">
+  <meta property="og:image" content="https://lauratheexplorer.co/preview.jpg">
+  <meta property="og:url" content="https://lauratheexplorer.co/subscribe">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://lauratheexplorer.co/preview.jpg">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .subscribe-hero {
+      text-align: center;
+      background: var(--cream);
+      border-bottom: 2px solid var(--ink);
+      padding: 2.5rem 2rem 2rem;
+    }
+    .subscribe-hero h1 { border-bottom: none; padding-bottom: 0; }
+
+    .subscribe-body {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    .subscribe-intro {
+      font-family: var(--body);
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--earth);
+      margin-bottom: 2rem;
+    }
+
+    .subscribe-form-card {
+      background: var(--white);
+      border: 1px solid var(--fog);
+      border-top: 4px solid var(--pine);
+      padding: 1.75rem 1.5rem;
+    }
+
+    .subscribe-form-label {
+      font-family: var(--sans);
+      font-size: 0.58rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--pine);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .subscribe-note {
+      margin-top: 1.25rem;
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      color: var(--trail);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .subscribe-what {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--fog);
+    }
+
+    .subscribe-what h3 {
+      font-family: var(--display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      text-transform: none;
+    }
+
+    .subscribe-what ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .subscribe-what li {
+      font-family: var(--body);
+      font-size: 0.9rem;
+      color: var(--earth);
+      line-height: 1.5;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+
+    .subscribe-what li::before {
+      content: '✦';
+      font-size: 0.5rem;
+      color: var(--pine);
+      flex-shrink: 0;
+      position: relative;
+      top: -1px;
+    }
+
+    @media (max-width: 600px) {
+      .subscribe-body { padding: 2rem 1rem 3rem; }
+      .subscribe-form-card { padding: 1.25rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="blaze"></span>
+    Laura on Trail
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-mobile-menu" id="nav-mobile-menu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="strava-log.html">Strava</a></li>
+    <li><a href="blog.html">Log</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="gear.html">Gear</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+</nav>
+
+<header class="subscribe-hero">
+  <div class="container">
+    <h1>Stay on Trail</h1>
+    <span class="section-label" style="margin-top:0.4rem;display:block">Follow Laura's 2026 AT thru-hike</span>
+  </div>
+</header>
+
+<main>
+  <div class="subscribe-body">
+
+    <p class="subscribe-intro">
+      2,198 miles, Georgia to Maine. Get updates delivered to your inbox
+      so you never miss a summit, a zero day, or a well-earned burger in town.
+    </p>
+
+    <div class="subscribe-form-card">
+      <span class="subscribe-form-label">Get trail updates</span>
+      <div class="subscribe-widget" data-source="subscribe-page"></div>
+      <p class="subscribe-note">
+        No spam. Just trail updates when there's something worth sharing.<br>
+        Unsubscribe any time.
+      </p>
+    </div>
+
+    <div class="subscribe-what">
+      <h3>What you'll get</h3>
+      <ul>
+        <li>New blog posts from the trail — in Laura's own words</li>
+        <li>Daily mileage and location updates when there's service</li>
+        <li>Photos from the most beautiful (and brutal) parts of the AT</li>
+        <li>The occasional update from the real world when she hits a town</li>
+      </ul>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot-logo">Laura on Trail</div>
+  <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
+</footer>
+
+<script src="subscribe.js"></script>
+<script>
+function toggleNav() {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  btn.classList.toggle("open");
+  menu.classList.toggle("open");
+}
+document.addEventListener("click", function(e) {
+  var btn  = document.getElementById("nav-hamburger");
+  var menu = document.getElementById("nav-mobile-menu");
+  if (menu && menu.classList.contains("open") && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    btn.classList.remove("open");
+    menu.classList.remove("open");
+  }
+});
+</script>
+</body>
+</html>

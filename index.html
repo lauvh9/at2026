@@ -382,6 +382,13 @@
             <a href="strava-log.html" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--pine);text-decoration:none;border-bottom:1px solid var(--pine)">View all activities →</a>
           </div>
 
+          <!-- Email subscribe -->
+          <div style="margin-top:0.5rem;border-top:1px solid var(--fog);padding-top:1.2rem">
+            <h2 style="margin-bottom:0.3rem">Stay on Trail</h2>
+            <p style="font-family:var(--body);font-size:0.85rem;color:var(--earth);line-height:1.6;margin-bottom:0.9rem;font-style:italic">Get trail updates in your inbox.</p>
+            <div class="subscribe-widget" data-source="homepage"></div>
+          </div>
+
           <!-- Resources preview -->
           <div style="margin-top:0.5rem;border-top:1px solid var(--fog);padding-top:1.2rem">
             <h2 style="margin-bottom:0.75rem">Quick Links</h2>
@@ -904,6 +911,7 @@
   })();
 </script>
 
+<script src="subscribe.js"></script>
 <script>
 function toggleNav() {
   var btn  = document.getElementById("nav-hamburger");

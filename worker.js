@@ -32,21 +32,101 @@ const GITHUB_REPO  = 'at2026';
 const ALLOWED_ORIGINS = [
   'https://lauratheexplorer.co',
   'https://at2026-ann.pages.dev',
-  'http://localhost:8080',
-  'http://127.0.0.1:8080',
 ];
+
+// Rate limiting — in-memory per Worker isolate (resets on cold start)
+// For stronger guarantees, replace with Cloudflare KV or Rate Limiting API.
+const rateLimitMap = new Map(); // ip -> [timestamps]
+const RATE_LIMIT   = 5;
+const RATE_WINDOW  = 10 * 60 * 1000; // 10 minutes
+
+function checkRateLimit(ip) {
+  const now  = Date.now();
+  const hits = (rateLimitMap.get(ip) || []).filter(t => now - t < RATE_WINDOW);
+  if (hits.length >= RATE_LIMIT) return false;
+  hits.push(now);
+  rateLimitMap.set(ip, hits);
+  return true;
+}
 
 export default {
   async fetch(request, env) {
-    const origin = request.headers.get('Origin') || '';
+    const origin   = request.headers.get('Origin') || '';
+    const pathname = new URL(request.url).pathname;
 
     // CORS preflight
     if (request.method === 'OPTIONS') {
       return corsResponse(null, 204, env, origin);
     }
 
-    if (request.method !== 'POST' || new URL(request.url).pathname !== '/comment') {
+    if (request.method !== 'POST') {
       return corsResponse(JSON.stringify({ error: 'Not found' }), 404, env, origin);
+    }
+
+    // ── /verify-password ────────────────────────────────────────────────────
+    // Checks the post password against the POST_PASSWORD Worker secret.
+    // Run: wrangler secret put POST_PASSWORD
+    if (pathname === '/verify-password') {
+      let body;
+      try { body = await request.json(); } catch {
+        return corsResponse(JSON.stringify({ error: 'Invalid JSON' }), 400, env, origin);
+      }
+      if (env.POST_PASSWORD && body.password === env.POST_PASSWORD) {
+        return corsResponse(JSON.stringify({ ok: true }), 200, env, origin);
+      }
+      return corsResponse(JSON.stringify({ ok: false }), 401, env, origin);
+    }
+
+    // ── /subscribe ───────────────────────────────────────────────────────────
+    // Saves an email address to Cloudflare KV (SUBSCRIBERS namespace).
+    // Key = normalised email, so duplicates are inherently prevented.
+    // Setup: wrangler kv:namespace create SUBSCRIBERS  → add ID to wrangler.toml
+    if (pathname === '/subscribe') {
+      const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+      if (!checkRateLimit(ip)) {
+        return corsResponse(JSON.stringify({ error: 'Too many requests. Please wait a few minutes.' }), 429, env, origin);
+      }
+
+      let body;
+      try { body = await request.json(); } catch {
+        return corsResponse(JSON.stringify({ error: 'Invalid JSON' }), 400, env, origin);
+      }
+
+      const raw = typeof body.email === 'string' ? body.email.trim() : '';
+      if (!raw) {
+        return corsResponse(JSON.stringify({ error: 'Email is required.' }), 400, env, origin);
+      }
+      const email = raw.toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        return corsResponse(JSON.stringify({ error: 'Please enter a valid email address.' }), 400, env, origin);
+      }
+
+      if (!env.SUBSCRIBERS) {
+        return corsResponse(JSON.stringify({ error: 'Subscription service not configured.' }), 503, env, origin);
+      }
+
+      const existing = await env.SUBSCRIBERS.get(email);
+      if (existing) {
+        return corsResponse(JSON.stringify({ duplicate: true }), 200, env, origin);
+      }
+
+      await env.SUBSCRIBERS.put(email, JSON.stringify({
+        email,
+        source:        body.source || 'unknown',
+        subscribed_at: new Date().toISOString(),
+      }));
+
+      return corsResponse(JSON.stringify({ ok: true }), 200, env, origin);
+    }
+
+    if (pathname !== '/comment') {
+      return corsResponse(JSON.stringify({ error: 'Not found' }), 404, env, origin);
+    }
+
+    // Rate limiting
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (!checkRateLimit(ip)) {
+      return corsResponse(JSON.stringify({ error: 'Too many comments. Please wait a few minutes.' }), 429, env, origin);
     }
 
     let body;
