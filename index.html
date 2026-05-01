@@ -560,6 +560,7 @@
     // Falls back to FALLBACK_MILES if running locally or file doesn't exist.
     let MILES_HIKED = FALLBACK_MILES;      // AT trail mile position — drives map & location
     let MILES_WALKED = FALLBACK_MILES;     // Total distance walked — drives stats
+    let CURRENT_DAY  = null;              // Hiking day number — set by sync, not browser clock
     try {
       const res  = await fetch('data/trail-status.json');
       if (res.ok) {
@@ -567,6 +568,7 @@
         if (typeof data.miles_hiked === 'number')         MILES_HIKED  = data.miles_hiked;
         if (typeof data.total_distance_miles === 'number') MILES_WALKED = data.total_distance_miles;
         else MILES_WALKED = MILES_HIKED; // fallback if field not yet written
+        if (typeof data.current_day === 'number')         CURRENT_DAY  = data.current_day;
       }
     } catch (e) {
       console.log('trail-status.json not found — using fallback miles.');
@@ -585,13 +587,13 @@
     document.getElementById('milesRemain').textContent = (TOTAL_MILES - MILES_HIKED).toLocaleString() + ' remaining';
     document.getElementById('milesHikedStat').textContent = MILES_HIKED.toLocaleString();
 
-    const days = Math.max(0, Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24)) + 1);
+    const days = Math.max(0, Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24)));
     document.getElementById('daysOut').textContent = days;
 
     // ── LOCATION CARD ────────────────────────────────────────────────────────
     const todayStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     document.getElementById('locMeta').textContent = `Mile ${MILES_HIKED} · ${todayStr}`;
-    document.getElementById('locBadge').textContent = days > 0 ? `Day ${days}` : 'Pre-hike';
+    document.getElementById('locBadge').textContent = CURRENT_DAY !== null ? `Day ${CURRENT_DAY}` : (days > 0 ? `Day ${days}` : 'Pre-hike');
 
     // Derive location name from nearest waypoint
     if (MILES_HIKED > 0) {
