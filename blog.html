@@ -423,14 +423,9 @@
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────────────
-// Change this to your GitHub repo details
-const GITHUB_OWNER = 'lauvh9';   // ← update this
-const GITHUB_REPO  = 'at2026';          // ← update this
-
-// Change this to your own password (only you know this)
-// This is NOT high-security — it just stops random visitors from seeing the editor.
-// For a static site this is the practical limit without a backend.
-const POST_PASSWORD = 'trailblaze2026';         // ← change this
+const GITHUB_OWNER = 'lauvh9';
+const GITHUB_REPO  = 'at2026';
+const WORKER_URL   = 'https://at2026-comments.lauvh9.workers.dev';
 
 // ── MODAL ────────────────────────────────────────────────────────────────────
 function openModal() {
@@ -458,16 +453,31 @@ document.getElementById('modal').addEventListener('click', function(e) {
 });
 
 // ── PASSWORD ─────────────────────────────────────────────────────────────────
-function checkPassword() {
+async function checkPassword() {
   const val = document.getElementById('password-input').value;
-  if (val === POST_PASSWORD) {
-    document.getElementById('pass-screen').classList.remove('active');
-    document.getElementById('editor-screen').classList.add('active');
-    // Restore any saved token
-    const saved = sessionStorage.getItem('gh_token');
-    if (saved) document.getElementById('gh-token').value = saved;
-  } else {
-    setStatus('pass-status', 'error', 'Incorrect password.');
+  const btn = document.querySelector('#pass-screen .btn-primary');
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  try {
+    const res  = await fetch(`${WORKER_URL}/verify-password`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ password: val }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data.ok) {
+      document.getElementById('pass-screen').classList.remove('active');
+      document.getElementById('editor-screen').classList.add('active');
+      const saved = sessionStorage.getItem('gh_token');
+      if (saved) document.getElementById('gh-token').value = saved;
+    } else {
+      setStatus('pass-status', 'error', 'Incorrect password.');
+    }
+  } catch {
+    setStatus('pass-status', 'error', 'Could not verify password. Try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Continue →';
   }
 }
 

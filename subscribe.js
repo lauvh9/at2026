@@ -7,7 +7,7 @@
  */
 
 (function () {
-  const WORKER_URL = 'https://at2026-comments.noah-f08.workers.dev';
+  const WORKER_URL = 'https://at2026-comments.lauvh9.workers.dev';
 
   // ── INPUT STYLES ── (shared with comments.js aesthetic)
   const INPUT_BASE = [

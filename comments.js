@@ -14,7 +14,7 @@
   // ── CONFIG ────────────────────────────────────────────────────────────────
   const GITHUB_OWNER = 'lauvh9';
   const GITHUB_REPO  = 'at2026';
-  const WORKER_URL   = 'https://at2026-comments.noah-f08.workers.dev';
+  const WORKER_URL   = 'https://at2026-comments.lauvh9.workers.dev';
   // ─────────────────────────────────────────────────────────────────────────
 
   function getSlugFromPath() {
