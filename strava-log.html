@@ -132,6 +132,7 @@
       border-top: 1px solid var(--fog);
       overflow: hidden;
       line-height: 0;
+      padding: 0.5rem 1.25rem;
     }
     .activity-elevation svg {
       display: block;
@@ -349,7 +350,7 @@ function renderElevationChart(activity) {
   if (!elev || elev.length < 2) return '';
 
   const W = 1000, H = 160;
-  const PL = 62, PR = 12, PT = 14, PB = 18;
+  const PL = 85, PR = 12, PT = 14, PB = 18;
   const CW = W - PL - PR, CH = H - PT - PB;
   const n = elev.length;
 
