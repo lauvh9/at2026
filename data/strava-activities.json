@@ -1,5 +1,349 @@
 [
   {
+    "id": 18339565932,
+    "name": "Day 4",
+    "description": "Long day! Saw the shoe tree at Neels Gap (where people who quit the trail on day 3 throw their shoes up), did a mini resupply at Mountain Crossings at Walasi-Yi, and rejoined my new friends from yesterday back at Low Gap Shelter!\n\nEnd mile: 43",
+    "start_date": "2026-05-01T12:18:43Z",
+    "start_date_local": "2026-05-01T08:18:43Z",
+    "distance": 27759.7,
+    "moving_time": 29683,
+    "elapsed_time": 35319,
+    "total_elevation_gain": 1173,
+    "end_mile": 43,
+    "altitude_stream": [
+      1097.8,
+      1093.2,
+      1105.4,
+      1115.8,
+      1129.8,
+      1132.8,
+      1138.6,
+      1146.8,
+      1155.4,
+      1166.2,
+      1176.6,
+      1188.8,
+      1200.6,
+      1212.2,
+      1223.4,
+      1222.6,
+      1221,
+      1220.2,
+      1220,
+      1229.2,
+      1237.4,
+      1250,
+      1263,
+      1273.4,
+      1278.4,
+      1287,
+      1293,
+      1302.6,
+      1309,
+      1321.4,
+      1332,
+      1338,
+      1345,
+      1351.8,
+      1355.6,
+      1357.4,
+      1354.8,
+      1343.2,
+      1338,
+      1337.2,
+      1331.6,
+      1319,
+      1309.2,
+      1296.6,
+      1285.2,
+      1275.8,
+      1269.2,
+      1258,
+      1251.4,
+      1250.2,
+      1246.4,
+      1248.8,
+      1242,
+      1228.8,
+      1217.8,
+      1211.6,
+      1201.6,
+      1188.6,
+      1178.6,
+      1171.6,
+      1163,
+      1150.4,
+      1141.6,
+      1131.4,
+      1123.8,
+      1110,
+      1098.4,
+      1091.4,
+      1082.8,
+      1071,
+      1059.2,
+      1051.2,
+      1053,
+      1047.6,
+      1039,
+      1027.4,
+      1013.6,
+      1005.4,
+      996.8,
+      993.4,
+      984.2,
+      980.4,
+      974.2,
+      960.2,
+      949.2,
+      950,
+      949.2,
+      949,
+      949.2,
+      949,
+      948.6,
+      947.2,
+      949.2,
+      959.2,
+      970.4,
+      972.8,
+      985.8,
+      999.6,
+      1010.4,
+      1020,
+      1030.6,
+      1038.2,
+      1047.8,
+      1061.8,
+      1073.8,
+      1083.2,
+      1083,
+      1094.2,
+      1102.2,
+      1108.8,
+      1112,
+      1114.4,
+      1126.6,
+      1139.4,
+      1152.4,
+      1168,
+      1175.4,
+      1176.4,
+      1183.2,
+      1172.8,
+      1173.6,
+      1170.2,
+      1160.8,
+      1158.8,
+      1156.2,
+      1144,
+      1134.2,
+      1117.8,
+      1103.2,
+      1089.2,
+      1078.2,
+      1060.8,
+      1051.2,
+      1061.4,
+      1071.8,
+      1079.4,
+      1072.6,
+      1062.6,
+      1063.4,
+      1053.6,
+      1045.8,
+      1045.8,
+      1047.6,
+      1051.2,
+      1062,
+      1063.8,
+      1067.6,
+      1077.6,
+      1079,
+      1082.6,
+      1091.6,
+      1104.6,
+      1114.6,
+      1110.4,
+      1115,
+      1125.2,
+      1137,
+      1149.6,
+      1138.4,
+      1123,
+      1109,
+      1107.6,
+      1093.6,
+      1081.8,
+      1077.2,
+      1077.8,
+      1081.6,
+      1089.4,
+      1098.2,
+      1105,
+      1111.6,
+      1124.4,
+      1135.6,
+      1141,
+      1140.4,
+      1153.4,
+      1160.4,
+      1161.6,
+      1159.4,
+      1163.2,
+      1173.6,
+      1161.2,
+      1147,
+      1141.6,
+      1132,
+      1118.4,
+      1107.4,
+      1093.8,
+      1079,
+      1065,
+      1053.6,
+      1043.2,
+      1041,
+      1031.2,
+      1017.8,
+      1009.6,
+      994.8,
+      983.6,
+      974.2,
+      974.2,
+      977.4,
+      989.2,
+      999.2,
+      1014.4,
+      1024.8,
+      1030.8,
+      1036,
+      1045.2,
+      1056,
+      1065.8,
+      1077.2,
+      1083,
+      1092.8,
+      1100.4,
+      1108.8,
+      1118.2,
+      1123.6,
+      1126.2,
+      1134.6,
+      1125.4,
+      1119.4,
+      1108.2,
+      1097.4,
+      1082.2,
+      1069.6,
+      1074,
+      1076.6,
+      1086.4,
+      1090.6,
+      1098,
+      1103.4,
+      1111.4,
+      1113.8,
+      1113.2,
+      1104.4,
+      1092.8,
+      1085.6,
+      1082.6,
+      1073.8,
+      1080,
+      1088.2,
+      1095,
+      1101.8,
+      1104.6,
+      1110.8,
+      1112.4,
+      1106.6,
+      1100.8,
+      1093,
+      1088.8,
+      1084.8,
+      1079.2,
+      1080.2,
+      1087.2,
+      1091.2,
+      1090.8,
+      1084.2,
+      1077.2,
+      1069.6,
+      1059,
+      1051.6,
+      1041.8,
+      1031.2,
+      1020.2,
+      1008.8,
+      1007.6,
+      998,
+      999.2,
+      1010.2,
+      1019.2,
+      1031,
+      1041.8,
+      1050,
+      1058.8,
+      1053.4,
+      1055.6,
+      1055.6,
+      1056.4,
+      1068,
+      1081,
+      1087,
+      1083.2,
+      1095.6,
+      1103.6,
+      1095,
+      1086,
+      1075.2,
+      1065.6,
+      1054.2,
+      1049,
+      1039.6,
+      1027.8,
+      1015.8,
+      1002.6,
+      990,
+      977.8,
+      963.4,
+      955,
+      945.4,
+      931
+    ],
+    "photos": [
+      "https://dgtzuqphqg23d.cloudfront.net/JDFts9O2zoE29tU0yvegpYjr0_NTlM90GAtsyJyFDqI-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/b-ECyM6OushaaFAVZUzP5AccLk8Q1ggPqaeVqi-PqQU-1152x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/OcLmPP75pkwZprn5utCivRezKi9fZ7cjHQYz4mzjZXw-1152x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/qDc5mV45HAbS5dtD0FEeKReMgvbbNBdWA2rjkNVOO-I-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/MJc0Od2SQb8hVnVZQqrMt_H-4j8Qv_NXXVTwY40tIKo-2048x1536.jpg"
+    ],
+    "videos": [],
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/JDFts9O2zoE29tU0yvegpYjr0_NTlM90GAtsyJyFDqI-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/b-ECyM6OushaaFAVZUzP5AccLk8Q1ggPqaeVqi-PqQU-1152x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/OcLmPP75pkwZprn5utCivRezKi9fZ7cjHQYz4mzjZXw-1152x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/qDc5mV45HAbS5dtD0FEeKReMgvbbNBdWA2rjkNVOO-I-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/MJc0Od2SQb8hVnVZQqrMt_H-4j8Qv_NXXVTwY40tIKo-2048x1536.jpg"
+      }
+    ]
+  },
+  {
     "id": 18324912983,
     "name": "Day 3",
     "description": "Survived a scary thunderstorm in my tent last night and was rewarded with low humidity, stunning views, and some new friends today!\n\nEnd mile: 27.7",
@@ -313,12 +657,46 @@
       1088.8
     ],
     "photos": [
-      "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/hJRS-cVsqMFWXEzek1hCCAMM3gJbE9swDcQ0ZIEQkd0-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/fweTZW1Wm_rn5OMvZbNXBDXqCDTerlojGAjonC3W_qU-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/MKD7KRT5c846qjqIkDpd4Cw4EEJTTvAsHuLBxgRxM1A-2048x1536.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/7yn6io82V0glrMxnLbLtbqH2l63MhAu0oIleSx_qvBo-1152x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/mECrHwy17fbmBpQsamf2Vk_C7dNJv-pfbv0gVM6lZZc-1536x2048.jpg"
+    ],
+    "videos": [
+      {
+        "src": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
+        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
+        "playable": false
+      }
+    ],
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/hJRS-cVsqMFWXEzek1hCCAMM3gJbE9swDcQ0ZIEQkd0-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/fweTZW1Wm_rn5OMvZbNXBDXqCDTerlojGAjonC3W_qU-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/MKD7KRT5c846qjqIkDpd4Cw4EEJTTvAsHuLBxgRxM1A-2048x1536.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/7yn6io82V0glrMxnLbLtbqH2l63MhAu0oIleSx_qvBo-1152x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/mECrHwy17fbmBpQsamf2Vk_C7dNJv-pfbv0gVM6lZZc-1536x2048.jpg"
+      },
+      {
+        "type": "video",
+        "src": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
+        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
+        "playable": false
+      }
     ]
   },
   {
@@ -640,6 +1018,29 @@
       "https://dgtzuqphqg23d.cloudfront.net/vkkR1ulczLpHnFZ8EaZP76f-xBieVZn2Ale6jUtwZQQ-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/TwcHP4F701y_nNQsBCzXKLEhZR06uFepvJEprGUyidk-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/Kxb6AspPOpkzBcHVe7SDQz3DhCAjH1NWnOT62XgNuM4-2048x1536.jpg"
+    ],
+    "videos": [],
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/rjxXPXYJJfKKczFp7sg8oLo2mnuBarXZtZBZT8_xUbE-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/XKbVI57jMzP72WRr5FwK5z-1NuM7RTYcKkl0U2LvW5w-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/vkkR1ulczLpHnFZ8EaZP76f-xBieVZn2Ale6jUtwZQQ-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/TwcHP4F701y_nNQsBCzXKLEhZR06uFepvJEprGUyidk-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/Kxb6AspPOpkzBcHVe7SDQz3DhCAjH1NWnOT62XgNuM4-2048x1536.jpg"
+      }
     ]
   },
   {
@@ -964,6 +1365,41 @@
       "https://dgtzuqphqg23d.cloudfront.net/mn69g80S0ckQhbHwbJr2ZQ7VovmitP8zKiUBn7s0jIA-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/2a051mQV2ItXCA5J4TOB06CvqduvjXchAcfvWPie5pQ-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/oPRkffJkC86FP0OUYKl5vDCGj3uW-IHcq3x4mWMRv3Y-1536x2048.jpg"
+    ],
+    "videos": [],
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/DZ8-8Agb8Uo7q-2bbPaeNwzjPBza_j7_8YGsisNX5a4-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/DHYcNvYWpUbLcrWx008oYLtVcmKBXHVTf7O8c23B728-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/RssTLLF7TaFonhwP23SFuUKM3Bi8AL3LNQqDzL_IErQ-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/LwrNxbx7ZxbWZ3AG3zBOhp_UgN1JSyo8xOIJzBK2PfQ-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/BZmbfz5cQlYIZX-Bnz1IGaZmYCMvUdNIrHtB-EFNOF8-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/mn69g80S0ckQhbHwbJr2ZQ7VovmitP8zKiUBn7s0jIA-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/2a051mQV2ItXCA5J4TOB06CvqduvjXchAcfvWPie5pQ-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/oPRkffJkC86FP0OUYKl5vDCGj3uW-IHcq3x4mWMRv3Y-1536x2048.jpg"
+      }
     ]
   },
   {
@@ -1279,7 +1715,9 @@
       13.6,
       13.6
     ],
-    "photos": []
+    "photos": [],
+    "videos": [],
+    "media": []
   },
   {
     "id": 18225694983,
@@ -1597,6 +2035,17 @@
     "photos": [
       "https://dgtzuqphqg23d.cloudfront.net/lvwMRdrfn5pS5QEWESUZDlskEnAGqbbI0Yo_ESjvR9M-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/8XQQrlzaR6pkjLY8SILAlKzBgbHYZ5wbAWu1n6l1YZk-1536x2048.jpg"
+    ],
+    "videos": [],
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/lvwMRdrfn5pS5QEWESUZDlskEnAGqbbI0Yo_ESjvR9M-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/8XQQrlzaR6pkjLY8SILAlKzBgbHYZ5wbAWu1n6l1YZk-1536x2048.jpg"
+      }
     ]
   },
   {
@@ -1912,8 +2361,21 @@
       7,
       7
     ],
-    "photos": [
-      "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg"
+    "photos": [],
+    "videos": [
+      {
+        "src": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
+        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
+        "playable": false
+      }
+    ],
+    "media": [
+      {
+        "type": "video",
+        "src": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
+        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
+        "playable": false
+      }
     ]
   }
 ]
