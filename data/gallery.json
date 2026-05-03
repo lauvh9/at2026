@@ -1,5 +1,65 @@
 [
   {
+    "date": "May 2, 2026",
+    "source": "strava",
+    "activityId": 18348662677,
+    "activityName": "Day 5",
+    "caption": "Day 5",
+    "src": "https://d35tn3x5zm6xrc.cloudfront.net/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs/thumbnails/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs_1080x1920.jpg",
+    "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs/thumbnails/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs_1080x1920.jpg",
+    "type": "video",
+    "playable": false,
+    "stravaUrl": "https://www.strava.com/activities/18348662677"
+  },
+  {
+    "date": "May 2, 2026",
+    "source": "strava",
+    "activityId": 18348662677,
+    "activityName": "Day 5",
+    "caption": "Day 5",
+    "src": "https://d35tn3x5zm6xrc.cloudfront.net/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk/thumbnails/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk_1080x1920.jpg",
+    "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk/thumbnails/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk_1080x1920.jpg",
+    "type": "video",
+    "playable": false,
+    "stravaUrl": "https://www.strava.com/activities/18348662677"
+  },
+  {
+    "date": "May 2, 2026",
+    "source": "strava",
+    "activityId": 18348662677,
+    "activityName": "Day 5",
+    "caption": "Day 5",
+    "src": "https://dgtzuqphqg23d.cloudfront.net/Wq-d1rG-q4rl8iwMkvfh2KOdIFL5-72yat-d6oa02xg-2048x1536.jpg",
+    "type": "photo"
+  },
+  {
+    "date": "May 2, 2026",
+    "source": "strava",
+    "activityId": 18348662677,
+    "activityName": "Day 5",
+    "caption": "Day 5",
+    "src": "https://dgtzuqphqg23d.cloudfront.net/n1ZJqUEIsBefBnG5FxfrTPgbEVjVKjy7FfMfmTuvxL0-1536x2048.jpg",
+    "type": "photo"
+  },
+  {
+    "date": "May 2, 2026",
+    "source": "strava",
+    "activityId": 18348662677,
+    "activityName": "Day 5",
+    "caption": "Day 5",
+    "src": "https://dgtzuqphqg23d.cloudfront.net/sdkkZVrouRX8grExZSR7Ang1bnoXH5Pkx-vIVkfwTDE-1536x2048.jpg",
+    "type": "photo"
+  },
+  {
+    "date": "May 2, 2026",
+    "source": "strava",
+    "activityId": 18348662677,
+    "activityName": "Day 5",
+    "caption": "Day 5",
+    "src": "https://dgtzuqphqg23d.cloudfront.net/x5Eac0VADYU-A06YrAxK9ssJBCsQZhdKd98OmVUs-nk-1536x2048.jpg",
+    "type": "photo"
+  },
+  {
     "date": "May 1, 2026",
     "source": "strava",
     "activityId": 18339565932,
