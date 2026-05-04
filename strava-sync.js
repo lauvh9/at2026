@@ -213,9 +213,11 @@ async function main() {
     .reduce((sum, { fullActivity: f }) => sum + (f.distance || 0), 0);
   const totalDistanceMiles = parseFloat((totalDistanceMeters / 1609.34).toFixed(1));
 
-  // Current hiking day — derived from the most recent hiking activity's date
+  // Current hiking day — derived from the most recent activity since hike start.
+  // We don't require an end-mile marker; any activity counts so the day counter
+  // stays current even on rest days or days without a description.
   const latestHikingActivity = fullActivities.find(({ fullActivity: f }) =>
-    new Date(f.start_date) >= HIKE_START_DATE && parseMile(f.description) !== null
+    new Date(f.start_date) >= HIKE_START_DATE
   );
   let currentDay = latestStatus.current_day || null;
   if (latestHikingActivity) {

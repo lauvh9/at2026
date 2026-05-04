@@ -1,9 +1,10 @@
 name: Strava Trail Sync
 
 on:
-  # Runs every day at 10am Eastern (2pm UTC — EDT is UTC-4 during the hike season)
+  # Runs every day at 9:30am EDT (1:30pm UTC). GitHub Actions can delay up to
+  # 30-60 min, so starting 30 min early keeps it reliable by 10am Eastern.
   schedule:
-    - cron: '0 14 * * *'
+    - cron: '30 13 * * *'
 
   # Also lets you trigger it manually from the GitHub Actions tab
   workflow_dispatch:
