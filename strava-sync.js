@@ -180,7 +180,7 @@ async function main() {
   ensureDir(path.join(__dirname, 'data'));
 
   const token      = await refreshAccessToken();
-  const activities = await fetchRecentActivities(token, 10);
+  const activities = await fetchRecentActivities(token, 50);
 
   if (!activities.length) {
     console.log('No activities found.');
@@ -207,40 +207,7 @@ async function main() {
     console.log(`Activity: "${fullActivity.name}" (${formatDate(fullActivity.start_date_local).iso})`);
   }
 
-  // Total distance walked since hike start (all activities from Apr 28 onward)
-  const totalDistanceMeters = fullActivities
-    .filter(({ fullActivity: f }) => new Date(f.start_date) >= HIKE_START_DATE)
-    .reduce((sum, { fullActivity: f }) => sum + (f.distance || 0), 0);
-  const totalDistanceMiles = parseFloat((totalDistanceMeters / 1609.34).toFixed(1));
-
-  // Current hiking day — derived from the most recent activity since hike start.
-  // We don't require an end-mile marker; any activity counts so the day counter
-  // stays current even on rest days or days without a description.
-  const latestHikingActivity = fullActivities.find(({ fullActivity: f }) =>
-    new Date(f.start_date) >= HIKE_START_DATE
-  );
-  let currentDay = latestStatus.current_day || null;
-  if (latestHikingActivity) {
-    const actDate = new Date(latestHikingActivity.fullActivity.start_date_local || latestHikingActivity.fullActivity.start_date);
-    currentDay = Math.floor((actDate - HIKE_START_DATE) / (1000 * 60 * 60 * 24)) + 1;
-  }
-
-  // Write trail status JSON (read by index.html)
-  if (latestMile !== null || totalDistanceMiles > 0) {
-    const updated = {
-      ...latestStatus,
-      ...(latestMile !== null ? { miles_hiked: latestMile } : {}),
-      total_distance_miles: totalDistanceMiles,
-      ...(currentDay !== null ? { current_day: currentDay } : {}),
-      last_updated: new Date().toISOString(),
-    };
-    fs.writeFileSync(STATUS_FILE, JSON.stringify(updated, null, 2), 'utf8');
-    console.log(`Updated trail-status.json → miles_hiked: ${latestMile}, total_distance_miles: ${totalDistanceMiles}, current_day: ${currentDay}`);
-  } else {
-    console.log('No mile data found; trail-status.json unchanged.');
-  }
-
-  // Write strava-activities.json for the Strava Log page
+  // Build fresh activity data for everything in the current fetch
   const stravaActivitiesData = [];
   for (const { activity, fullActivity: full } of fullActivities) {
     const [{ photos, videos }, altitude_stream] = await Promise.all([
@@ -273,8 +240,60 @@ async function main() {
     });
   }
 
-  fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(stravaActivitiesData, null, 2), 'utf8');
-  console.log(`Wrote strava-activities.json (${stravaActivitiesData.length} activities)`);
+  // Merge with existing to preserve history beyond the per_page fetch window.
+  // New fetched data takes precedence (updated descriptions, re-fetched media).
+  const existingActivities = loadJSON(ACTIVITIES_FILE, []);
+  const newIds = new Set(stravaActivitiesData.map(a => a.id));
+  const mergedActivities = [
+    ...stravaActivitiesData,
+    ...existingActivities.filter(a => !newIds.has(a.id)),
+  ];
+  mergedActivities.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+
+  fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(mergedActivities, null, 2), 'utf8');
+  console.log(`Wrote strava-activities.json (${mergedActivities.length} total, ${stravaActivitiesData.length} refreshed)`);
+
+  // Total distance from ALL merged activities since hike start — never undercounts
+  // even when older activities fall outside the per_page fetch window.
+  const totalDistanceMeters = mergedActivities
+    .filter(a => new Date(a.start_date) >= HIKE_START_DATE)
+    .reduce((sum, a) => sum + (a.distance || 0), 0);
+  const totalDistanceMiles = parseFloat((totalDistanceMeters / 1609.34).toFixed(1));
+
+  // Current hiking day — derived from the most recent activity since hike start.
+  // We don't require an end-mile marker; any activity counts so the day counter
+  // stays current even on rest days or days without a description.
+  const latestHikingActivity = fullActivities.find(({ fullActivity: f }) =>
+    new Date(f.start_date) >= HIKE_START_DATE
+  );
+  let currentDay = latestStatus.current_day || null;
+  if (latestHikingActivity) {
+    const actDate = new Date(latestHikingActivity.fullActivity.start_date_local || latestHikingActivity.fullActivity.start_date);
+    currentDay = Math.floor((actDate - HIKE_START_DATE) / (1000 * 60 * 60 * 24)) + 1;
+  }
+
+  // miles_hiked tracks AT trail position (from "End mile: N" in descriptions).
+  // Only ever increase it — missing a tag on a recent activity should not
+  // reset progress back to the last tagged day.
+  const prevMilesHiked = latestStatus.miles_hiked ?? null;
+  const newMilesHiked = latestMile !== null
+    ? Math.max(latestMile, prevMilesHiked ?? 0)
+    : prevMilesHiked;
+
+  // Write trail status JSON (read by index.html)
+  if (newMilesHiked !== null || totalDistanceMiles > 0) {
+    const updated = {
+      ...latestStatus,
+      ...(newMilesHiked !== null ? { miles_hiked: newMilesHiked } : {}),
+      total_distance_miles: totalDistanceMiles,
+      ...(currentDay !== null ? { current_day: currentDay } : {}),
+      last_updated: new Date().toISOString(),
+    };
+    fs.writeFileSync(STATUS_FILE, JSON.stringify(updated, null, 2), 'utf8');
+    console.log(`Updated trail-status.json → miles_hiked: ${newMilesHiked}, total_distance_miles: ${totalDistanceMiles}, current_day: ${currentDay}`);
+  } else {
+    console.log('No mile data found; trail-status.json unchanged.');
+  }
 
   // Update gallery.json with any new Strava photos + videos (deduplicate by URL)
   const gallery      = loadJSON(GALLERY_FILE, []);
