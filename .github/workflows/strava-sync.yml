@@ -8,6 +8,11 @@ on:
 
   # Also lets you trigger it manually from the GitHub Actions tab
   workflow_dispatch:
+    inputs:
+      sync_before_date:
+        description: 'Exclude activities on or after this date (YYYY-MM-DD). Leave blank for all.'
+        required: false
+        default: ''
 
 jobs:
   sync:
@@ -31,6 +36,7 @@ jobs:
           STRAVA_CLIENT_ID:     ${{ secrets.STRAVA_CLIENT_ID }}
           STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
+          SYNC_BEFORE_DATE:     ${{ inputs.sync_before_date }}
         run: node strava-sync.js
 
       - name: Commit and push any changes
