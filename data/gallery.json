@@ -1,5 +1,14 @@
 [
   {
+    "date": "May 4, 2026",
+    "source": "strava",
+    "activityId": 18385126790,
+    "activityName": "Day 7: see ya GA, hello NC!",
+    "caption": "Day 7: see ya GA, hello NC!",
+    "src": "https://d3nn82uaxijpm6.cloudfront.net/assets/media/placeholder-photo@4x-67ab8c12170dd97dadc32c434c4bafebc7ca0a052fe719c48b54725f81fbbffd.png",
+    "type": "photo"
+  },
+  {
     "date": "May 3, 2026",
     "source": "strava",
     "activityId": 18364701852,
