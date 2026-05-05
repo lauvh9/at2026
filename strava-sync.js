@@ -253,6 +253,26 @@ async function main() {
   fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(mergedActivities, null, 2), 'utf8');
   console.log(`Wrote strava-activities.json (${mergedActivities.length} total, ${stravaActivitiesData.length} refreshed)`);
 
+  // Estimate trail position by walking activities in chronological order.
+  // Tagged "End mile: N" values are used as exact anchors; untagged days
+  // advance the estimate by their GPS distance so missing tags don't stall
+  // the counter. GPS miles ≈ AT miles with small error from off-trail detours.
+  {
+    const hikingAsc = mergedActivities
+      .filter(a => new Date(a.start_date) >= HIKE_START_DATE)
+      .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+    let runningEndMile = null;
+    for (const a of hikingAsc) {
+      if (a.end_mile !== null) {
+        runningEndMile = a.end_mile;
+      } else if (runningEndMile !== null) {
+        runningEndMile = parseFloat((runningEndMile + a.distance / 1609.34).toFixed(1));
+      }
+    }
+    if (runningEndMile !== null) latestMile = runningEndMile;
+  }
+
   // Total distance from ALL merged activities since hike start — never undercounts
   // even when older activities fall outside the per_page fetch window.
   const totalDistanceMeters = mergedActivities
