@@ -1,5 +1,32 @@
 [
   {
+    "src": "photos/2026-05-06-day-2-1.jpg",
+    "type": "photo",
+    "caption": "",
+    "date": "May 6, 2026",
+    "source": "blog",
+    "postLink": "blog-posts/2026-05-06-day-2.html",
+    "postTitle": "Day 2"
+  },
+  {
+    "src": "photos/2026-05-06-day-2-2.jpg",
+    "type": "photo",
+    "caption": "",
+    "date": "May 6, 2026",
+    "source": "blog",
+    "postLink": "blog-posts/2026-05-06-day-2.html",
+    "postTitle": "Day 2"
+  },
+  {
+    "src": "photos/2026-05-06-day-2-3.jpg",
+    "type": "photo",
+    "caption": "",
+    "date": "May 6, 2026",
+    "source": "blog",
+    "postLink": "blog-posts/2026-05-06-day-2.html",
+    "postTitle": "Day 2"
+  },
+  {
     "date": "May 4, 2026",
     "source": "strava",
     "activityId": 18385126790,
