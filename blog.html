@@ -480,9 +480,10 @@ async function checkPassword() {
     });
     const data = await res.json().catch(() => ({}));
     if (data.ok) {
+      localStorage.setItem('post_authed', '1');
       document.getElementById('pass-screen').classList.remove('active');
       document.getElementById('editor-screen').classList.add('active');
-      const saved = sessionStorage.getItem('gh_token');
+      const saved = localStorage.getItem('gh_token');
       if (saved) document.getElementById('gh-token').value = saved;
     } else {
       setStatus('pass-status', 'error', 'Incorrect password.');
@@ -617,6 +618,7 @@ function generatePostHTML({ title, date, tags, excerpt, body, photoFilenames = [
     '  <title>' + title + ' — Laura on Trail</title>',
     '  <meta property="og:title" content="' + title + ' — Laura on Trail">',
     '  <meta property="og:image" content="https://lauratheexplorer.co/preview.jpg">',
+    ...(excerpt ? ['  <meta name="description" content="' + excerpt + '">'] : []),
     '  <link rel="icon" type="image/x-icon" href="../favicon.ico">',
     '  <link rel="stylesheet" href="../style.css" />',
     '  <style>',
@@ -689,6 +691,7 @@ function generatePostHTML({ title, date, tags, excerpt, body, photoFilenames = [
     '  </section>',
     '</main>',
     '<scr' + 'ipt src="../comments.js"></scr' + 'ipt>',
+    '<scr' + 'ipt src="../edit.js"></scr' + 'ipt>',
     '<scr' + 'ipt>',
     'function toggleNav() {',
     '  var btn  = document.getElementById("nav-hamburger");',
@@ -787,7 +790,7 @@ async function publishPost() {
   const btn = document.getElementById('publish-btn');
   btn.disabled = true;
   setStatus('publish-status', '', '');
-  sessionStorage.setItem('gh_token', token);
+  localStorage.setItem('gh_token', token);
 
   const postSlug = `${date}-${slugify(title)}`;
   const filename = `${postSlug}.html`;
