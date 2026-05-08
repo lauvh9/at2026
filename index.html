@@ -30,6 +30,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <style>
     /* ── HOME-SPECIFIC ── */
     .current-location-card {
@@ -133,6 +134,83 @@
     }
     .state-pip.done { background: var(--pine); color: var(--fog); }
     .state-pip.current { background: var(--accent); color: var(--white); }
+
+    /* ── TRAIL MAP ── */
+    #ttlWrap { height: 500px; }
+    @media (max-width: 800px) { #ttlWrap { height: 340px; } }
+    /* Leaflet overrides to match site style */
+    .leaflet-tooltip.ttl-tip {
+      font-family: var(--mono); font-size: 0.5rem; font-weight: 700;
+      background: var(--ink); color: var(--cream);
+      border: none; box-shadow: none; border-radius: 2px;
+      padding: 3px 8px; letter-spacing: 0.06em; white-space: nowrap;
+    }
+    .leaflet-tooltip.ttl-tip::before { display: none; }
+    .leaflet-control-attribution { font-size: 0.45rem !important; }
+
+    /* ── PROPORTIONAL TRAIL TIMELINE ── */
+    .ttl-terminus {
+      display: flex; align-items: center; gap: 8px; padding: 4px 2px;
+    }
+    .ttl-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 0.52rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .ttl-dot-k { background: var(--earth); color: var(--white); }
+    .ttl-dot-s { background: var(--pine);  color: var(--white); }
+    .ttl-place {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.76rem; color: var(--earth);
+    }
+    .ttl-track {
+      position: relative; display: flex; flex-direction: column;
+      height: 480px; margin: 3px 0;
+    }
+    @media (max-width: 800px) { .ttl-track { height: 340px; } }
+    .ttl-bg-line {
+      position: absolute; top: 0; bottom: 0; left: 11px; width: 2px;
+      background: repeating-linear-gradient(
+        to bottom, var(--sand) 0, var(--sand) 5px, transparent 5px, transparent 9px
+      );
+    }
+    .ttl-done-line {
+      position: absolute; bottom: 0; left: 11px; width: 2px;
+      background: var(--pine);
+    }
+    .ttl-seg {
+      padding-left: 32px; min-height: 0;
+      border-top: 1px solid var(--fog);
+      display: flex; align-items: flex-start; padding-top: 3px;
+    }
+    .ttl-seg:first-child { border-top: none; }
+    .ttl-abbr {
+      display: block; font-family: var(--mono); font-size: 0.56rem;
+      font-weight: 700; letter-spacing: 0.06em; color: var(--trail);
+    }
+    .ttl-abbr-active { color: var(--accent); }
+    .ttl-mi {
+      display: block; font-family: var(--mono); font-size: 0.46rem;
+      color: var(--fog); letter-spacing: 0.03em; margin-top: 1px;
+    }
+    .ttl-marker {
+      position: absolute; left: 5px;
+      display: flex; align-items: center; gap: 6px;
+      transform: translateY(-50%); z-index: 5; pointer-events: none;
+    }
+    .ttl-marker-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+      border: 2px solid var(--cream);
+      box-shadow: 0 0 0 1.5px var(--accent);
+    }
+    .ttl-marker-lbl {
+      font-family: var(--mono); font-size: 0.5rem; font-weight: 700;
+      color: var(--cream); background: var(--ink);
+      padding: 2px 6px; white-space: nowrap;
+      letter-spacing: 0.06em; border-radius: 2px;
+    }
   </style>
 </head>
 <body>
@@ -263,98 +341,7 @@
           <!-- Schematic trail map -->
           <div class="trail-svg-container" style="margin-top:2rem">
             <div class="map-overlay-label">Trail route · GA → ME</div>
-            <svg viewBox="0 0 280 600" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;max-width:300px">
-              <defs>
-                <marker id="arrowTip" viewBox="0 0 10 10" refX="8" refY="5"
-                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                  <path d="M1 1L9 5L1 9" fill="none" stroke="#2d4a2d" stroke-width="2" stroke-linecap="round"/>
-                </marker>
-              </defs>
-
-              <!-- State labels (right side) -->
-              <g font-family="'Space Mono', monospace" font-size="8" fill="#8b5e3c" letter-spacing="0.05em">
-                <text x="200" y="574">GA</text>
-                <text x="200" y="514">NC/TN</text>
-                <text x="200" y="434">VA</text>
-                <text x="200" y="324">PA</text>
-                <text x="200" y="224">NY/CT/MA</text>
-                <text x="200" y="134">VT/NH</text>
-                <text x="200" y="54">ME</text>
-              </g>
-
-              <!-- State boundary lines (dashed) -->
-              <g stroke="#c9a96e" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.5">
-                <line x1="60" y1="550" x2="195" y2="550"/>
-                <line x1="60" y1="490" x2="195" y2="490"/>
-                <line x1="60" y1="400" x2="195" y2="400"/>
-                <line x1="60" y1="300" x2="195" y2="300"/>
-                <line x1="60" y1="205" x2="195" y2="205"/>
-                <line x1="60" y1="120" x2="195" y2="120"/>
-              </g>
-
-              <!-- Trail path (wiggly, goes generally N) -->
-              <path d="
-                M 100,575
-                Q 95,562 108,555
-                Q 118,548 105,538
-                Q 92,528 112,518
-                Q 125,510 115,500
-                Q 102,490 118,480
-                Q 130,470 120,460
-                Q 108,450 125,440
-                Q 138,432 128,422
-                Q 118,412 130,400
-                Q 142,390 132,378
-                Q 120,365 135,352
-                Q 148,340 140,328
-                Q 130,315 145,302
-                Q 158,290 148,278
-                Q 138,265 150,252
-                Q 162,240 155,228
-                Q 146,215 158,202
-                Q 170,190 160,178
-                Q 148,165 160,152
-                Q 170,140 162,128
-                Q 152,115 164,102
-                Q 175,90 165,78
-                Q 155,65 165,52
-                Q 172,42 168,30
-              " fill="none" stroke="#c9a96e" stroke-width="2.5" stroke-dasharray="6 3" opacity="0.55"/>
-
-              <!-- Solid trail completed — animated by JS -->
-              <path id="completedTrail" d="M 100,575 Q 95,562 108,555" fill="none" stroke="#2d4a2d" stroke-width="3" stroke-linecap="round"/>
-
-              <!-- Start marker -->
-              <g transform="translate(93,575)">
-                <circle cx="7" cy="0" r="6" fill="#2d4a2d" stroke="#f4ede0" stroke-width="1.5"/>
-                <text x="7" y="3.5" font-family="'Space Mono',monospace" font-size="6" fill="#f4ede0" text-anchor="middle">S</text>
-              </g>
-              <text x="20" y="579" font-family="'Crimson Pro',serif" font-size="9" fill="#5c3d1e" font-style="italic">Springer Mtn</text>
-
-              <!-- Current position marker (animated) -->
-              <g id="currentPosMarker" transform="translate(93,575)">
-                <circle cx="7" cy="0" r="7" fill="none" stroke="#c0392b" stroke-width="1.5" opacity="0.5">
-                  <animate attributeName="r" values="7;12;7" dur="2s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="7" cy="0" r="5" fill="#c0392b" stroke="#f4ede0" stroke-width="1.5"/>
-                <!-- Label pill — positioned and filled by JS -->
-                <rect id="markerLabelBg" x="16" y="-14" width="0" height="18" rx="3" fill="#1a1a1a" opacity="0.82"/>
-                <text id="markerLabelMile" x="22" y="-3" font-family="'Space Mono',monospace" font-size="7" font-weight="bold" fill="#c9a96e"></text>
-                <text id="markerLabelPlace" x="22" y="8" font-family="'Space Mono',monospace" font-size="6" fill="#f4ede0"></text>
-              </g>
-
-              <!-- End marker -->
-              <g transform="translate(161,22)">
-                <circle cx="7" cy="0" r="6" fill="#8b5e3c" stroke="#f4ede0" stroke-width="1.5" opacity="0.5"/>
-                <text x="7" y="3.5" font-family="'Space Mono',monospace" font-size="6" fill="#f4ede0" text-anchor="middle">K</text>
-              </g>
-              <text x="12" y="17" font-family="'Crimson Pro',serif" font-size="9" fill="#5c3d1e" font-style="italic">Katahdin</text>
-
-              <!-- Arrow pointing north -->
-              <line x1="35" y1="50" x2="35" y2="25" stroke="#2d4a2d" stroke-width="1.5" marker-end="url(#arrowTip)"/>
-              <text x="35" y="62" font-family="'Space Mono',monospace" font-size="7" fill="#8b5e3c" text-anchor="middle">N</text>
-            </svg>
+            <div id="ttlWrap"></div>
             <div class="update-notice">
               Location reflects most recent check-in and may not be perfectly accurate.
             </div>
@@ -580,6 +567,144 @@
     { mile: 2189, name: 'Mount Katahdin — Summit!', type: 'poi',     emoji: '🏁', desc: 'The northern terminus. The finish line. We made it.' },
   ];
 
+  // ── PROPORTIONAL TRAIL TIMELINE ─────────────────────────────────────────
+  // Update state mileage here if AT data changes.
+  const TRAIL_STATES = [
+    { label: "ME",    name: "Maine",                    miles: 281.4 },
+    { label: "NH",    name: "New Hampshire",            miles: 160.9 },
+    { label: "VT",    name: "Vermont",                  miles: 150.8 },
+    { label: "MA",    name: "Massachusetts",            miles: 90.2  },
+    { label: "CT",    name: "Connecticut",              miles: 51.6  },
+    { label: "NY",    name: "New York",                 miles: 88.4  },
+    { label: "NJ",    name: "New Jersey",               miles: 72.2  },
+    { label: "PA",    name: "Pennsylvania",             miles: 229.6 },
+    { label: "MD",    name: "Maryland",                 miles: 40.9  },
+    { label: "WV",    name: "West Virginia",            miles: 4.0   },
+    { label: "VA",    name: "Virginia",                 miles: 550.3 },
+    { label: "NC/TN", name: "N. Carolina / Tennessee", miles: 386.7 },
+    { label: "GA",    name: "Georgia",                  miles: 78.6  },
+  ];
+  const TTL_TOTAL = TRAIL_STATES.reduce((s, x) => s + x.miles, 0);
+
+  function renderTrailTimeline(milesHiked) {
+    const wrap = document.getElementById('ttlWrap');
+    if (!wrap) return;
+    if (typeof L === 'undefined') {
+      wrap.innerHTML = '<div style="padding:2rem;text-align:center;font-family:var(--mono);font-size:0.65rem;color:var(--trail)">Map loading…</div>';
+      return;
+    }
+
+    // AT route waypoints: { m: miles_from_springer, ll: [lat, lng] }
+    // Accurate enough to show the trail's real geography on a map.
+    // To update: adjust coordinates or add/remove waypoints as needed.
+    const AT_ROUTE = [
+      { m: 0,    ll: [34.627, -84.194] },  // Springer Mtn, GA
+      { m: 29,   ll: [34.737, -83.921] },  // Blood Mountain, GA
+      { m: 78,   ll: [34.901, -83.557] },  // GA/NC border
+      { m: 109,  ll: [35.147, -83.382] },  // Franklin, NC
+      { m: 137,  ll: [35.349, -83.678] },  // Nantahala OC, NC
+      { m: 164,  ll: [35.444, -83.807] },  // Fontana Dam, NC
+      { m: 200,  ll: [35.563, -83.499] },  // Clingmans Dome
+      { m: 238,  ll: [35.719, -83.270] },  // Davenport Gap
+      { m: 275,  ll: [35.893, -82.833] },  // Hot Springs, NC
+      { m: 344,  ll: [36.130, -82.197] },  // Erwin, TN
+      { m: 396,  ll: [36.104, -82.107] },  // Roan Mountain
+      { m: 453,  ll: [36.638, -81.781] },  // Damascus, VA
+      { m: 500,  ll: [36.660, -81.545] },  // Mt. Rogers area
+      { m: 592,  ll: [37.352, -80.736] },  // Pearisburg, VA
+      { m: 730,  ll: [37.411, -79.762] },  // Daleville, VA
+      { m: 865,  ll: [38.069, -78.889] },  // Waynesboro, VA
+      { m: 927,  ll: [38.525, -78.438] },  // Big Meadows, Shenandoah
+      { m: 972,  ll: [38.918, -77.986] },  // Front Royal, VA
+      { m: 1026, ll: [39.323, -77.729] },  // Harpers Ferry, WV
+      { m: 1065, ll: [39.715, -77.527] },  // Pen Mar, MD/PA
+      { m: 1105, ll: [40.033, -77.306] },  // Pine Grove Furnace, PA
+      { m: 1150, ll: [40.383, -77.023] },  // Duncannon, PA
+      { m: 1220, ll: [40.575, -75.990] },  // Hamburg, PA
+      { m: 1298, ll: [40.971, -75.133] },  // Delaware Water Gap
+      { m: 1360, ll: [41.221, -74.500] },  // High Point area, NJ
+      { m: 1415, ll: [41.313, -74.004] },  // Bear Mountain, NY
+      { m: 1452, ll: [41.560, -73.618] },  // Pawling, NY
+      { m: 1508, ll: [41.988, -73.420] },  // Salisbury, CT
+      { m: 1576, ll: [42.473, -73.169] },  // Dalton, MA
+      { m: 1618, ll: [42.878, -73.192] },  // Bennington, VT
+      { m: 1658, ll: [43.163, -73.063] },  // Manchester Center, VT
+      { m: 1708, ll: [43.605, -72.820] },  // Killington, VT
+      { m: 1755, ll: [43.702, -72.288] },  // Hanover, NH
+      { m: 1808, ll: [44.108, -71.678] },  // Franconia Notch, NH
+      { m: 1878, ll: [44.386, -71.173] },  // Gorham, NH
+      { m: 1900, ll: [44.506, -70.969] },  // NH/ME border
+      { m: 1950, ll: [44.631, -70.747] },  // Andover, ME
+      { m: 2009, ll: [45.103, -70.429] },  // Stratton, ME
+      { m: 2046, ll: [45.204, -69.957] },  // Caratunk, ME
+      { m: 2079, ll: [45.295, -69.507] },  // Monson, ME
+      { m: 2150, ll: [45.620, -69.150] },  // 100-Mile Wilderness
+      { m: 2189, ll: [45.904, -68.921] },  // Katahdin, ME
+    ];
+
+    // Split route into completed and remaining portions at current mile
+    const completedLL = [];
+    const remainingLL = [];
+    for (let i = 0; i < AT_ROUTE.length; i++) {
+      const wp = AT_ROUTE[i];
+      const next = AT_ROUTE[i + 1];
+      if (wp.m <= milesHiked) {
+        completedLL.push(wp.ll);
+        if (next && next.m > milesHiked) {
+          // Interpolate the exact split point between waypoints
+          const t = (milesHiked - wp.m) / (next.m - wp.m);
+          const split = [
+            wp.ll[0] + t * (next.ll[0] - wp.ll[0]),
+            wp.ll[1] + t * (next.ll[1] - wp.ll[1]),
+          ];
+          completedLL.push(split);
+          remainingLL.push(split);
+        }
+      } else {
+        remainingLL.push(wp.ll);
+      }
+    }
+    if (completedLL.length === 0) AT_ROUTE.forEach(w => remainingLL.push(w.ll));
+
+    // Init Leaflet map
+    const map = L.map(wrap, { scrollWheelZoom: false, zoomControl: true });
+
+    // CartoDB Positron — clean, minimal, no API key required
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 15,
+    }).addTo(map);
+
+    // Remaining trail — dashed, sand/gold
+    if (remainingLL.length > 1) {
+      L.polyline(remainingLL, { color: '#c9a96e', weight: 3, opacity: 0.65, dashArray: '7 5' }).addTo(map);
+    }
+
+    // Completed trail — solid pine green
+    if (completedLL.length > 1) {
+      L.polyline(completedLL, { color: '#507856', weight: 4, opacity: 0.9 }).addTo(map);
+    }
+
+    // Endpoint markers
+    const dotStyle = { radius: 6, color: '#fdfaf5', weight: 2, opacity: 1, fillOpacity: 1 };
+    L.circleMarker([34.627, -84.194], { ...dotStyle, fillColor: '#507856' })
+      .bindTooltip('Springer Mtn', { direction: 'right', className: 'ttl-tip' }).addTo(map);
+    L.circleMarker([45.904, -68.921], { ...dotStyle, fillColor: '#3a2e1a' })
+      .bindTooltip('Katahdin', { direction: 'right', className: 'ttl-tip' }).addTo(map);
+
+    // Current position marker
+    if (milesHiked > 0 && completedLL.length > 0) {
+      const pos = completedLL[completedLL.length - 1];
+      L.circleMarker(pos, { ...dotStyle, radius: 8, fillColor: '#8b3a1a' })
+        .bindTooltip(`Mile ${milesHiked.toLocaleString()}`, { permanent: true, direction: 'right', className: 'ttl-tip' })
+        .addTo(map);
+    }
+
+    // Fit map to show the full trail with a little padding
+    map.fitBounds(L.latLngBounds(AT_ROUTE.map(w => w.ll)), { padding: [16, 16] });
+  }
+
   window.addEventListener('load', async () => {
     // Try to load miles from the auto-updated JSON file.
     // Falls back to FALLBACK_MILES if running locally or file doesn't exist.
@@ -708,122 +833,8 @@
         </div>`;
     }).join('');
 
-    // ── ANIMATED TRAIL MAP ───────────────────────────────────────────────────
-    // The full trail path is the same curve as the dashed background path.
-    // We use getPointAtLength() to find where the hiker is and stroke-dasharray
-    // to draw only the completed portion as a solid green line.
-
-    const trailPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    trailPath.setAttribute('d', `
-      M 100,575
-      Q 95,562 108,555
-      Q 118,548 105,538
-      Q 92,528 112,518
-      Q 125,510 115,500
-      Q 102,490 118,480
-      Q 130,470 120,460
-      Q 108,450 125,440
-      Q 138,432 128,422
-      Q 118,412 130,400
-      Q 142,390 132,378
-      Q 120,365 135,352
-      Q 148,340 140,328
-      Q 130,315 145,302
-      Q 158,290 148,278
-      Q 138,265 150,252
-      Q 162,240 155,228
-      Q 146,215 158,202
-      Q 170,190 160,178
-      Q 148,165 160,152
-      Q 170,140 162,128
-      Q 152,115 164,102
-      Q 175,90 165,78
-      Q 155,65 165,52
-      Q 172,42 168,30
-    `);
-
-    const totalPathLen = trailPath.getTotalLength();
-    const pctComplete  = Math.min(MILES_HIKED / TOTAL_MILES, 1);
-    const hikedLen     = totalPathLen * pctComplete;
-
-    // Update completed trail stroke using dash trick:
-    // dasharray "hikedLen totalPathLen" draws exactly hikedLen px of stroke
-    const completedEl = document.getElementById('completedTrail');
-    completedEl.setAttribute('d', trailPath.getAttribute('d'));
-    completedEl.setAttribute('stroke-dasharray', `0 ${totalPathLen}`);
-    completedEl.setAttribute('stroke-dashoffset', '0');
-
-    // Animate the stroke growing from 0 to hikedLen over 1.4s
-    setTimeout(() => {
-      completedEl.style.transition = 'stroke-dasharray 1.4s cubic-bezier(0.4,0,0.2,1)';
-      completedEl.setAttribute('stroke-dasharray', `${hikedLen} ${totalPathLen}`);
-    }, 400);
-
-    // Move the current position marker to the correct point on the path
-    const pos = trailPath.getPointAtLength(hikedLen);
-    const marker = document.getElementById('currentPosMarker');
-    marker.setAttribute('transform', `translate(${pos.x - 7}, ${pos.y})`);
-
-    // ── MARKER LABEL ─────────────────────────────────────────────────────────
-    // Find the nearest waypoint and build a label string
-    if (MILES_HIKED > 0) {
-      // Check if we're AT a waypoint (within 3 miles)
-      const AT_THRESHOLD = 3;
-      const nearby = TRAIL_WAYPOINTS.find(w => Math.abs(w.mile - MILES_HIKED) <= AT_THRESHOLD);
-
-      let placeLine;
-      if (nearby) {
-        // At or very near a named waypoint
-        placeLine = nearby.name.length > 18 ? nearby.name.slice(0, 17) + '…' : nearby.name;
-      } else {
-        // Find the next waypoint ahead and say "X mi from ..."
-        const next = TRAIL_WAYPOINTS.find(w => w.mile > MILES_HIKED);
-        if (next) {
-          const diff = Math.round(next.mile - MILES_HIKED);
-          const shortName = next.name.replace(/,.*$/, '').trim(); // drop ", STATE" suffix
-          const clipped = shortName.length > 14 ? shortName.slice(0, 13) + '…' : shortName;
-          placeLine = `${diff} mi to ${clipped}`;
-        } else {
-          placeLine = 'Near Katahdin';
-        }
-      }
-
-      const mileLine = `Mile ${MILES_HIKED}`;
-
-      // Measure approximate text widths (monospace ~5.5px/char at font-size 7,  ~4.8px at 6)
-      const mileW  = mileLine.length  * 5.5;
-      const placeW = placeLine.length * 4.8;
-      const labelW = Math.max(mileW, placeW) + 16; // 8px padding each side
-
-      const mileEl  = document.getElementById('markerLabelMile');
-      const placeEl = document.getElementById('markerLabelPlace');
-      const bgEl    = document.getElementById('markerLabelBg');
-
-      mileEl.textContent  = mileLine;
-      placeEl.textContent = placeLine;
-
-      // Flip label to the LEFT of the dot if too close to right edge of viewBox (280px)
-      // pos.x is in SVG coords; dot center is at pos.x (after the -7 translate)
-      const dotCenterX = pos.x; // absolute SVG x of dot center
-      const flipLeft   = dotCenterX + labelW + 20 > 260;
-
-      if (flipLeft) {
-        // Label sits to the left: anchor at x = -labelW - 10 relative to group origin
-        const lx = -(labelW + 10);
-        bgEl.setAttribute('x',      lx);
-        bgEl.setAttribute('width',  labelW);
-        mileEl.setAttribute('x',    lx + 8);
-        placeEl.setAttribute('x',   lx + 8);
-      } else {
-        // Label sits to the right (default)
-        bgEl.setAttribute('x',     16);
-        bgEl.setAttribute('width', labelW);
-        mileEl.setAttribute('x',   22);
-        placeEl.setAttribute('x',  22);
-      }
-
-      bgEl.setAttribute('width', labelW);
-    }
+    // ── TRAIL TIMELINE ───────────────────────────────────────────────────────
+    renderTrailTimeline(MILES_HIKED);
 
   });
 
@@ -936,6 +947,7 @@
   })();
 </script>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="subscribe.js"></script>
 <script>
 function toggleNav() {
