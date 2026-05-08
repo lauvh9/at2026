@@ -305,6 +305,31 @@ h3 { font-size: 1.1rem; font-weight: 700; }
   position: relative;
 }
 .progress-fill::after { display: none; }
+.progress-track-outer {
+  position: relative;
+  padding-top: 1.3rem;
+  padding-bottom: 1.3rem;
+}
+.progress-pct,
+.progress-miles-hiked {
+  position: absolute;
+  left: 0;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--trail);
+  white-space: nowrap;
+}
+.progress-pct { top: 0; }
+.progress-miles-hiked { bottom: 0; }
+.progress-miles-remain {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--trail);
+  white-space: nowrap;
+}
 
 /* ── STAT GRID ───────────────────────────────────────── */
 .stat-grid {
