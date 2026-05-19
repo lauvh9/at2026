@@ -421,11 +421,6 @@
                onchange="handlePhotoFiles(this.files)">
         <div class="photo-previews" id="photo-previews"></div>
       </div>
-      <div class="field">
-        <label>GitHub personal access token</label>
-        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-        <div class="field-note">Needs repo write access. Go to GitHub → Settings → Developer Settings → Personal access tokens → Generate new token (classic) → check "repo".</div>
-      </div>
       <div class="modal-actions">
         <button class="btn btn-primary" id="publish-btn" onclick="publishPost()">Publish post →</button>
         <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
@@ -440,20 +435,28 @@
 const GITHUB_OWNER = 'lauvh9';
 const GITHUB_REPO  = 'at2026';
 const WORKER_URL   = 'https://at2026-comments.lauvh9.workers.dev';
+const PASS_KEY     = 'post_password';
 
 // ── MODAL ────────────────────────────────────────────────────────────────────
 function openModal() {
   document.getElementById('modal').classList.add('open');
   document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
   document.body.style.overflow = 'hidden';
+  // Skip password screen if already authenticated
+  if (localStorage.getItem(PASS_KEY)) {
+    document.getElementById('pass-screen').classList.remove('active');
+    document.getElementById('editor-screen').classList.add('active');
+  }
 }
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
-  // Reset to password screen
-  document.getElementById('pass-screen').classList.add('active');
-  document.getElementById('editor-screen').classList.remove('active');
-  document.getElementById('password-input').value = '';
+  // Only show password screen again if not authenticated
+  if (!localStorage.getItem(PASS_KEY)) {
+    document.getElementById('pass-screen').classList.add('active');
+    document.getElementById('editor-screen').classList.remove('active');
+    document.getElementById('password-input').value = '';
+  }
   setStatus('pass-status', '', '');
   setStatus('publish-status', '', '');
   // Clear pending photos
@@ -481,10 +484,9 @@ async function checkPassword() {
     const data = await res.json().catch(() => ({}));
     if (data.ok) {
       localStorage.setItem('post_authed', '1');
+      localStorage.setItem(PASS_KEY, val);
       document.getElementById('pass-screen').classList.remove('active');
       document.getElementById('editor-screen').classList.add('active');
-      const saved = localStorage.getItem('gh_token');
-      if (saved) document.getElementById('gh-token').value = saved;
     } else {
       setStatus('pass-status', 'error', 'Incorrect password.');
     }
@@ -745,31 +747,43 @@ function generateBlogCard({ title, date, excerpt, tags, filename }) {
         </a>`;
 }
 
-// ── PUBLISH TO GITHUB ─────────────────────────────────────────────────────────
-async function putGitHub(token, path, content, sha, commitMsg) {
-  const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`,
-    {
-      method: 'PUT',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: commitMsg, content, ...(sha ? { sha } : {}) }),
-    }
-  );
+// ── GITHUB VIA WORKER ────────────────────────────────────────────────────────
+// All GitHub writes are proxied through the Worker so GITHUB_TOKEN never
+// touches the browser. The password is the only credential stored client-side.
+async function workerRead(path) {
+  const password = localStorage.getItem(PASS_KEY);
+  if (!password) throw new Error('Session expired — please close and re-open the editor.');
+  const res = await fetch(`${WORKER_URL}/github-read`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password, path }),
+  });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `GitHub API error ${res.status} on ${path}`);
+    if (res.status === 401) {
+      localStorage.removeItem(PASS_KEY);
+      throw new Error('Password rejected — please close and re-authenticate.');
+    }
+    throw new Error(err.error || `Read error ${res.status} on ${path}`);
   }
   return res.json();
 }
 
-async function getGitHub(token, path) {
-  const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+async function workerWrite(path, content, sha, commitMsg) {
+  const password = localStorage.getItem(PASS_KEY);
+  if (!password) throw new Error('Session expired — please close and re-open the editor.');
+  const res = await fetch(`${WORKER_URL}/github-write`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password, path, content, sha: sha || undefined, message: commitMsg }),
+  });
   if (!res.ok) {
-    if (res.status === 404) return null;
-    throw new Error(`GitHub read error ${res.status} on ${path}`);
+    const err = await res.json().catch(() => ({}));
+    if (res.status === 401) {
+      localStorage.removeItem(PASS_KEY);
+      throw new Error('Password rejected — please close and re-authenticate.');
+    }
+    throw new Error(err.error || `Write error ${res.status} on ${path}`);
   }
   return res.json();
 }
@@ -780,17 +794,15 @@ async function publishPost() {
   const tags    = document.getElementById('post-tags').value.trim();
   const excerpt = document.getElementById('post-excerpt').value.trim();
   const body    = document.getElementById('post-body').value.trim();
-  const token   = document.getElementById('gh-token').value.trim();
 
-  if (!title || !date || !body || !token) {
-    setStatus('publish-status', 'error', 'Title, date, body, and GitHub token are all required.');
+  if (!title || !date || !body) {
+    setStatus('publish-status', 'error', 'Title, date, and body are all required.');
     return;
   }
 
   const btn = document.getElementById('publish-btn');
   btn.disabled = true;
   setStatus('publish-status', '', '');
-  localStorage.setItem('gh_token', token);
 
   const postSlug = `${date}-${slugify(title)}`;
   const filename = `${postSlug}.html`;
@@ -804,7 +816,7 @@ async function publishPost() {
         const p      = pendingPhotos[i];
         const b64img = await resizeImage(p.file);
         const fname  = `photos/${postSlug}-${i + 1}.jpg`;
-        await putGitHub(token, fname, b64img, null, `Add photo for: ${title}`);
+        await workerWrite(fname, b64img, null, `Add photo for: ${title}`);
         photoFilenames.push({ filename: fname, caption: p.caption });
         btn.textContent = `Uploading photos (${i + 1}/${pendingPhotos.length})…`;
       }
@@ -813,7 +825,7 @@ async function publishPost() {
     // ── 2. Update gallery.json ──────────────────────────────────────────────
     if (photoFilenames.length) {
       btn.textContent = 'Updating gallery…';
-      const galData = await getGitHub(token, 'data/gallery.json');
+      const galData = await workerRead('data/gallery.json');
       const existing = galData
         ? JSON.parse(fromBase64(galData.content))
         : [];
@@ -832,7 +844,7 @@ async function publishPost() {
 
       const updatedGal    = [...newEntries, ...existing];
       const galB64        = toBase64(JSON.stringify(updatedGal, null, 2));
-      await putGitHub(token, 'data/gallery.json', galB64, galData ? galData.sha : null,
+      await workerWrite('data/gallery.json', galB64, galData ? galData.sha : null,
         `Add gallery photos for: ${title}`);
     }
 
@@ -840,10 +852,10 @@ async function publishPost() {
     btn.textContent = 'Publishing post…';
     const postHTML = generatePostHTML({ title, date, tags, excerpt, body, photoFilenames });
     const postB64  = toBase64(postHTML);
-    await putGitHub(token, `blog-posts/${filename}`, postB64, null, `Add blog post: ${title}`);
+    await workerWrite(`blog-posts/${filename}`, postB64, null, `Add blog post: ${title}`);
 
     // ── 4. Prepend card to blog.html ────────────────────────────────────────
-    const blogData    = await getGitHub(token, 'blog.html');
+    const blogData    = await workerRead('blog.html');
     if (!blogData) throw new Error('Could not fetch blog.html from GitHub');
     const blogDecoded = fromBase64(blogData.content);
     const marker      = '<!-- AUTO-POSTS-START -->';
@@ -851,7 +863,7 @@ async function publishPost() {
     const card        = generateBlogCard({ title, date, excerpt, tags, filename });
     const updatedBlog = blogDecoded.replace(marker, marker + '\n' + card);
     const blogB64     = toBase64(updatedBlog);
-    await putGitHub(token, 'blog.html', blogB64, blogData.sha, `Add blog card for: ${title}`);
+    await workerWrite('blog.html', blogB64, blogData.sha, `Add blog card for: ${title}`);
 
     setStatus('publish-status', 'success',
       `✓ Published! Live at lauratheexplorer.co/blog-posts/${filename} in ~1 min.` +

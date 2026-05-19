@@ -218,11 +218,8 @@ async function main() {
     ]);
     const end_mile = parseMile(full.description);
 
-    // Unified media array consumed by strava-log.html
-    const media = [
-      ...photos.map(src => ({ type: 'photo', src })),
-      ...videos.map(v  => ({ type: 'video', ...v })),
-    ];
+    // Unified media array — photos only; videos are intentionally excluded from the site
+    const media = photos.map(src => ({ type: 'photo', src }));
 
     stravaActivitiesData.push({
       id:                   full.id,
@@ -236,8 +233,8 @@ async function main() {
       total_elevation_gain: full.total_elevation_gain,
       end_mile,
       altitude_stream,
-      photos,   // kept for backwards compat
-      videos,
+      photos,
+      videos: [],
       media,
     });
   }
@@ -282,6 +279,11 @@ async function main() {
     .reduce((sum, a) => sum + (a.distance || 0), 0);
   const totalDistanceMiles = parseFloat((totalDistanceMeters / 1609.34).toFixed(1));
 
+  const totalElevationMeters = mergedActivities
+    .filter(a => new Date(a.start_date) >= HIKE_START_DATE)
+    .reduce((sum, a) => sum + (a.total_elevation_gain || 0), 0);
+  const totalElevationFeet = Math.round(totalElevationMeters * 3.28084);
+
   // Current hiking day — derived from the most recent activity since hike start.
   // We don't require an end-mile marker; any activity counts so the day counter
   // stays current even on rest days or days without a description.
@@ -308,11 +310,12 @@ async function main() {
       ...latestStatus,
       ...(newMilesHiked !== null ? { miles_hiked: newMilesHiked } : {}),
       total_distance_miles: totalDistanceMiles,
+      total_elevation_feet: totalElevationFeet,
       ...(currentDay !== null ? { current_day: currentDay } : {}),
       last_updated: new Date().toISOString(),
     };
     fs.writeFileSync(STATUS_FILE, JSON.stringify(updated, null, 2), 'utf8');
-    console.log(`Updated trail-status.json → miles_hiked: ${newMilesHiked}, total_distance_miles: ${totalDistanceMiles}, current_day: ${currentDay}`);
+    console.log(`Updated trail-status.json → miles_hiked: ${newMilesHiked}, total_distance_miles: ${totalDistanceMiles}, total_elevation_feet: ${totalElevationFeet}, current_day: ${currentDay}`);
   } else {
     console.log('No mile data found; trail-status.json unchanged.');
   }
@@ -320,8 +323,7 @@ async function main() {
   // Update gallery.json with any new Strava photos + videos (deduplicate by URL)
   const gallery      = loadJSON(GALLERY_FILE, []);
   const existingUrls = new Set(gallery.map(e => e.src));
-  let addedPhotos    = 0;
-  let addedVideos    = 0;
+  let addedPhotos = 0;
   for (const entry of stravaActivitiesData) {
     const date        = formatDate(entry.start_date_local);
     const stravaUrl   = `https://www.strava.com/activities/${entry.id}`;
@@ -335,24 +337,10 @@ async function main() {
       }
     }
 
-    for (const video of (entry.videos || [])) {
-      const key = video.src || video.thumbnail;
-      if (key && !existingUrls.has(key)) {
-        gallery.unshift({
-          ...sharedMeta,
-          src:        video.src,
-          thumbnail:  video.thumbnail,
-          type:       'video',
-          playable:   video.playable,
-          stravaUrl,
-        });
-        existingUrls.add(key);
-        addedVideos++;
-      }
-    }
+    // Videos excluded from gallery intentionally
   }
   fs.writeFileSync(GALLERY_FILE, JSON.stringify(gallery, null, 2), 'utf8');
-  console.log(`Updated gallery.json (+${addedPhotos} photos, +${addedVideos} videos, ${gallery.length} total)`);
+  console.log(`Updated gallery.json (+${addedPhotos} photos, ${gallery.length} total)`);
 
   console.log('Sync complete.');
 }

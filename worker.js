@@ -119,6 +119,67 @@ export default {
       return corsResponse(JSON.stringify({ ok: true }), 200, env, origin);
     }
 
+    // ── /github-read ─────────────────────────────────────────────────────────
+    // Password-authenticated proxy to GitHub Contents API (GET).
+    // Allows the editor to read files without exposing GITHUB_TOKEN to the browser.
+    if (pathname === '/github-read') {
+      let body;
+      try { body = await request.json(); } catch {
+        return corsResponse(JSON.stringify({ error: 'Invalid JSON' }), 400, env, origin);
+      }
+      if (!env.POST_PASSWORD || body.password !== env.POST_PASSWORD) {
+        return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401, env, origin);
+      }
+      const { path } = body;
+      if (!path || typeof path !== 'string' || path.includes('..') || path.startsWith('/')) {
+        return corsResponse(JSON.stringify({ error: 'Invalid path' }), 400, env, origin);
+      }
+      const ghRes = await fetch(
+        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`,
+        { headers: { Authorization: `Bearer ${env.GITHUB_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'at2026-editor' } }
+      );
+      if (!ghRes.ok) {
+        if (ghRes.status === 404) return corsResponse('null', 200, env, origin);
+        const err = await ghRes.json().catch(() => ({}));
+        return corsResponse(JSON.stringify({ error: err.message || `GitHub read error ${ghRes.status}` }), 502, env, origin);
+      }
+      return corsResponse(await ghRes.text(), 200, env, origin);
+    }
+
+    // ── /github-write ─────────────────────────────────────────────────────────
+    // Password-authenticated proxy to GitHub Contents API (PUT).
+    // GITHUB_TOKEN never leaves the Worker; the browser only needs the password.
+    if (pathname === '/github-write') {
+      let body;
+      try { body = await request.json(); } catch {
+        return corsResponse(JSON.stringify({ error: 'Invalid JSON' }), 400, env, origin);
+      }
+      if (!env.POST_PASSWORD || body.password !== env.POST_PASSWORD) {
+        return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401, env, origin);
+      }
+      const { path, content, sha, message } = body;
+      if (!path || typeof path !== 'string' || path.includes('..') || path.startsWith('/')) {
+        return corsResponse(JSON.stringify({ error: 'Invalid path' }), 400, env, origin);
+      }
+      if (!content || !message) {
+        return corsResponse(JSON.stringify({ error: 'Missing content or message' }), 400, env, origin);
+      }
+      const ghRes = await fetch(
+        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`,
+        {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${env.GITHUB_TOKEN}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json', 'User-Agent': 'at2026-editor' },
+          body: JSON.stringify({ message, content, ...(sha ? { sha } : {}) }),
+        }
+      );
+      if (!ghRes.ok) {
+        const err = await ghRes.json().catch(() => ({}));
+        return corsResponse(JSON.stringify({ error: err.message || `GitHub write error ${ghRes.status}` }), 502, env, origin);
+      }
+      const data = await ghRes.json();
+      return corsResponse(JSON.stringify({ ok: true, sha: data.content?.sha }), 200, env, origin);
+    }
+
     if (pathname !== '/comment') {
       return corsResponse(JSON.stringify({ error: 'Not found' }), 404, env, origin);
     }

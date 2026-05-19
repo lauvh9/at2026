@@ -5,7 +5,7 @@
   const GITHUB_REPO  = 'at2026';
   const WORKER_URL   = 'https://at2026-comments.lauvh9.workers.dev';
   const AUTH_KEY     = 'post_authed';
-  const TOKEN_KEY    = 'gh_token';
+  const PASS_KEY     = 'post_password';
 
   // Only run on blog post pages and only when authenticated
   if (!document.querySelector('article.post-prose')) return;
@@ -163,11 +163,6 @@
         <label>Post body</label>
         <textarea id="edit-body"></textarea>
       </div>
-      <div class="field">
-        <label>GitHub token</label>
-        <input type="password" id="edit-gh-token" placeholder="ghp_xxxx…">
-        <div style="font-family:var(--sans);font-size:0.6rem;color:var(--trail);margin-top:0.25rem;font-style:italic">Stored locally — you only need to enter this once per browser.</div>
-      </div>
       <div class="modal-actions">
         <button class="btn btn-primary" id="edit-save-btn">Save changes &#8594;</button>
         <button class="btn btn-outline" id="edit-cancel-btn">Cancel</button>
@@ -193,9 +188,6 @@
     document.getElementById('edit-excerpt').value = excerpt;
     document.getElementById('edit-body').value    = body;
 
-    const savedToken = localStorage.getItem(TOKEN_KEY);
-    if (savedToken) document.getElementById('edit-gh-token').value = savedToken;
-
     setStatus('', '');
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -209,6 +201,7 @@
   // ── Log out ───────────────────────────────────────────────────────────────
   document.getElementById('edit-logout-btn').addEventListener('click', function () {
     localStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(PASS_KEY);
     closeEditor();
     fab.remove();
     overlay.remove();
@@ -217,23 +210,53 @@
   // ── Save ──────────────────────────────────────────────────────────────────
   document.getElementById('edit-save-btn').addEventListener('click', doSave);
 
+  // ── Worker helpers ────────────────────────────────────────────────────────
+  async function workerRead(path) {
+    const password = localStorage.getItem(PASS_KEY);
+    if (!password) throw new Error('Not authenticated — please log in on the blog page.');
+    const res = await fetch(`${WORKER_URL}/github-read`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, path }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 401) localStorage.removeItem(PASS_KEY);
+      throw new Error(err.error || `Read error ${res.status}`);
+    }
+    return res.json();
+  }
+
+  async function workerWrite(path, content, sha, message) {
+    const password = localStorage.getItem(PASS_KEY);
+    if (!password) throw new Error('Not authenticated — please log in on the blog page.');
+    const res = await fetch(`${WORKER_URL}/github-write`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, path, content, sha: sha || undefined, message }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 401) localStorage.removeItem(PASS_KEY);
+      throw new Error(err.error || `Write error ${res.status}`);
+    }
+    return res.json();
+  }
+
   async function doSave() {
     const title   = document.getElementById('edit-title').value.trim();
     const tags    = document.getElementById('edit-tags').value.trim();
     const excerpt = document.getElementById('edit-excerpt').value.trim();
     const body    = document.getElementById('edit-body').value.trim();
-    const token   = document.getElementById('edit-gh-token').value.trim();
 
     if (!title || !body) {
       setStatus('error', 'Title and body are required.');
       return;
     }
-    if (!token) {
-      setStatus('error', 'GitHub token is required to save.');
+    if (!localStorage.getItem(PASS_KEY)) {
+      setStatus('error', 'Not authenticated — please log in on the blog page first.');
       return;
     }
-
-    localStorage.setItem(TOKEN_KEY, token);
 
     const btn = document.getElementById('edit-save-btn');
     btn.disabled = true;
@@ -241,37 +264,21 @@
     setStatus('', '');
 
     try {
-      // Derive the repo-relative file path from the current URL
       const filePath = window.location.pathname.replace(/^\//, '');
-      const apiBase  = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/`;
-      const ghHeaders = {
-        Authorization:  `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept:         'application/vnd.github+json',
-        'User-Agent':   'at2026-editor',
-      };
 
-      // 1. Fetch current file SHA
-      const getRes = await fetch(apiBase + filePath, { headers: ghHeaders });
-      if (!getRes.ok) throw new Error(`Could not read file from GitHub (${getRes.status})`);
-      const { sha } = await getRes.json();
+      // 1. Fetch current file SHA via Worker
+      const fileData = await workerRead(filePath);
+      if (!fileData) throw new Error(`Could not read file from GitHub`);
+      const { sha } = fileData;
 
       // 2. Rebuild and commit the post HTML
-      const photos  = readPhotosFromDOM();
-      const html    = buildPostHTML({ title, tags, excerpt, body, filePath, photos });
-      const putRes  = await fetch(apiBase + filePath, {
-        method:  'PUT',
-        headers: ghHeaders,
-        body:    JSON.stringify({ message: `Edit: ${title}`, content: toBase64(html), sha }),
-      });
-      if (!putRes.ok) {
-        const err = await putRes.json().catch(() => ({}));
-        throw new Error(err.message || `GitHub write error ${putRes.status}`);
-      }
+      const photos = readPhotosFromDOM();
+      const html   = buildPostHTML({ title, tags, excerpt, body, filePath, photos });
+      await workerWrite(filePath, toBase64(html), sha, `Edit: ${title}`);
 
       // 3. Update the card in blog.html
       btn.textContent = 'Updating listing…';
-      await updateBlogCard({ title, tags, excerpt, filePath, ghHeaders, apiBase });
+      await updateBlogCard({ title, tags, excerpt, filePath });
 
       setStatus('success', '✓ Saved! Changes will be live in ~1 min.');
       btn.textContent = 'Saved ✓';
@@ -311,34 +318,24 @@
   }
 
   // ── Blog card update ──────────────────────────────────────────────────────
-  async function updateBlogCard({ title, tags, excerpt, filePath, ghHeaders, apiBase }) {
+  async function updateBlogCard({ title, tags, excerpt, filePath }) {
     const filename  = filePath.split('/').pop();
     const dateMatch = filename.match(/^(\d{4}-\d{2}-\d{2})/);
     if (!dateMatch) return;
     const date = dateMatch[1];
 
-    const res = await fetch(apiBase + 'blog.html', { headers: ghHeaders });
-    if (!res.ok) return;
-    const data     = await res.json();
+    const data = await workerRead('blog.html');
+    if (!data) return;
     const blogHtml = fromBase64(data.content);
     const marker   = `<!-- BLOG-POST: ${date} -->`;
     if (!blogHtml.includes(marker)) return;
 
-    // Replace from the marker line through the first </a> that closes the card
     const cardRegex = new RegExp(`[ \\t]*<!-- BLOG-POST: ${date} -->[\\s\\S]*?<\\/a>`);
     const newCard   = generateBlogCard({ title, date, excerpt, tags, filename }).replace(/^\n/, '');
     const updated   = blogHtml.replace(cardRegex, newCard);
-    if (updated === blogHtml) return; // nothing changed
+    if (updated === blogHtml) return;
 
-    await fetch(apiBase + 'blog.html', {
-      method:  'PUT',
-      headers: ghHeaders,
-      body:    JSON.stringify({
-        message: `Update blog card: ${title}`,
-        content: toBase64(updated),
-        sha:     data.sha,
-      }),
-    });
+    await workerWrite('blog.html', toBase64(updated), data.sha, `Update blog card: ${title}`);
   }
 
   // ── HTML builders (mirrors generatePostHTML / generateBlogCard in blog.html) ─
