@@ -1,5 +1,384 @@
 [
   {
+    "id": 18568367789,
+    "name": "Day 21: feeling like Hansel and Gretel",
+    "description": "300+ miles and 3 weeks down!! Stopped by the Southern Cookie Lady’s house, which was literally a fairy tale - she lives right off trail and bakes cookies for hikers! Hiked an incredible ridge and then wrapped up my first 20 miler of the trail with some unfortunately spicy pad thai and a Nutella and potato chip dessert.\n\nEnd mile: 308.8",
+    "start_date": "2026-05-18T11:23:34Z",
+    "start_date_local": "2026-05-18T07:23:34Z",
+    "distance": 33630.3,
+    "moving_time": 33235,
+    "elapsed_time": 44297,
+    "total_elevation_gain": 1484,
+    "end_mile": 308.8,
+    "altitude_stream": [
+      825.2,
+      840.2,
+      857.6,
+      875.2,
+      884.2,
+      899.4,
+      910.6,
+      919,
+      927,
+      935,
+      942.4,
+      949.2,
+      940.2,
+      949.6,
+      960.6,
+      964.6,
+      963.8,
+      962.4,
+      962,
+      968,
+      960.8,
+      949.8,
+      935,
+      916.8,
+      902.8,
+      886,
+      864.6,
+      849.6,
+      834.6,
+      816.8,
+      796.6,
+      773.6,
+      758.6,
+      738.8,
+      718.6,
+      700.4,
+      688.6,
+      687.4,
+      699.8,
+      710.6,
+      721.8,
+      730.6,
+      746.8,
+      757,
+      761.6,
+      761.2,
+      772,
+      769.8,
+      760.8,
+      748.6,
+      729.4,
+      720,
+      721.4,
+      728.6,
+      735.8,
+      748.6,
+      747.6,
+      730,
+      730.6,
+      730,
+      728.6,
+      735.4,
+      745.2,
+      755.4,
+      766.4,
+      778.4,
+      790,
+      804.2,
+      817.2,
+      830.2,
+      839.8,
+      852.4,
+      857,
+      867,
+      879,
+      894.6,
+      908,
+      918.6,
+      931.8,
+      934,
+      943.8,
+      947.2,
+      942.6,
+      942.6,
+      939.2,
+      933.2,
+      937.2,
+      935.6,
+      946,
+      954,
+      948,
+      948.2,
+      955.8,
+      966.8,
+      981.6,
+      990.2,
+      997.4,
+      1001.2,
+      1012.4,
+      1013.8,
+      1023.2,
+      1021.6,
+      1027.8,
+      1042,
+      1051.2,
+      1057.2,
+      1079,
+      1086.2,
+      1097.2,
+      1106.8,
+      1104.6,
+      1107.8,
+      1115.8,
+      1127.8,
+      1141.8,
+      1154.2,
+      1167.6,
+      1176.2,
+      1186,
+      1194.8,
+      1208.2,
+      1216.6,
+      1226.6,
+      1243.2,
+      1252.6,
+      1261.6,
+      1272.6,
+      1282.6,
+      1285.6,
+      1292.6,
+      1305.8,
+      1316,
+      1321,
+      1326,
+      1335.2,
+      1347,
+      1357.4,
+      1369.2,
+      1381,
+      1388.4,
+      1395.6,
+      1404.2,
+      1409.6,
+      1406.4,
+      1400.6,
+      1392.4,
+      1390.8,
+      1386.4,
+      1382.6,
+      1378.2,
+      1373.8,
+      1366.2,
+      1353.6,
+      1345.6,
+      1335,
+      1336.8,
+      1329.4,
+      1326,
+      1321.4,
+      1322.2,
+      1312.4,
+      1320.6,
+      1319.2,
+      1326,
+      1321.8,
+      1331.6,
+      1343,
+      1350.4,
+      1354.8,
+      1361.6,
+      1357.4,
+      1369.8,
+      1358,
+      1348.4,
+      1341.2,
+      1337.8,
+      1347.2,
+      1348.8,
+      1362.4,
+      1363.2,
+      1369,
+      1368.6,
+      1373.8,
+      1378,
+      1386.4,
+      1374.8,
+      1367.6,
+      1367.6,
+      1369,
+      1378,
+      1370.2,
+      1378.4,
+      1374.8,
+      1362.2,
+      1345.6,
+      1327.2,
+      1317.6,
+      1300,
+      1286.6,
+      1286.6,
+      1294.8,
+      1290.4,
+      1271.2,
+      1270.8,
+      1287.4,
+      1290.8,
+      1305.8,
+      1311.6,
+      1320,
+      1326.6,
+      1324.6,
+      1321.4,
+      1318.8,
+      1304,
+      1295,
+      1303.4,
+      1297,
+      1282.8,
+      1281.4,
+      1270.4,
+      1280.2,
+      1290,
+      1304.2,
+      1321.8,
+      1337.6,
+      1351.2,
+      1366.4,
+      1379.4,
+      1391.4,
+      1398.2,
+      1390,
+      1394.2,
+      1397.4,
+      1406,
+      1401,
+      1410,
+      1428.4,
+      1438.2,
+      1434.2,
+      1447.6,
+      1459.8,
+      1451.8,
+      1461,
+      1467.6,
+      1456,
+      1453.2,
+      1441.6,
+      1435.6,
+      1432.4,
+      1422.8,
+      1407.4,
+      1392.6,
+      1386.2,
+      1372.6,
+      1379.6,
+      1389,
+      1381.2,
+      1380.6,
+      1373.6,
+      1379.4,
+      1380,
+      1375.8,
+      1376.8,
+      1369,
+      1365,
+      1362.8,
+      1355.6,
+      1351.6,
+      1340.6,
+      1333.4,
+      1326.8,
+      1314,
+      1301.8,
+      1289.2,
+      1280.2,
+      1271.6,
+      1264.2,
+      1261.2,
+      1247.8,
+      1234.6,
+      1221.2,
+      1213.8,
+      1204,
+      1190.4,
+      1179.6,
+      1160.2,
+      1142.4,
+      1123.4,
+      1099.6,
+      1081.4,
+      1062.8,
+      1072.8,
+      1088.8,
+      1104.2,
+      1118.8,
+      1124.8,
+      1122.2,
+      1116.4,
+      1105.6,
+      1105.2
+    ],
+    "photos": [
+      "https://dgtzuqphqg23d.cloudfront.net/BRf1ndYLqBOFU6E5dUDam5Cjhm3ovf_hKeZfxDgepeg-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/fQOT-IEGkZjkUt4NTa4GsT1DWtCdRhv1wwPrrO4G9q4-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/clHWT9EyfjL_nemHTNoU-46L_MV5sFG2Twc9kagzs9A-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/DGVSsLqWf_emDzR0JOfpGYWG2xzA1w5_8uDWwdvyDBU-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/5Qo2djXDi_UxwxqKcnr5ilSjY33xnCrhcj23D7O_9qY-2048x1536.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/UN_eSvUluJuK-cTONLD2MqJkvT4mMtRSMYHKKU_PTAA-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/fKUFvdQXIYJ9B2Zdyb2kWSNuIxNJLTCgW-tQkWtjhU8-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/vFKABNyqA7G8UZ7IqiQiffc0MFpbHdaCuZ1q8CLD1wk-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/lq3WEucGt5iytMHW4U3M-BS-4jzOy7jM7bnQjENg5Ok-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/8tLrqg00uAucG0wQcW8hRts9kWY6cQQ0Eyb7LpCUK48-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/BEZc2thPkPa9hvVYxNgID7dFVA6H7IhCc_EZNUJSLh0-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/hpktwfK22vEqP6hpYirwNM0VnonU0_fN60fIwnt-Ccw-1536x2048.jpg"
+    ],
+    "videos": [],
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/BRf1ndYLqBOFU6E5dUDam5Cjhm3ovf_hKeZfxDgepeg-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/fQOT-IEGkZjkUt4NTa4GsT1DWtCdRhv1wwPrrO4G9q4-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/clHWT9EyfjL_nemHTNoU-46L_MV5sFG2Twc9kagzs9A-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/DGVSsLqWf_emDzR0JOfpGYWG2xzA1w5_8uDWwdvyDBU-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/5Qo2djXDi_UxwxqKcnr5ilSjY33xnCrhcj23D7O_9qY-2048x1536.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/UN_eSvUluJuK-cTONLD2MqJkvT4mMtRSMYHKKU_PTAA-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/fKUFvdQXIYJ9B2Zdyb2kWSNuIxNJLTCgW-tQkWtjhU8-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/vFKABNyqA7G8UZ7IqiQiffc0MFpbHdaCuZ1q8CLD1wk-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/lq3WEucGt5iytMHW4U3M-BS-4jzOy7jM7bnQjENg5Ok-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/8tLrqg00uAucG0wQcW8hRts9kWY6cQQ0Eyb7LpCUK48-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/BEZc2thPkPa9hvVYxNgID7dFVA6H7IhCc_EZNUJSLh0-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/hpktwfK22vEqP6hpYirwNM0VnonU0_fN60fIwnt-Ccw-1536x2048.jpg"
+      }
+    ]
+  },
+  {
     "id": 18553841959,
     "name": "Day 20! goodbyes, snake (!!), and another fire tower!",
     "description": "Shorter day but still some big climbs! Hiked 5ish miles with Noah Cracknell fueled by Joey’s Bagels (and almost knocked him down trying to get away from a snake), then 7.5 more to a dispersed tentsite. Also, cosmic brownies were a GREAT resupply move. Feeling a little low after the goodbye with Noah and separating from my trail family for a little while, but we’ll be good in the morning! \n\nEnd mile: 288.0",
@@ -323,13 +702,7 @@
       "https://dgtzuqphqg23d.cloudfront.net/AtPmopT38QOJedp5y85AsL2HFYKD65JPA9COfU-CjNE-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/j3eYec-iiR78cHXbcVnqZrIqjW61pEZC5x9ACqK6FY0-1536x2048.jpg"
     ],
-    "videos": [
-      {
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg/thumbnails/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg/thumbnails/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg_1080x1920.jpg",
-        "playable": false
-      }
-    ],
+    "videos": [],
     "media": [
       {
         "type": "photo",
@@ -366,12 +739,6 @@
       {
         "type": "photo",
         "src": "https://dgtzuqphqg23d.cloudfront.net/j3eYec-iiR78cHXbcVnqZrIqjW61pEZC5x9ACqK6FY0-1536x2048.jpg"
-      },
-      {
-        "type": "video",
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg/thumbnails/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg/thumbnails/-Yarv7ItG5eOqU8FGFC_5pPpFusTfcPNCszQlfA32Mg_1080x1920.jpg",
-        "playable": false
       }
     ]
   },
@@ -5392,13 +5759,7 @@
       "https://dgtzuqphqg23d.cloudfront.net/XclfVYGLG_QRvMni03DTI71afAzJ1mpbkhWHqscYGKk-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/VoYsVZIqNfyryzMEVkAATTmuW8TVXUd_LjzGyfPscBM-1536x2048.jpg"
     ],
-    "videos": [
-      {
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U/thumbnails/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U/thumbnails/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U_1080x1920.jpg",
-        "playable": false
-      }
-    ],
+    "videos": [],
     "media": [
       {
         "type": "photo",
@@ -5419,12 +5780,6 @@
       {
         "type": "photo",
         "src": "https://dgtzuqphqg23d.cloudfront.net/VoYsVZIqNfyryzMEVkAATTmuW8TVXUd_LjzGyfPscBM-1536x2048.jpg"
-      },
-      {
-        "type": "video",
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U/thumbnails/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U/thumbnails/ZR9rkaKP88soQgpg2Yr2kDVCVACCcZx1O_cTt_lsV-U_1080x1920.jpg",
-        "playable": false
       }
     ]
   },
@@ -5747,18 +6102,7 @@
       "https://dgtzuqphqg23d.cloudfront.net/n1ZJqUEIsBefBnG5FxfrTPgbEVjVKjy7FfMfmTuvxL0-1536x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/Wq-d1rG-q4rl8iwMkvfh2KOdIFL5-72yat-d6oa02xg-2048x1536.jpg"
     ],
-    "videos": [
-      {
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk/thumbnails/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk/thumbnails/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk_1080x1920.jpg",
-        "playable": false
-      },
-      {
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs/thumbnails/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs/thumbnails/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs_1080x1920.jpg",
-        "playable": false
-      }
-    ],
+    "videos": [],
     "media": [
       {
         "type": "photo",
@@ -5775,18 +6119,6 @@
       {
         "type": "photo",
         "src": "https://dgtzuqphqg23d.cloudfront.net/Wq-d1rG-q4rl8iwMkvfh2KOdIFL5-72yat-d6oa02xg-2048x1536.jpg"
-      },
-      {
-        "type": "video",
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk/thumbnails/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk/thumbnails/H-w50qMJFVBo1SRDqCbZLXsQNOYKe87VMVEY_cTaOVk_1080x1920.jpg",
-        "playable": false
-      },
-      {
-        "type": "video",
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs/thumbnails/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs/thumbnails/HgoOSQplio0ZE2-J-85NnR4uSaE9w9xFqBWquPhsgSs_1080x1920.jpg",
-        "playable": false
       }
     ]
   },
@@ -6454,13 +6786,7 @@
       "https://dgtzuqphqg23d.cloudfront.net/7yn6io82V0glrMxnLbLtbqH2l63MhAu0oIleSx_qvBo-1152x2048.jpg",
       "https://dgtzuqphqg23d.cloudfront.net/mECrHwy17fbmBpQsamf2Vk_C7dNJv-pfbv0gVM6lZZc-1536x2048.jpg"
     ],
-    "videos": [
-      {
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
-        "playable": false
-      }
-    ],
+    "videos": [],
     "media": [
       {
         "type": "photo",
@@ -6481,12 +6807,6 @@
       {
         "type": "photo",
         "src": "https://dgtzuqphqg23d.cloudfront.net/mECrHwy17fbmBpQsamf2Vk_C7dNJv-pfbv0gVM6lZZc-1536x2048.jpg"
-      },
-      {
-        "type": "video",
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw/thumbnails/jhiHGFb76ONMrH0M_-yxKOwIFIOMb-dEsaMSeWG52xw_1920x1080.jpg",
-        "playable": false
       }
     ]
   },
@@ -8153,20 +8473,7 @@
       7
     ],
     "photos": [],
-    "videos": [
-      {
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
-        "playable": false
-      }
-    ],
-    "media": [
-      {
-        "type": "video",
-        "src": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
-        "thumbnail": "https://d35tn3x5zm6xrc.cloudfront.net/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30/thumbnails/tmUFOpeRRdQwf5LIki0MJeAayubXzK_ISSCHsCJdA30_1080x1920.jpg",
-        "playable": false
-      }
-    ]
+    "videos": [],
+    "media": []
   }
 ]
