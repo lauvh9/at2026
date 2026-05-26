@@ -302,20 +302,20 @@
           <div>
             <div style="font-family:var(--mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--trail);margin-top:1.2rem;margin-bottom:0.5rem">States</div>
             <div class="state-progress">
-              <span class="state-pip current">GA</span>
-              <span class="state-pip">NC</span>
-              <span class="state-pip">TN</span>
-              <span class="state-pip">VA</span>
-              <span class="state-pip">WV</span>
-              <span class="state-pip">MD</span>
-              <span class="state-pip">PA</span>
-              <span class="state-pip">NJ</span>
-              <span class="state-pip">NY</span>
-              <span class="state-pip">CT</span>
-              <span class="state-pip">MA</span>
-              <span class="state-pip">VT</span>
-              <span class="state-pip">NH</span>
-              <span class="state-pip">ME</span>
+              <span class="state-pip" data-state="GA">GA</span>
+              <span class="state-pip" data-state="NC">NC</span>
+              <span class="state-pip" data-state="TN">TN</span>
+              <span class="state-pip" data-state="VA">VA</span>
+              <span class="state-pip" data-state="WV">WV</span>
+              <span class="state-pip" data-state="MD">MD</span>
+              <span class="state-pip" data-state="PA">PA</span>
+              <span class="state-pip" data-state="NJ">NJ</span>
+              <span class="state-pip" data-state="NY">NY</span>
+              <span class="state-pip" data-state="CT">CT</span>
+              <span class="state-pip" data-state="MA">MA</span>
+              <span class="state-pip" data-state="VT">VT</span>
+              <span class="state-pip" data-state="NH">NH</span>
+              <span class="state-pip" data-state="ME">ME</span>
             </div>
           </div>
 
@@ -591,6 +591,38 @@
   ];
   const TTL_TOTAL = TRAIL_STATES.reduce((s, x) => s + x.miles, 0);
 
+  // Miles at which the AT enters each state (GA→ME order, sourced from waypoints)
+  const STATE_ENTRY_MILES = [
+    { label: 'GA', mile: 0    },
+    { label: 'NC', mile: 78   },
+    { label: 'TN', mile: 307  },
+    { label: 'VA', mile: 453  },
+    { label: 'WV', mile: 1018 },
+    { label: 'MD', mile: 1028 },
+    { label: 'PA', mile: 1065 },
+    { label: 'NJ', mile: 1305 },
+    { label: 'NY', mile: 1370 },
+    { label: 'CT', mile: 1458 },
+    { label: 'MA', mile: 1520 },
+    { label: 'VT', mile: 1600 },
+    { label: 'NH', mile: 1741 },
+    { label: 'ME', mile: 1900 },
+  ];
+
+  function updateStatePips(milesHiked) {
+    STATE_ENTRY_MILES.forEach((s, i) => {
+      const pip = document.querySelector(`.state-pip[data-state="${s.label}"]`);
+      if (!pip) return;
+      const nextMile = STATE_ENTRY_MILES[i + 1]?.mile ?? Infinity;
+      pip.classList.remove('done', 'current');
+      if (milesHiked >= nextMile) {
+        pip.classList.add('done');
+      } else if (milesHiked >= s.mile) {
+        pip.classList.add('current');
+      }
+    });
+  }
+
   function renderTrailTimeline(milesHiked) {
     const wrap = document.getElementById('ttlWrap');
     if (!wrap) return;
@@ -747,6 +779,8 @@
     document.getElementById('milesHiked').textContent = MILES_HIKED.toLocaleString() + ' miles hiked';
     document.getElementById('milesRemain').textContent = (TOTAL_MILES - MILES_HIKED).toLocaleString() + ' remaining';
     document.getElementById('milesHikedStat').textContent = MILES_HIKED.toLocaleString();
+
+    updateStatePips(MILES_HIKED);
 
     // Use sync-provided day count only — never infer from the browser clock, which
     // would drift ahead of the actual data and make avg mi/day misleading.
