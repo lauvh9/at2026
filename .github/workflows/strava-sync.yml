@@ -37,7 +37,17 @@ jobs:
           STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
           SYNC_BEFORE_DATE:     ${{ inputs.sync_before_date }}
-        run: node strava-sync.js
+        run: |
+          for attempt in 1 2 3; do
+            node strava-sync.js && break
+            if [ $attempt -lt 3 ]; then
+              echo "Attempt $attempt failed, retrying in 30s..."
+              sleep 30
+            else
+              echo "All 3 attempts failed."
+              exit 1
+            fi
+          done
 
       - name: Commit and push any changes
         run: |
