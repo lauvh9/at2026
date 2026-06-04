@@ -180,6 +180,23 @@ export default {
       return corsResponse(JSON.stringify({ ok: true, sha: data.content?.sha }), 200, env, origin);
     }
 
+    // ── /strava-proxy-token ───────────────────────────────────────────────────
+    // Proxies Strava OAuth token refresh to Cloudflare IPs, which are not
+    // blocked by Strava's CloudFront WAF (unlike GitHub Actions IP ranges).
+    if (pathname === '/strava-proxy-token') {
+      const body = await request.text();
+      const stravaRes = await fetch('https://www.strava.com/oauth/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'User-Agent': 'at2026-strava-sync/1.0' },
+        body,
+      });
+      const text = await stravaRes.text();
+      return new Response(text, {
+        status: stravaRes.status,
+        headers: { 'Content-Type': stravaRes.headers.get('Content-Type') || 'application/json' },
+      });
+    }
+
     if (pathname !== '/comment') {
       return corsResponse(JSON.stringify({ error: 'Not found' }), 404, env, origin);
     }

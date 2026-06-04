@@ -19,9 +19,10 @@ const fs   = require('fs');
 const path = require('path');
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
-const CLIENT_ID     = process.env.STRAVA_CLIENT_ID;
-const CLIENT_SECRET = process.env.STRAVA_CLIENT_SECRET;
-const REFRESH_TOKEN = process.env.STRAVA_REFRESH_TOKEN;
+const CLIENT_ID        = process.env.STRAVA_CLIENT_ID;
+const CLIENT_SECRET    = process.env.STRAVA_CLIENT_SECRET;
+const REFRESH_TOKEN    = process.env.STRAVA_REFRESH_TOKEN;
+const STRAVA_WORKER_URL = process.env.STRAVA_WORKER_URL; // proxy via Cloudflare to avoid WAF blocks
 const SYNC_START_DATE  = new Date('2026-04-20'); // No activities before this date
 const HIKE_START_DATE  = new Date('2026-04-28'); // Actual hike start — for total distance
 const SYNC_BEFORE_DATE = process.env.SYNC_BEFORE_DATE ? new Date(process.env.SYNC_BEFORE_DATE) : null;
@@ -55,7 +56,10 @@ function loadJSON(file, fallback) {
 // ─── STRAVA TOKEN REFRESH ─────────────────────────────────────────────────
 async function refreshAccessToken() {
   console.log('Refreshing Strava access token…');
-  const data = await fetchJSON('https://www.strava.com/oauth/token', {
+  const endpoint = STRAVA_WORKER_URL
+    ? `${STRAVA_WORKER_URL}/strava-proxy-token`
+    : 'https://www.strava.com/oauth/token';
+  const data = await fetchJSON(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
