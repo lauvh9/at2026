@@ -23,6 +23,7 @@ const CLIENT_ID        = process.env.STRAVA_CLIENT_ID;
 const CLIENT_SECRET    = process.env.STRAVA_CLIENT_SECRET;
 const REFRESH_TOKEN    = process.env.STRAVA_REFRESH_TOKEN;
 const STRAVA_WORKER_URL = process.env.STRAVA_WORKER_URL; // proxy via Cloudflare to avoid WAF blocks
+const STRAVA_API_BASE  = STRAVA_WORKER_URL ? `${STRAVA_WORKER_URL}/strava-api` : 'https://www.strava.com/api/v3';
 const SYNC_START_DATE  = new Date('2026-04-20'); // No activities before this date
 const HIKE_START_DATE  = new Date('2026-04-28'); // Actual hike start — for total distance
 const SYNC_BEFORE_DATE = process.env.SYNC_BEFORE_DATE ? new Date(process.env.SYNC_BEFORE_DATE) : null;
@@ -77,7 +78,7 @@ async function refreshAccessToken() {
 async function fetchRecentActivities(token, perPage = 10) {
   console.log('Fetching recent Strava activities…');
   return fetchJSON(
-    `https://www.strava.com/api/v3/athlete/activities?per_page=${perPage}`,
+    `${STRAVA_API_BASE}/athlete/activities?per_page=${perPage}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 }
@@ -87,7 +88,7 @@ async function fetchRecentActivities(token, perPage = 10) {
 async function fetchAltitudeStream(token, activityId) {
   try {
     const data = await fetchJSON(
-      `https://www.strava.com/api/v3/activities/${activityId}/streams?keys=altitude&key_by_type=true`,
+      `${STRAVA_API_BASE}/activities/${activityId}/streams?keys=altitude&key_by_type=true`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const raw = (data.altitude && data.altitude.data) ? data.altitude.data : [];
@@ -108,7 +109,7 @@ async function fetchAltitudeStream(token, activityId) {
 async function fetchMedia(token, activityId) {
   try {
     const items = await fetchJSON(
-      `https://www.strava.com/api/v3/activities/${activityId}/photos?photo_sources=true&size=1800`,
+      `${STRAVA_API_BASE}/activities/${activityId}/photos?photo_sources=true&size=1800`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
@@ -147,7 +148,7 @@ async function fetchMedia(token, activityId) {
 // ─── FETCH FULL ACTIVITY (for full description) ───────────────────────────
 async function fetchActivity(token, activityId) {
   return fetchJSON(
-    `https://www.strava.com/api/v3/activities/${activityId}`,
+    `${STRAVA_API_BASE}/activities/${activityId}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 }

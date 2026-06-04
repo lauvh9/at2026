@@ -59,6 +59,26 @@ export default {
       return corsResponse(null, 204, env, origin);
     }
 
+    // ── /strava-api/* — REST API proxy ───────────────────────────────────────
+    // Proxies all Strava REST API calls so GitHub Actions IPs (blocked by
+    // Strava's CloudFront WAF) can reach the API via Cloudflare IPs.
+    if (pathname.startsWith('/strava-api/')) {
+      const stravaPath = pathname.slice('/strava-api/'.length);
+      const url = new URL(request.url);
+      const stravaUrl = `https://www.strava.com/api/v3/${stravaPath}${url.search}`;
+      const stravaRes = await fetch(stravaUrl, {
+        method: request.method,
+        headers: {
+          Authorization: request.headers.get('Authorization') || '',
+          'User-Agent': 'at2026-strava-sync/1.0',
+        },
+      });
+      return new Response(await stravaRes.text(), {
+        status: stravaRes.status,
+        headers: { 'Content-Type': stravaRes.headers.get('Content-Type') || 'application/json' },
+      });
+    }
+
     if (request.method !== 'POST') {
       return corsResponse(JSON.stringify({ error: 'Not found' }), 404, env, origin);
     }
