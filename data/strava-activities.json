@@ -17848,36 +17848,9 @@
       864.4,
       864.2
     ],
-    "photos": [
-      "https://dgtzuqphqg23d.cloudfront.net/rjxXPXYJJfKKczFp7sg8oLo2mnuBarXZtZBZT8_xUbE-1536x2048.jpg",
-      "https://dgtzuqphqg23d.cloudfront.net/XKbVI57jMzP72WRr5FwK5z-1NuM7RTYcKkl0U2LvW5w-1536x2048.jpg",
-      "https://dgtzuqphqg23d.cloudfront.net/vkkR1ulczLpHnFZ8EaZP76f-xBieVZn2Ale6jUtwZQQ-1536x2048.jpg",
-      "https://dgtzuqphqg23d.cloudfront.net/TwcHP4F701y_nNQsBCzXKLEhZR06uFepvJEprGUyidk-1536x2048.jpg",
-      "https://dgtzuqphqg23d.cloudfront.net/Kxb6AspPOpkzBcHVe7SDQz3DhCAjH1NWnOT62XgNuM4-2048x1536.jpg"
-    ],
+    "photos": [],
     "videos": [],
-    "media": [
-      {
-        "type": "photo",
-        "src": "https://dgtzuqphqg23d.cloudfront.net/rjxXPXYJJfKKczFp7sg8oLo2mnuBarXZtZBZT8_xUbE-1536x2048.jpg"
-      },
-      {
-        "type": "photo",
-        "src": "https://dgtzuqphqg23d.cloudfront.net/XKbVI57jMzP72WRr5FwK5z-1NuM7RTYcKkl0U2LvW5w-1536x2048.jpg"
-      },
-      {
-        "type": "photo",
-        "src": "https://dgtzuqphqg23d.cloudfront.net/vkkR1ulczLpHnFZ8EaZP76f-xBieVZn2Ale6jUtwZQQ-1536x2048.jpg"
-      },
-      {
-        "type": "photo",
-        "src": "https://dgtzuqphqg23d.cloudfront.net/TwcHP4F701y_nNQsBCzXKLEhZR06uFepvJEprGUyidk-1536x2048.jpg"
-      },
-      {
-        "type": "photo",
-        "src": "https://dgtzuqphqg23d.cloudfront.net/Kxb6AspPOpkzBcHVe7SDQz3DhCAjH1NWnOT62XgNuM4-2048x1536.jpg"
-      }
-    ]
+    "media": []
   },
   {
     "id": 18298785267,
