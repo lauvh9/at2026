@@ -193,6 +193,12 @@ async function main() {
     return;
   }
 
+  // Load cache early so we can skip re-fetching already-synced activities.
+  // Each activity costs 3 API calls (detail + photos + altitude); skipping cached
+  // ones keeps us well under Strava's 100 req/15-min rate limit.
+  const existingActivities = loadJSON(ACTIVITIES_FILE, []);
+  const existingById = new Map(existingActivities.map(a => [a.id, a]));
+
   // Find the most recent activity that has an end mile marker
   let latestMile   = null;
   let latestStatus = loadJSON(STATUS_FILE, {});
@@ -202,6 +208,18 @@ async function main() {
   for (const activity of activities) {
     if (new Date(activity.start_date) < SYNC_START_DATE) continue;
     if (SYNC_BEFORE_DATE && new Date(activity.start_date) >= SYNC_BEFORE_DATE) continue;
+
+    if (existingById.has(activity.id)) {
+      const cached = existingById.get(activity.id);
+      const endMile = cached.end_mile;
+      if (endMile !== null && endMile !== undefined && (latestMile === null || endMile > latestMile)) {
+        latestMile = endMile;
+      }
+      fullActivities.push({ activity, fullActivity: cached, isNew: false });
+      console.log(`Activity (cached): "${cached.name}" (${formatDate(cached.start_date_local).iso})`);
+      continue;
+    }
+
     const fullActivity = await fetchActivity(token, activity.id);
     const endMile      = parseMile(fullActivity.description);
 
@@ -210,13 +228,18 @@ async function main() {
       latestMile = endMile;
     }
 
-    fullActivities.push({ activity, fullActivity });
+    fullActivities.push({ activity, fullActivity, isNew: true });
     console.log(`Activity: "${fullActivity.name}" (${formatDate(fullActivity.start_date_local).iso})`);
   }
 
-  // Build fresh activity data for everything in the current fetch
+  // Build fresh activity data — only make API calls for new activities not in cache
   const stravaActivitiesData = [];
-  for (const { activity, fullActivity: full } of fullActivities) {
+  for (const { activity, fullActivity: full, isNew } of fullActivities) {
+    if (!isNew) {
+      stravaActivitiesData.push(existingById.get(activity.id));
+      continue;
+    }
+
     const [{ photos, videos }, altitude_stream] = await Promise.all([
       fetchMedia(token, activity.id).catch(() => ({ photos: [], videos: [] })),
       fetchAltitudeStream(token, activity.id),
@@ -246,7 +269,6 @@ async function main() {
 
   // Merge with existing to preserve history beyond the per_page fetch window.
   // New fetched data takes precedence (updated descriptions, re-fetched media).
-  const existingActivities = loadJSON(ACTIVITIES_FILE, []);
   const newIds = new Set(stravaActivitiesData.map(a => a.id));
   const mergedActivities = [
     ...stravaActivitiesData,
