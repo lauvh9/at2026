@@ -31,6 +31,7 @@ const SYNC_BEFORE_DATE = process.env.SYNC_BEFORE_DATE ? new Date(process.env.SYN
 const STATUS_FILE      = path.join(__dirname, 'data', 'trail-status.json');
 const ACTIVITIES_FILE  = path.join(__dirname, 'data', 'strava-activities.json');
 const GALLERY_FILE     = path.join(__dirname, 'data', 'gallery.json');
+const EXCLUDED_FILE    = path.join(__dirname, 'data', 'excluded-activities.json');
 
 // Regex to find "end mile: 342" (case-insensitive, flexible spacing/punctuation)
 const MILE_REGEX = /end\s*mile[:\s\-]+(\d+(\.\d+)?)/i;
@@ -199,6 +200,8 @@ async function main() {
   const existingActivities = loadJSON(ACTIVITIES_FILE, []);
   const existingById = new Map(existingActivities.map(a => [a.id, a]));
 
+  const excludedIds = new Set((loadJSON(EXCLUDED_FILE, { ids: [] }).ids || []).map(Number));
+
   // Find the most recent activity that has an end mile marker
   let latestMile   = null;
   let latestStatus = loadJSON(STATUS_FILE, {});
@@ -208,6 +211,7 @@ async function main() {
   for (const activity of activities) {
     if (new Date(activity.start_date) < SYNC_START_DATE) continue;
     if (SYNC_BEFORE_DATE && new Date(activity.start_date) >= SYNC_BEFORE_DATE) continue;
+    if (excludedIds.has(activity.id)) { console.log(`Skipping excluded activity ${activity.id}`); continue; }
 
     if (existingById.has(activity.id)) {
       const cached = existingById.get(activity.id);
@@ -273,7 +277,7 @@ async function main() {
   const mergedActivities = [
     ...stravaActivitiesData,
     ...existingActivities.filter(a => !newIds.has(a.id)),
-  ];
+  ].filter(a => !excludedIds.has(a.id));
   mergedActivities.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
 
   fs.writeFileSync(ACTIVITIES_FILE, JSON.stringify(mergedActivities, null, 2), 'utf8');
