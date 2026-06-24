@@ -290,6 +290,7 @@
             </div>
             <div class="progress-track-outer">
               <span id="pctLabel" class="progress-pct"></span>
+              <span id="estFinish" class="progress-est-finish"></span>
               <div class="progress-track">
                 <div class="progress-fill" id="progressFill" style="width:0%"></div>
               </div>
@@ -815,6 +816,18 @@
 
     const avg = days > 0 ? (MILES_WALKED / days).toFixed(1) : 0;
     document.getElementById('avgMiles').textContent = avg;
+
+    if (parseFloat(avg) > 0) {
+      const milesRemaining = TOTAL_MILES - MILES_HIKED;
+      const daysToFinish = milesRemaining / parseFloat(avg);
+      const estDate = new Date(today);
+      estDate.setDate(estDate.getDate() + Math.round(daysToFinish));
+      const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const d = estDate.getDate();
+      const ord = d % 10 === 1 && d !== 11 ? 'st' : d % 10 === 2 && d !== 12 ? 'nd' : d % 10 === 3 && d !== 13 ? 'rd' : 'th';
+      document.getElementById('estFinish').textContent =
+        `est. finish ${MONTHS[estDate.getMonth()]} ${d}${ord}`;
+    }
 
     document.getElementById('milesToGo').textContent = (TOTAL_MILES - MILES_HIKED).toLocaleString();
 
