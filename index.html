@@ -473,6 +473,8 @@
 <script>
   const TOTAL_MILES = 2198.4;
   const START_DATE  = new Date('2026-04-28');
+  // Extra calendar days added to est. finish for planned rest/zero days still ahead.
+  const EST_FINISH_ZERO_BUFFER_DAYS = 4;
 
   // MILES_HIKED is loaded from data/trail-status.json (auto-updated by Strava sync).
   // If the file is missing or the site isn't connected to Strava yet,
@@ -819,7 +821,7 @@
 
     if (parseFloat(avg) > 0) {
       const milesRemaining = TOTAL_MILES - MILES_HIKED;
-      const daysToFinish = milesRemaining / parseFloat(avg);
+      const daysToFinish = milesRemaining / parseFloat(avg) + EST_FINISH_ZERO_BUFFER_DAYS;
       const estDate = new Date(today);
       estDate.setDate(estDate.getDate() + Math.round(daysToFinish));
       const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
