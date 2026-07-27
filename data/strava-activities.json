@@ -360,15 +360,15 @@
   },
   {
     "id": 19464924716,
-    "name": "Morning Hike",
-    "description": "",
+    "name": "Day 89: full circle!",
+    "description": "My mom and dad dropped Noah and I off at the trail for a full day of slackpacking, which was wonderful since my back/shoulder blades have been bothering me - I think just from wearing a pack for so many hours without much other movement to loosen the muscles. Noah and I made it to the tiny little section of trail we had done back on January 1st en route to a trip upstate. At the time, it felt surreal to think I’d ever be 1400 miles into the trail, and it was miraculous that Noah just happened to be visiting when I made it to that part of the trail again! We met my parents for lunch at a lake, then did another 10 miles in the afternoon before heading back to the Airbnb for another home cooked meal by my mom, some fresh fruit, and ice cream. These people are making it hard to get back to the gritty trail life! \n\nEnd mile: 1440.3",
     "start_date": "2026-07-25T12:13:03Z",
     "start_date_local": "2026-07-25T08:13:03Z",
     "distance": 30326.3,
     "moving_time": 24728,
     "elapsed_time": 32030,
     "total_elevation_gain": 1351,
-    "end_mile": null,
+    "end_mile": 1440.3,
     "altitude_stream": [
       138.8,
       150.4,
@@ -671,9 +671,46 @@
       263.2,
       260.8
     ],
-    "photos": [],
+    "photos": [
+      "https://dgtzuqphqg23d.cloudfront.net/QSaKofy2ZeRT33NEOrMki9AmYAzSeT_s1-XQN9K9k0w-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/7y9RvxJDCvlyTZ6mZ3FO1hk3bSmGASKJpluDEYZY93w-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/EvFkPro7Ufe4MABIXeA4aIDo-PXG29FdRKS7vNQO2dI-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/r3MlrW3jLtUfGu4R3B_aIaKCpgUKgS76qVW2nBUpYGY-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/hJE98oJ-3TspjUC6dwwAS8g_UjJ0baI36zfEptk3wec-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/h-PWIoBcB2MdcaaAi-tA7rjb8TzBiuo-JXOGLMabsCA-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/gv4xGAG3LoPHnhYwLNA1N6OEiS_JvmqcR8v3Ifymjos-1536x2048.jpg"
+    ],
     "videos": [],
-    "media": []
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/QSaKofy2ZeRT33NEOrMki9AmYAzSeT_s1-XQN9K9k0w-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/7y9RvxJDCvlyTZ6mZ3FO1hk3bSmGASKJpluDEYZY93w-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/EvFkPro7Ufe4MABIXeA4aIDo-PXG29FdRKS7vNQO2dI-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/r3MlrW3jLtUfGu4R3B_aIaKCpgUKgS76qVW2nBUpYGY-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/hJE98oJ-3TspjUC6dwwAS8g_UjJ0baI36zfEptk3wec-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/h-PWIoBcB2MdcaaAi-tA7rjb8TzBiuo-JXOGLMabsCA-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/gv4xGAG3LoPHnhYwLNA1N6OEiS_JvmqcR8v3Ifymjos-1536x2048.jpg"
+      }
+    ]
   },
   {
     "id": 19452585129,
