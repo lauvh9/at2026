@@ -13,6 +13,10 @@ on:
         description: 'Exclude activities on or after this date (YYYY-MM-DD). Leave blank for all.'
         required: false
         default: ''
+      refresh_activity_ids:
+        description: 'Comma-separated Strava activity IDs to re-fetch from API (updates cached entries).'
+        required: false
+        default: ''
 
 jobs:
   sync:
@@ -38,6 +42,7 @@ jobs:
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
           STRAVA_WORKER_URL:    https://at2026-comments.lauvh9.workers.dev
           SYNC_BEFORE_DATE:     ${{ inputs.sync_before_date }}
+          REFRESH_ACTIVITY_IDS: ${{ inputs.refresh_activity_ids }}
         run: |
           for attempt in 1 2 3; do
             node strava-sync.js && break

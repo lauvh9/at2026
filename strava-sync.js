@@ -13,6 +13,7 @@
  *   STRAVA_CLIENT_ID
  *   STRAVA_CLIENT_SECRET
  *   STRAVA_REFRESH_TOKEN   ← from first-time OAuth setup (see STRAVA-SETUP.md)
+ *   REFRESH_ACTIVITY_IDS   ← optional comma-separated Strava activity IDs to re-fetch (bypass cache)
  */
 
 const fs   = require('fs');
@@ -27,6 +28,13 @@ const STRAVA_API_BASE  = STRAVA_WORKER_URL ? `${STRAVA_WORKER_URL}/strava-api` :
 const SYNC_START_DATE  = new Date('2026-04-20'); // No activities before this date
 const HIKE_START_DATE  = new Date('2026-04-28'); // Actual hike start — for total distance
 const SYNC_BEFORE_DATE = process.env.SYNC_BEFORE_DATE ? new Date(process.env.SYNC_BEFORE_DATE) : null;
+const REFRESH_ACTIVITY_IDS = new Set(
+  (process.env.REFRESH_ACTIVITY_IDS || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(Number)
+);
 
 const STATUS_FILE      = path.join(__dirname, 'data', 'trail-status.json');
 const ACTIVITIES_FILE  = path.join(__dirname, 'data', 'strava-activities.json');
@@ -213,7 +221,9 @@ async function main() {
     if (SYNC_BEFORE_DATE && new Date(activity.start_date) >= SYNC_BEFORE_DATE) continue;
     if (excludedIds.has(activity.id)) { console.log(`Skipping excluded activity ${activity.id}`); continue; }
 
-    if (existingById.has(activity.id)) {
+    const forceRefresh = REFRESH_ACTIVITY_IDS.has(activity.id);
+
+    if (existingById.has(activity.id) && !forceRefresh) {
       const cached = existingById.get(activity.id);
       const endMile = cached.end_mile;
       if (endMile !== null && endMile !== undefined && (latestMile === null || endMile > latestMile)) {
@@ -233,7 +243,29 @@ async function main() {
     }
 
     fullActivities.push({ activity, fullActivity, isNew: true });
-    console.log(`Activity: "${fullActivity.name}" (${formatDate(fullActivity.start_date_local).iso})`);
+    const label = forceRefresh ? 'refreshed' : 'new';
+    console.log(`Activity (${label}): "${fullActivity.name}" (${formatDate(fullActivity.start_date_local).iso})`);
+  }
+
+  // Re-fetch cached activities requested via REFRESH_ACTIVITY_IDS but outside the recent fetch window
+  const processedIds = new Set(fullActivities.map(({ activity }) => activity.id));
+  for (const id of REFRESH_ACTIVITY_IDS) {
+    if (processedIds.has(id) || excludedIds.has(id)) continue;
+    const fullActivity = await fetchActivity(token, id);
+    if (new Date(fullActivity.start_date) < SYNC_START_DATE) continue;
+    if (SYNC_BEFORE_DATE && new Date(fullActivity.start_date) >= SYNC_BEFORE_DATE) continue;
+
+    const endMile = parseMile(fullActivity.description);
+    if (endMile !== null && (latestMile === null || endMile > latestMile)) {
+      latestMile = endMile;
+    }
+
+    fullActivities.push({
+      activity: { id: fullActivity.id, start_date: fullActivity.start_date },
+      fullActivity,
+      isNew: true,
+    });
+    console.log(`Activity (refreshed): "${fullActivity.name}" (${formatDate(fullActivity.start_date_local).iso})`);
   }
 
   // Build fresh activity data — only make API calls for new activities not in cache
