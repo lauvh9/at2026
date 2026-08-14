@@ -168,6 +168,90 @@
       aspect-ratio: 1 / 1;
       object-fit: cover;
       display: block;
+      cursor: pointer;
+    }
+
+    /* Lightbox — per-activity photo viewer. Desktop navigates with the arrow
+       buttons/keyboard; touch devices (phone, iPad) swipe instead, so the
+       buttons hide under (hover: none) rather than a width breakpoint. */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,18,8,0.95);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-inner {
+      position: relative;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      touch-action: pan-y;
+    }
+    .lightbox-inner img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 3px;
+      display: block;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .lightbox-counter {
+      margin-top: 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--trail);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: -2.5rem;
+      right: 0;
+      background: none;
+      border: none;
+      color: var(--fog);
+      font-size: 1.5rem;
+      cursor: pointer;
+      font-family: var(--mono);
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.15s;
+    }
+    .lightbox-close:hover { color: var(--white); }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(26,18,8,0.15);
+      border: none;
+      color: var(--fog);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.75rem 1rem;
+      border-radius: 2px;
+      transition: background 0.15s;
+      font-family: var(--mono);
+    }
+    .lightbox-nav:hover { background: rgba(26,18,8,0.25); }
+    .lightbox-nav.prev { left: -4rem; }
+    .lightbox-nav.next { right: -4rem; }
+
+    @media (hover: none) {
+      .lightbox-nav { display: none; }
+    }
+    @media (max-width: 960px) {
+      .lightbox-nav.prev { left: 0.5rem; }
+      .lightbox-nav.next { right: 0.5rem; }
+      .lightbox-close { top: 0.5rem; right: 0.5rem; }
     }
 
     /* Empty state */
@@ -258,6 +342,16 @@
   </section>
 </main>
 
+<div class="lightbox" id="lightbox" onclick="closeLightboxOnBg(event)">
+  <div class="lightbox-inner" id="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">✕</button>
+    <button class="lightbox-nav prev" onclick="navigateLightbox(-1)" aria-label="Previous photo">‹</button>
+    <button class="lightbox-nav next" onclick="navigateLightbox(1)" aria-label="Next photo">›</button>
+    <div id="lightbox-media"></div>
+    <div id="lightbox-counter" class="lightbox-counter"></div>
+  </div>
+</div>
+
 <footer>
   <div class="foot-logo">Laura on Trail</div>
   <p>Springer Mountain, GA → Katahdin, ME · NOBO 2026</p>
@@ -331,6 +425,10 @@ const AT_SECTIONS = [
   [2198, 'Baxter State Park',                       'Maine'],
 ];
 const AT_TOTAL = 2198;
+
+// activity id → photo src array, so the lightbox only ever cycles through
+// that one activity's photos, not the whole page.
+const activityPhotoSets = {};
 
 function getATSection(mile) {
   return AT_SECTIONS.find(([max]) => mile <= max) || AT_SECTIONS[AT_SECTIONS.length - 1];
@@ -426,9 +524,11 @@ function renderActivity(activity) {
     || (activity.photos || []).map(src => ({ type: 'photo', src })))
     .filter(item => item.type !== 'video');
 
+  activityPhotoSets[activity.id] = mediaItems.map(item => item.src);
+
   const photoHTML = mediaItems.length
-    ? `<div class="activity-photos">${mediaItems.map(item =>
-        `<img src="${item.src}" alt="Trail photo" loading="lazy">`
+    ? `<div class="activity-photos">${mediaItems.map((item, i) =>
+        `<img src="${item.src}" alt="Trail photo" loading="lazy" onclick="openLightbox(${activity.id}, ${i})">`
       ).join('')}</div>`
     : '';
 
@@ -475,6 +575,75 @@ function renderActivity(activity) {
 
   return card;
 }
+
+// ── LIGHTBOX ─────────────────────────────────────────────────────────────────
+// Desktop: arrow buttons + ←/→ keys. Touch (phone/iPad): swipe left/right.
+// Both navigate within the tapped photo's own activityPhotoSets entry only.
+let lightboxPhotos = [];
+let lightboxIndex  = 0;
+
+function openLightbox(activityId, index) {
+  lightboxPhotos = activityPhotoSets[activityId] || [];
+  if (!lightboxPhotos.length) return;
+  lightboxIndex = index;
+  renderLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeLightboxOnBg(e) {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+}
+
+function navigateLightbox(dir) {
+  if (lightboxPhotos.length < 2) return;
+  lightboxIndex = (lightboxIndex + dir + lightboxPhotos.length) % lightboxPhotos.length;
+  renderLightbox();
+}
+
+function renderLightbox() {
+  document.getElementById('lightbox-media').innerHTML =
+    `<img src="${lightboxPhotos[lightboxIndex]}" alt="Trail photo">`;
+  document.getElementById('lightbox-counter').textContent =
+    lightboxPhotos.length > 1 ? `${lightboxIndex + 1} / ${lightboxPhotos.length}` : '';
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') navigateLightbox(1);
+  if (e.key === 'ArrowLeft')  navigateLightbox(-1);
+  if (e.key === 'Escape')     closeLightbox();
+});
+
+// Swipe navigation for touch devices. Vertical drags are left alone (so a
+// downward swipe can still scroll/dismiss) — only a mostly-horizontal drag
+// past the threshold counts as a page turn.
+(function () {
+  const SWIPE_THRESHOLD_PX = 40;
+  const inner = document.getElementById('lightbox-inner');
+  let startX = null;
+  let startY = null;
+
+  inner.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  inner.addEventListener('touchend', e => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    startX = null;
+    if (Math.abs(dx) > SWIPE_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy)) {
+      navigateLightbox(dx < 0 ? 1 : -1);
+    }
+  }, { passive: true });
+})();
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 async function init() {
