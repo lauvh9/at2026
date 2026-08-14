@@ -158,16 +158,16 @@
 
     /* Photos */
     .activity-photos {
-      columns: 3 160px;
-      column-gap: 3px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
       border-top: 1px solid var(--fog);
     }
     .activity-photos img {
       width: 100%;
-      height: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
       display: block;
-      margin-bottom: 3px;
-      break-inside: avoid;
     }
 
     /* Empty state */
@@ -207,6 +207,7 @@
       .activity-stats .activity-stat:nth-child(2) { border-right: none; }
       .activity-stats .activity-stat:nth-child(3) { border-top: 1px solid var(--fog); }
       .activity-stats .activity-stat:nth-child(4) { border-top: 1px solid var(--fog); }
+      .activity-photos { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
