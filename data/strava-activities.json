@@ -1,15 +1,15 @@
 [
   {
     "id": 19951321786,
-    "name": "Morning Hike",
-    "description": "",
+    "name": "Day 124: the longest 7 mile day ever",
+    "description": "Woke up this morning with a plan to hit the trail by 6:30, do 7 miles to a road, and get picked up by a hostel at 10am. In reality, I woke up freezing, checked the weather, and saw that it was 48° with a real feel of 42°. I called to Horsepower that I wasn’t getting out of bed until 7 and basically just stayed in the warmth of my sleeping bag until then. I finally got out, put on all my warm layers, and hit the trail. Obviously, I had to stop five minutes into our giant first climb to take all my layers off, but it was nice while it lasted! \n\nSometimes, the short days are the longest. In my head, I expect them to be over in a heartbeat, but the reality is I still have to hike 3ish hours to do a 7 mile day. My legs just aren’t recovering well anymore either, and I’m moving slower than I was a few weeks ago, even on relatively easy terrain. It took me almost 4 hours to hike 7 miles, which isn’t a pace I love to see.  Eventually, I made it, and ran into some trail magic in the parking lot and had a beer to cheer me up. \n\nThe hostel picked us up - six people to a car that could only seat four - and I sat in the bed of the truck with the packs to make room. The hostel was SO nice - enormous living room, comfortable bunk room, and tons of games and amenities. We threw in some laundry, showered, and made ourselves at home. The hostel owner drove us to town for a resupply after we showered, and I decided to just make dinner at the hostel with Horsepower and Jukebox. Nothing special - we just bought ingredients for a salad, mac & cheese, chicken nuggets, and roasted asparagus, but it was nice to at least cook in a kitchen again. Another group of hikers really one-upped us, grilling steaks, corn, and potatoes, but I was thrilled with our dinner. We also made brownies to go with ice cream for dessert, and that hit the spot too. Spoiler alert: it’ll probably be my breakfast tomorrow too. \n\nEnd mile: 2009.5",
     "start_date": "2026-08-29T11:43:01Z",
     "start_date_local": "2026-08-29T07:43:01Z",
     "distance": 11844.4,
     "moving_time": 13411,
     "elapsed_time": 14300,
     "total_elevation_gain": 601,
-    "end_mile": null,
+    "end_mile": 2009.5,
     "altitude_stream": [
       820,
       826.4,
@@ -312,9 +312,46 @@
       424.8,
       424.8
     ],
-    "photos": [],
+    "photos": [
+      "https://dgtzuqphqg23d.cloudfront.net/ZvNhV2WVdWt6JfmIXn_FwK54mRc2nC71QhVqwSeRKwA-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/A2aqt8Z26iHzN57cOQ_2vjWBRdH6ahydAFMxQyJyCYQ-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/Te55cXEf8y_PUIOhxeHwB7UdkVoydQ98mWgaR0-oXag-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/7mNAMYmT9M_MHj0dsDW_mMu0SdfhK_C5Lv6Rj7CCjwk-2048x1536.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/BO9eTB2ugxCxOP3RxsaJYGPVP9BQQ_umyrDUbTuBLa4-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/HyksWNnSIbJ5y-7unf3OBM3L0K33x2mFH8BOG_Xzsos-1536x2048.jpg",
+      "https://dgtzuqphqg23d.cloudfront.net/gXDjkZ7UBg166BtWY93SHh08Csxwy7yXAbZoEH6bgo0-1536x2048.jpg"
+    ],
     "videos": [],
-    "media": []
+    "media": [
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/ZvNhV2WVdWt6JfmIXn_FwK54mRc2nC71QhVqwSeRKwA-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/A2aqt8Z26iHzN57cOQ_2vjWBRdH6ahydAFMxQyJyCYQ-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/Te55cXEf8y_PUIOhxeHwB7UdkVoydQ98mWgaR0-oXag-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/7mNAMYmT9M_MHj0dsDW_mMu0SdfhK_C5Lv6Rj7CCjwk-2048x1536.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/BO9eTB2ugxCxOP3RxsaJYGPVP9BQQ_umyrDUbTuBLa4-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/HyksWNnSIbJ5y-7unf3OBM3L0K33x2mFH8BOG_Xzsos-1536x2048.jpg"
+      },
+      {
+        "type": "photo",
+        "src": "https://dgtzuqphqg23d.cloudfront.net/gXDjkZ7UBg166BtWY93SHh08Csxwy7yXAbZoEH6bgo0-1536x2048.jpg"
+      }
+    ]
   },
   {
     "id": 19942237300,
