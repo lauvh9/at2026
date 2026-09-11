@@ -477,10 +477,59 @@
   // Extra calendar days added to est. finish for planned rest/zero days still ahead.
   const EST_FINISH_ZERO_BUFFER_DAYS = 4;
 
-  // MILES_HIKED is loaded from data/trail-status.json (auto-updated by Strava sync).
-  // If the file is missing or the site isn't connected to Strava yet,
-  // change the fallback value below manually instead.
+  // MILES_HIKED is loaded from data/trail-status.json (now updated manually —
+  // the automatic Strava sync has been retired now that the trail is done).
+  // If the file is missing, change the fallback value below manually instead.
   const FALLBACK_MILES = 0;
+
+  // ── FINISH CELEBRATION ───────────────────────────────────────────────────────
+  function launchConfetti() {
+    const colors = ['#507856', '#c8a96e', '#8b3a1a', '#4a7a8a'];
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+    ctx.scale(dpr, dpr);
+
+    const pieces = Array.from({ length: 60 }, () => ({
+      x: Math.random() * innerWidth,
+      y: -20 - Math.random() * innerHeight * 0.5,
+      w: 5 + Math.random() * 4,
+      h: 8 + Math.random() * 5,
+      speed: 1.5 + Math.random() * 2,
+      drift: (Math.random() - 0.5) * 1.2,
+      angle: Math.random() * Math.PI,
+      spin: (Math.random() - 0.5) * 0.2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+    }));
+
+    const duration = 3200;
+    const start = performance.now();
+
+    function frame(now) {
+      const elapsed = now - start;
+      const fade = Math.max(0, 1 - elapsed / duration);
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      if (fade <= 0) { canvas.remove(); return; }
+      ctx.globalAlpha = fade;
+      for (const p of pieces) {
+        p.x += p.drift;
+        p.y += p.speed;
+        p.angle += p.spin;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
 
   // ── TRAIL WAYPOINTS ──────────────────────────────────────────────────────────
   // type: 'resupply' | 'poi' | 'state'
@@ -617,7 +666,7 @@
     STATE_ENTRY_MILES.forEach((s, i) => {
       const pip = document.querySelector(`.state-pip[data-state="${s.label}"]`);
       if (!pip) return;
-      const nextMile = STATE_ENTRY_MILES[i + 1]?.mile ?? Infinity;
+      const nextMile = STATE_ENTRY_MILES[i + 1]?.mile ?? TOTAL_MILES;
       pip.classList.remove('done', 'current');
       if (milesHiked >= nextMile) {
         pip.classList.add('done');
@@ -768,10 +817,13 @@
     } catch (e) {
       console.log('trail-status.json not found — using fallback miles.');
     }
+    if (MILES_HIKED >= TOTAL_MILES) launchConfetti();
+
     const today = new Date();
     const startDate = new Date('2026-04-28');
     document.getElementById('statusHeading').textContent =
-      today < startDate ? 'Prepping & training' : 'On the trail';
+      MILES_HIKED >= TOTAL_MILES ? 'Trail complete!' :
+      (today < startDate ? 'Prepping & training' : 'On the trail');
 
     const pct = (MILES_HIKED / TOTAL_MILES * 100).toFixed(1);
     const pctInt = Math.round(MILES_HIKED / TOTAL_MILES * 100);
@@ -820,8 +872,10 @@
     const avg = days > 0 ? (MILES_WALKED / days).toFixed(1) : 0;
     document.getElementById('avgMiles').textContent = avg;
 
-    if (parseFloat(avg) > 0) {
-      const milesRemaining = TOTAL_MILES - MILES_HIKED;
+    const milesRemaining = TOTAL_MILES - MILES_HIKED;
+    if (milesRemaining <= 0) {
+      document.getElementById('estFinish').textContent = 'finished! 🏁';
+    } else if (parseFloat(avg) > 0) {
       const daysToFinish = milesRemaining / parseFloat(avg) + EST_FINISH_ZERO_BUFFER_DAYS;
       const estDate = new Date(today);
       estDate.setDate(estDate.getDate() + Math.round(daysToFinish));
